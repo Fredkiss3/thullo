@@ -1,0 +1,11 @@
+{
+  "name": "@thullo/root",
+  "version": "1.0.0",
+  "scripts": {
+    "postinstall": "lerna bootstrap",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "lerna": "^4.0.0"
+  }
+}
