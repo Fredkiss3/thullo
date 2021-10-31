@@ -1,0 +1,72 @@
+import { RegisterRequest } from './RegisterRequest';
+import { RegisterPresenter } from './RegisterPresenter';
+import { RegisterResponse } from './RegisterResponse';
+import { FieldErrors } from '../../utils/types';
+import Validator from 'validatorjs';
+import { MemberRepository } from '../../entities/Member';
+import { v4 as uuiv4 } from 'uuid';
+import bcrypt from 'bcrypt';
+Validator.useLang('fr');
+
+export class RegisterUseCase {
+    RULES = {
+        login: 'required|regex:/^[a-z]+([a-z0-9-])*[^-]$/',
+        name: 'required',
+        password: 'required'
+    };
+
+    constructor(private memberRepository: MemberRepository) {}
+
+    async execute(
+        request: RegisterRequest,
+        presenter: RegisterPresenter
+    ): Promise<void> {
+        let errors = this.validate(request);
+
+        if (errors === null) {
+            if (
+                (await this.memberRepository.getMemberByLogin(
+                    request.login
+                )) !== null
+            ) {
+                errors = {
+                    login: ['Un utilisateur avec le login existe déjà']
+                };
+            } else {
+                const hash = await bcrypt.hash(request.password, 12);
+                await this.memberRepository.register({
+                    id: uuiv4(),
+                    ...request,
+                    password: hash
+                });
+            }
+        }
+
+        presenter.present(new RegisterResponse(errors));
+    }
+
+    validate(request: RegisterRequest): FieldErrors {
+        const validation = new Validator(request, this.RULES, {
+            regex: {
+                login:
+                    'Le format du login est invalide, le format attendu est : \n' +
+                    '- Des lettres minuscules\n' +
+                    '- Des chiffres (optionnel)\n' +
+                    '- Sans espace \n' +
+                    '- Ne commençant pas par un chiffre\n' +
+                    "- Et ne se terminant pas par un trait d'union"
+            },
+            required: {
+                name: 'Veuillez renseigner votre nom',
+                login: 'Veuillez renseigner votre login',
+                password: 'Veuillez renseigner votre mot de passe'
+            }
+        });
+
+        if (validation.passes()) {
+            return null;
+        }
+
+        return validation.errors.all();
+    }
+}

@@ -14,7 +14,7 @@ export class __UC__UseCase {
     presenter: __UC__Presenter
   ): Promise<void> {
     // TODO : UseCase Logic
-    const errors = this.validate(request);
+    let errors = this.validate(request);
     presenter.present(new __UC__Response(errors));
   }
 

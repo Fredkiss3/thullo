@@ -46,7 +46,6 @@ describe('__UC__ Use case', () => {
 
         // Then
         expect(presenter.response?.errors).not.toBe(null);
-        expect(presenter.response?.company).toBe(null);
       }
     );
   });

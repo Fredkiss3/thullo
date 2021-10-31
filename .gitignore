@@ -1,2 +1,8 @@
 node_modules/
 dist/
+*.xml
+.idea/
+/.idea/codeStyles/codeStyleConfig.xml
+/.idea/codeStyles/Project.xml
+/.idea/vcs.xml
+*.iml

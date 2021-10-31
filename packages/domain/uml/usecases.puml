@@ -1,0 +1,73 @@
+@startuml
+'https://plantuml.com/use-case-diagram
+:Member: as member
+:Admin: as admin
+
+left to right direction
+
+rectangle Thullo {
+    (S'enregistrer) as (register)
+    (S'authentifier) as (auth)
+
+    (Afficher tableaux) as (seeAllBoards)
+    (Créer tableau) as (addBoard)
+    (Afficher tableau) as (seeBoard)
+    (Changer visibilité tableau) as (setBoardVisibility)
+    (Renommer tableau) as (renameBoard)
+    (Modifier description tableau) as (updateBoardDescription)
+
+    (Rechercher membres) as (searchMembers)
+    (Ajouter membre au tableau) as (inviteMemberToBoard)
+    (Retirer membre du tableau) as (removeMemberFromBoard)
+
+    (Ajouter liste) as (addList)
+    (Renommer liste) as (renameList)
+    (Supprimer liste) as (deleteList)
+
+    (Ajouter carte) as (addCard)
+    (Déplacer carte) as (moveCard)
+    (Sélectionner Carte) as (seeCardDetails)
+    (Renommer carte) as (renameCard)
+    (Changer description de carte) as (updateCardDescription)
+    (Ajouter lien à la carte) as (addAttachement)
+    (Supprimer lien) as (deleteAttachement)
+    (Ajouter commentaire) as (addComment)
+    (Modifier commentaire) as (updateComment)
+    (supprimer commentaire) as (deleteComment)
+    (Changer couverture carte) as (updateCardCover)
+    (Ajouter label) as (addLabelToCard)
+    (Retirer label) as (removeLabelFromCard)
+
+    (register) <.left. (auth) : << include >>
+    (inviteMemberToBoard) ..> (searchMembers) : << include >>
+
+    member -- (auth)
+    member -- (seeAllBoards)
+    member -- (seeBoard)
+    member -- (addBoard)
+    member -- (addList)
+    member -- (renameList)
+    member -- (deleteList)
+    member -- (addCard)
+    member -- (moveCard)
+    member -- (renameCard)
+    member -- (seeCardDetails)
+    member -- (addComment)
+    member -- (updateComment)
+    member -- (deleteComment)
+    member -- (addLabelToCard)
+    member -- (removeLabelFromCard)
+    member -- (updateCardDescription)
+    member -- (updateCardCover)
+    member -- (addAttachement)
+    member -- (deleteAttachement)
+
+    admin -- (removeMemberFromBoard)
+    admin -- (renameBoard)
+    admin -- (updateBoardDescription)
+    admin -- (inviteMemberToBoard)
+    admin -- (setBoardVisibility)
+
+    member <|-right- admin
+ }
+@enduml

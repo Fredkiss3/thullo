@@ -1,0 +1,85 @@
+@startuml
+'https://plantuml.com/class-diagram
+class Member {
+    id: string;
+    avatar: string;
+    name: string;
+    login: string;
+    password: string;
+}
+
+class Admin {
+}
+
+class Board {
+    id: string;
+    cover: Image;
+    private: boolean;
+    name: string;
+    description: string;
+}
+
+class List {
+    id: string;
+    name: string;
+}
+
+class Card {
+    id: string;
+    coverURL: string;
+    description: string;
+}
+
+enum Colors {
+    GREEN
+    YELLOW
+    ORANGE
+    RED
+    BLUE
+    LIGHTBLUE
+    LIGHTGREEN
+    BLACK
+    DARK
+    GREY
+    LIGHTGREY
+    LIGHT
+}
+
+class Label {
+    id: string;
+    name: string;
+    color: Colors
+}
+
+class Comment {
+    id: string;
+    createdAt: Date;
+    updatedAt: Date;
+    content: string;
+}
+
+class Attachment {
+    id: string;
+    link: string;
+    title: string;
+    coverURL: string;
+    addedAt: Date;
+}
+
+Member <|-- Admin
+
+Admin *- Board : Owner
+Member "Many" -- "Many" Board : participates in
+
+Board *-- List : Contains
+List *-- Card : Contains
+Card *-- Attachment : Contains
+Card "One" -- "Many" Comment : Contains
+
+Card "Many" o-- "Many" Label : Has
+
+Label --* Board  : Belongs To
+
+Member *-- Comment : Writes
+
+@enduml
