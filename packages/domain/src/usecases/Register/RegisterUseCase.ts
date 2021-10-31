@@ -12,7 +12,7 @@ export class RegisterUseCase {
     RULES = {
         login: 'required|regex:/^[a-z]+([a-z0-9-])*[^-]$/',
         name: 'required',
-        password: 'required'
+        password: 'required|regex:/^(?=.*[0-9])(?=.*[a-z])(?=.*\\W).{6,}$/'
     };
 
     constructor(private memberRepository: MemberRepository) {}
@@ -48,6 +48,12 @@ export class RegisterUseCase {
     validate(request: RegisterRequest): FieldErrors {
         const validation = new Validator(request, this.RULES, {
             regex: {
+                password:
+                    'Le format du mot de passe est invalide, le format attendu est :\n' +
+                    '- Au moins une lettre\n' +
+                    '- Au moins un chiffre\n' +
+                    '- Au moins un caractère spécial (exemples : @, &, +, * )\n' +
+                    '- Au moins 6 caractères\n',
                 login:
                     'Le format du login est invalide, le format attendu est : \n' +
                     '- Des lettres minuscules\n' +

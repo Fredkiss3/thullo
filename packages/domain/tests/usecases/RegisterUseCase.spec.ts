@@ -19,7 +19,7 @@ const presenter = new (class implements RegisterPresenter {
 
 const request: RegisterRequest = {
     name: 'Adrien KISSIE',
-    password: 'password',
+    password: 'password123.',
     avatar: 'randomfilename.jpeg',
     login: 'fredkiss3'
 };
@@ -191,10 +191,31 @@ describe('Register Use case', () => {
                 }
             },
             {
-                label: 'password empty',
+                label: 'password too short (less than six characters)',
                 request: {
                     ...request,
-                    password: ''
+                    password: 'hello'
+                }
+            },
+            {
+                label: 'password invalid (Needs at least one digit)',
+                request: {
+                    ...request,
+                    password: 'hellothere'
+                }
+            },
+            {
+                label: 'password invalid (Needs at least one special char)',
+                request: {
+                    ...request,
+                    password: 'hellothere123'
+                }
+            },
+            {
+                label: 'password invalid (Needs at least one letter)',
+                request: {
+                    ...request,
+                    password: '123456+'
                 }
             }
         ];
