@@ -3,9 +3,12 @@
   "version": "1.0.0",
   "scripts": {
     "postinstall": "lerna bootstrap",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest --testPathIgnorePatterns=/scripts/templates/usecases/"
   },
   "devDependencies": {
-    "lerna": "^4.0.0"
+    "@types/jest": "^27.0.2",
+    "jest": "^27.3.1",
+    "lerna": "^4.0.0",
+    "ts-jest": "^27.0.7"
   }
 }
