@@ -34,13 +34,9 @@ export class AddBoardUseCase {
 
             if (null !== owner) {
                 this.boardRepository.addBoard({
-                    name: request.name,
-                    cover: request.cover,
-                    private: request.private,
+                    ...request,
                     id: uuidv4(),
-                    participants: [],
                     description: null,
-                    owner
                 });
             } else {
                 errors = {
@@ -59,6 +55,9 @@ export class AddBoardUseCase {
                 cover: 'Veuillez uploader une image de couverture pour le tableau',
                 private: 'Veuillez renseigner la visibilité du tableau',
                 ownerId: 'Veuillez renseigner le propriétaire'
+            },
+            boolean: {
+                private: 'La visibilité du tableau doit être public ou privée'
             }
         });
 

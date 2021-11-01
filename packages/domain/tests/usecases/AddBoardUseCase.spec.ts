@@ -36,12 +36,8 @@ const request: AddBoardRequest = {
 };
 
 const boardExpected: Omit<Board, 'id'> = {
-    name: request.name,
-    cover: request.cover,
-    private: request.private,
-    participants: [],
-    description: null,
-    owner: zeus
+    ...request,
+    description: null
 };
 
 describe('AddBoard Use case', () => {

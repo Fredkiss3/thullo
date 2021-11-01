@@ -1,11 +1,10 @@
-import { Member } from "../Member";
+import { MemberId } from "../Member";
 
 export interface Board {
   id: string;
   cover: string;
   name: string;
   description: string | null;
-  participants: Member[];
   private: boolean;
-  owner: Member;
+  ownerId: MemberId;
 }

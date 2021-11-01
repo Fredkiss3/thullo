@@ -1,7 +1,10 @@
+export type MemberId = string;
+
 export interface Member {
-  id: string;
+  id: MemberId;
   name: string;
   login: string;
   password: string;
   avatar: string | null;
 }
+
