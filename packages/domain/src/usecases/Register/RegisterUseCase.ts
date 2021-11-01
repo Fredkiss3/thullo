@@ -4,8 +4,8 @@ import { RegisterResponse } from './RegisterResponse';
 import { FieldErrors } from '../../utils/types';
 import Validator from 'validatorjs';
 import { MemberRepository } from '../../entities/Member';
-import { v4 as uuiv4 } from 'uuid';
 import bcrypt from 'bcrypt';
+import { randomUUID as uuidv4 } from "crypto";
 Validator.useLang('fr');
 
 export class RegisterUseCase {
@@ -35,7 +35,7 @@ export class RegisterUseCase {
             } else {
                 const hash = await bcrypt.hash(request.password, 12);
                 await this.memberRepository.register({
-                    id: uuiv4(),
+                    id: uuidv4(),
                     ...request,
                     password: hash
                 });
