@@ -3,7 +3,8 @@ import { Member, MemberRepository } from '@thullo/domain';
 export class MemberRepositoryBuilder {
     private getMemberByLogin: (login: string) => Promise<Member | null> = () =>
         Promise.resolve(null);
-    private getAll: () => Promise<Member[]> = () => Promise.resolve([]);
+    private getMemberById: (id: string) => Promise<Member | null> = () =>
+        Promise.resolve(null);
     private register: (member: Member) => Promise<void> = () =>
         Promise.resolve();
 
@@ -14,8 +15,8 @@ export class MemberRepositoryBuilder {
         return this;
     }
 
-    withGetAll(getAll: () => Promise<Member[]>) {
-        this.getAll = getAll;
+    withGetMemberById(getMemberById: (id: string) => Promise<Member | null>) {
+        this.getMemberById = getMemberById;
         return this;
     }
 
@@ -26,8 +27,8 @@ export class MemberRepositoryBuilder {
 
     build(): MemberRepository {
         return {
+            getMemberById: this.getMemberById,
             getMemberByLogin: this.getMemberByLogin,
-            getAll: this.getAll,
             register: this.register
         };
     }
