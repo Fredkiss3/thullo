@@ -16,10 +16,6 @@ const presenter = new (class implements __UC__Presenter {
 const request: __UC__Request = {};
 
 describe('__UC__ Use case', () => {
-    beforeEach(() => {
-        presenter.response = null;
-    });
-
     it('is successful', async () => {
         // Given
         const useCase = new __UC__UseCase();

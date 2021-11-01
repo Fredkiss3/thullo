@@ -39,6 +39,7 @@ rectangle Thullo {
     (Retirer label) as (removeLabelFromCard)
 
     (register) <.left. (auth) : << include >>
+    (seeBoard) .left.> (addBoard): << include >>
     (inviteMemberToBoard) ..> (searchMembers) : << include >>
 
     member -- (auth)
@@ -61,6 +62,7 @@ rectangle Thullo {
     member -- (updateCardCover)
     member -- (addAttachement)
     member -- (deleteAttachement)
+
 
     admin -- (removeMemberFromBoard)
     admin -- (renameBoard)

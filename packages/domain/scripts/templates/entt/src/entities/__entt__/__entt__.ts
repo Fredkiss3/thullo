@@ -1,3 +1,3 @@
 export interface __entt__ {
-  // fields
+  // TODO: fields
 }

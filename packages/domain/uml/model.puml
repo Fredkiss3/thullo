@@ -69,7 +69,7 @@ class Attachment {
 Member <|-- Admin
 
 Admin *- Board : Owner
-Member "Many" -- "Many" Board : participates in
+Member "Many" --o "Many" Board : participates in
 
 Board *-- List : Contains
 List *-- Card : Contains
