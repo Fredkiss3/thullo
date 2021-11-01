@@ -1,6 +1,8 @@
 import { Board } from './';
 
 export interface BoardRepository {
-    // getBoardById(id: string): Promise<Board | null>;
-    getAllBoardsWhereMemberIsPresentOrIsOwner(memberId: string): Promise<Board[]>;
+    addBoard(board: Board): Promise<void>;
+    getAllBoardsWhereMemberIsPresentOrIsOwner(
+        memberId: string
+    ): Promise<Board[]>;
 }

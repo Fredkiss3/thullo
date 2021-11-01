@@ -5,19 +5,27 @@ export class BoardRepositoryBuilder {
         memberId: string
     ) => Promise<Board[]> = () => Promise.resolve([]);
 
+    private addBoard: (board: Board) => Promise<void> = (board: Board) =>
+        Promise.resolve();
+
     withGetAllBoardsWhereMemberIsPresentOrIsOwner(
-        getAllBoardsWhereMemberIsPresentOrIsOwner: (memberId: string) => Promise<Board[]>
+        getAllBoardsWhereMemberIsPresentOrIsOwner: (
+            memberId: string
+        ) => Promise<Board[]>
     ) {
         this.getAllBoardsWhereMemberIsPresentOrIsOwner =
             getAllBoardsWhereMemberIsPresentOrIsOwner;
         return this;
     }
 
+    withAddBoard(addBoard: (board: Board) => Promise<void>) {
+        this.addBoard = addBoard;
+        return this;
+    }
+
     build(): BoardRepository {
         return {
-            // getBoardById(id: string): Promise<Board | null> {
-            //     return Promise.resolve(null);
-            // },
+            addBoard: this.addBoard,
             getAllBoardsWhereMemberIsPresentOrIsOwner:
                 this.getAllBoardsWhereMemberIsPresentOrIsOwner
         };
