@@ -25,19 +25,20 @@ const zeus: Member = {
     login: 'zeus',
     password: '$2a$12$wAw/.WVPaDZXyFT7FIfkGOrCAYTfHPrgXLd7ABu8WBl6.ResQDvSq', // "password123."
     name: 'Zeus God of thunder',
-    avatar: 'thunder.png'
+    avatarURL: 'https://placekitten.com/200/300'
 };
 
 const request: AddBoardRequest = {
     name: 'Olympus Reunion',
-    cover: 'olympus.png',
+    coverURL: 'https://placekitten.com/200/300',
     private: true,
     ownerId: zeus.id
 };
 
 const boardExpected: Omit<Board, 'id'> = {
     ...request,
-    description: null
+    description: null,
+    participants: []
 };
 
 describe('AddBoard Use case', () => {
@@ -104,7 +105,14 @@ describe('AddBoard Use case', () => {
                 label: 'cover empty',
                 request: {
                     ...request,
-                    name: ''
+                    coverURL: ''
+                }
+            },
+            {
+                label: 'cover not an URL',
+                request: {
+                    ...request,
+                    coverURL: 'hello'
                 }
             },
             {

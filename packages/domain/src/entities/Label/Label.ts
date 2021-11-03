@@ -7,6 +7,7 @@ export enum Colors {
     LIGHTBLUE = 'LIGHTBLUE',
     LIGHTGREEN = 'LIGHTGREEN',
     BLACK = 'BLACK',
+    PURPLE = 'PURPLE',
     DARK = 'DARK',
     GREY = 'GREY',
     LIGHTGREY = 'LIGHTGREY',

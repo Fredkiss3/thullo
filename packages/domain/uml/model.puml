@@ -28,6 +28,7 @@ class List {
 class Card {
     position: int
     id: string
+    title: string
     coverURL: string
     description: string
 }
@@ -70,7 +71,7 @@ class Attachment {
 
 Member <|-- Admin
 
-Admin *- Board : Owner
+Admin "Many" o---right---  "Many" Board : Owner
 Member "Many" --o "Many" Board : participates in
 
 Board *-- List : Contains

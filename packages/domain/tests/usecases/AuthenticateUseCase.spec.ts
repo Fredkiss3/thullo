@@ -26,7 +26,7 @@ const memberExpected: Member = {
     ...request,
     password: '$2a$12$wAw/.WVPaDZXyFT7FIfkGOrCAYTfHPrgXLd7ABu8WBl6.ResQDvSq', // "password123."
     name: 'Fred KISS',
-    avatar: null
+    avatarURL: null
 };
 
 describe('Authenticate Use case', () => {

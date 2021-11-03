@@ -1,11 +1,18 @@
 import { Attachment } from "../Attachment";
 import { ListId } from "../List";
+import { Label } from "../Label";
+import { Comment } from "../Comment";
+
+export type CardId = string;
 
 export interface Card {
-    id: string;
+    id: CardId;
     parentListId: ListId;
     position: number;
-    coverURL: string;
+    coverURL: string | null;
     description: string;
+    title: string;
     attachments: Attachment[];
+    labels: Label[];
+    comments: Comment[];
 }

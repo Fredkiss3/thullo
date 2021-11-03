@@ -1,5 +1,5 @@
 export interface AddBoardRequest {
-  cover: string;
+  coverURL: string;
   name: string;
   private: boolean;
   ownerId: string;

@@ -20,7 +20,7 @@ const presenter = new (class implements RegisterPresenter {
 const request: RegisterRequest = {
     name: 'Adrien KISSIE',
     password: 'password123.',
-    avatar: 'randomfilename.jpeg',
+    avatarURL: 'https://placekitten.com/200/300',
     login: 'fredkiss3'
 };
 
@@ -43,7 +43,7 @@ describe('Register Use case', () => {
         expect(presenter.response?.errors).toBe(null);
         expect(memberAdded).not.toBe(null);
         expect((memberAdded as unknown as Member).login).toBe(request.login);
-        expect((memberAdded as unknown as Member).avatar).toBe(request.avatar);
+        expect((memberAdded as unknown as Member).avatarURL).toBe(request.avatarURL);
         expect((memberAdded as unknown as Member).name).toBe(request.name);
     });
 
@@ -135,6 +135,13 @@ describe('Register Use case', () => {
                 }
             },
             {
+                label: 'avatarURL not an url',
+                request: {
+                    ...request,
+                    avatarURL: 'notanurl'
+                }
+            },
+            {
                 label: 'login format invalid (with number in the beginning)',
                 request: {
                     ...request,
@@ -170,24 +177,10 @@ describe('Register Use case', () => {
                 }
             },
             {
-                label: 'name empty (with spaces)',
-                request: {
-                    ...request,
-                    name: ' '
-                }
-            },
-            {
                 label: 'login empty',
                 request: {
                     ...request,
                     login: ''
-                }
-            },
-            {
-                label: 'login empty (with spaces)',
-                request: {
-                    ...request,
-                    login: ' '
                 }
             },
             {
@@ -238,6 +231,7 @@ describe('Register Use case', () => {
                 await useCase.execute(request, presenter);
 
                 // Then
+                console.log(presenter.response?.errors);
                 expect(presenter.response?.errors).not.toBe(null);
                 expect(memberAdded).toBe(null);
             }

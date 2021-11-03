@@ -8,7 +8,6 @@ import bcrypt from 'bcrypt';
 Validator.useLang('fr');
 
 export class AuthenticateUseCase {
-    // TODO : Add Validation Rules
     RULES = {
         login: 'required',
         password: 'required',
@@ -51,8 +50,10 @@ export class AuthenticateUseCase {
     }
 
     validate(request: AuthenticateRequest): FieldErrors {
-        // TODO : Validation Rules
-        const validation = new Validator(request, this.RULES, {});
+        const validation = new Validator(request, this.RULES, {
+            'required.password': "Le mot de passe est requis",
+            'required.login': "Le login est requis",
+        });
 
         if (validation.passes()) {
             return null;

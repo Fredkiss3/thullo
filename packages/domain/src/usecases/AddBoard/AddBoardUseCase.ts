@@ -11,9 +11,9 @@ Validator.useLang('fr');
 export class AddBoardUseCase {
     RULES = {
         name: 'required',
-        cover: 'required',
         ownerId: 'required',
-        private: 'required|boolean'
+        private: 'required|boolean',
+        coverURL: 'required|url'
     };
 
     constructor(
@@ -37,6 +37,7 @@ export class AddBoardUseCase {
                     ...request,
                     id: uuidv4(),
                     description: null,
+                    participants: []
                 });
             } else {
                 errors = {
@@ -52,12 +53,15 @@ export class AddBoardUseCase {
         const validation = new Validator(request, this.RULES, {
             required: {
                 name: 'Veuillez saisir le nom du tableau',
-                cover: 'Veuillez uploader une image de couverture pour le tableau',
+                coverURL: 'Veuillez uploader une image de couverture pour le tableau',
                 private: 'Veuillez renseigner la visibilité du tableau',
                 ownerId: 'Veuillez renseigner le propriétaire'
             },
             boolean: {
                 private: 'La visibilité du tableau doit être public ou privée'
+            },
+            url: {
+                coverURL: "l'image de couverture doit être une URL valide"
             }
         });
 
