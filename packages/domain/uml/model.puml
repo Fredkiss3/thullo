@@ -8,9 +8,6 @@ class Member {
     password: string
 }
 
-class Admin {
-}
-
 class Board {
     id: string
     cover: Image
@@ -69,10 +66,14 @@ class Attachment {
     addedAt: Date
 }
 
-Member <|-- Admin
+class Participation {
+    isAdmin: boolean
+}
 
-Admin "Many" o---right---  "Many" Board : Owner
-Member "Many" --o "Many" Board : participates in
+'Member "Many" --o "Many" Board : participates in
+
+Member "One" -- "Many" Participation : Participates in
+Participation "Many" -* "One" Board : participants
 
 Board *-- List : Contains
 List *-- Card : Contains

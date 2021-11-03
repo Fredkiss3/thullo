@@ -11,3 +11,5 @@ export * from './entities/Card';
 export * from './entities/Comment';
 export * from './entities/Attachment';
 export * from './entities/BoardAggregate';
+export * from './entities/Participation';
+

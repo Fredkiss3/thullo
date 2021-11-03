@@ -11,7 +11,7 @@ Validator.useLang('fr');
 export class AddBoardUseCase {
     RULES = {
         name: 'required',
-        ownerId: 'required',
+        memberId: 'required',
         private: 'required|boolean',
         coverURL: 'required|url'
     };
@@ -29,15 +29,17 @@ export class AddBoardUseCase {
 
         if (null === errors) {
             const owner = await this.memberRepository.getMemberById(
-                request.ownerId
+                request.memberId
             );
 
             if (null !== owner) {
                 this.boardRepository.addBoard({
-                    ...request,
+                    name: request.name,
+                    private: request.private,
+                    coverURL: request.coverURL,
                     id: uuidv4(),
                     description: null,
-                    participants: []
+                    participants: [{ isAdmin: true, member: owner }]
                 });
             } else {
                 errors = {
@@ -51,18 +53,14 @@ export class AddBoardUseCase {
 
     validate(request: AddBoardRequest): FieldErrors {
         const validation = new Validator(request, this.RULES, {
-            required: {
-                name: 'Veuillez saisir le nom du tableau',
-                coverURL: 'Veuillez uploader une image de couverture pour le tableau',
-                private: 'Veuillez renseigner la visibilité du tableau',
-                ownerId: 'Veuillez renseigner le propriétaire'
-            },
-            boolean: {
-                private: 'La visibilité du tableau doit être public ou privée'
-            },
-            url: {
-                coverURL: "l'image de couverture doit être une URL valide"
-            }
+            'required.name': 'Veuillez saisir le nom du tableau',
+            'required.coverURL':
+                'Veuillez uploader une image de couverture pour le tableau',
+            'required.private': 'Veuillez renseigner la visibilité du tableau',
+            'required.memberId': 'Veuillez renseigner le propriétaire',
+            'boolean.private':
+                'La visibilité du tableau doit être public ou privée',
+            'url.coverURL': "l'image de couverture doit être une URL valide"
         });
 
         if (validation.passes()) {

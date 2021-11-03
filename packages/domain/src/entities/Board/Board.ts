@@ -1,4 +1,4 @@
-import { Member, MemberId } from "../Member";
+import { Participation } from "../Participation";
 
 export type BoardId = string;
 
@@ -6,8 +6,7 @@ export interface Board {
     id: BoardId;
     coverURL: string;
     name: string;
-    participants: Member[];
+    participants: Participation[];
     description: string | null;
     private: boolean;
-    ownerId: MemberId;
 }

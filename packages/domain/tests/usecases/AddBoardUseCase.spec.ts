@@ -32,13 +32,20 @@ const request: AddBoardRequest = {
     name: 'Olympus Reunion',
     coverURL: 'https://placekitten.com/200/300',
     private: true,
-    ownerId: zeus.id
+    memberId: zeus.id
 };
 
 const boardExpected: Omit<Board, 'id'> = {
-    ...request,
+    name: request.name,
+    coverURL: request.coverURL,
+    private: request.private,
     description: null,
-    participants: []
+    participants: [
+        {
+            isAdmin: true,
+            member: zeus
+        }
+    ]
 };
 
 describe('AddBoard Use case', () => {
@@ -119,7 +126,7 @@ describe('AddBoard Use case', () => {
                 label: 'ownerId empty',
                 request: {
                     ...request,
-                    ownerId: ''
+                    memberId: ''
                 }
             }
         ];
