@@ -5,13 +5,15 @@ import {
     List,
     ListNotFoundError,
     Member,
+    MemberAlreadyInBoardError,
+    MemberNotInBoardError,
     OperationUnauthorizedError
 } from '@thullo/domain';
-import { randomUUID as uuidv4 } from 'crypto';
+import { v4 as uuidv4 } from 'uuid';
 
 const BOARD_ID = uuidv4();
 
-const participants: Member[] = [
+const members: Member[] = [
     {
         id: uuidv4(),
         login: 'adamthe1',
@@ -44,23 +46,41 @@ let cards: Card[];
 
 let aggregate: BoardAggregate;
 
+const todoListID = uuidv4();
+const InProgressListID = uuidv4();
+const DoneListID = uuidv4();
+
+const firstCardID = uuidv4();
+const secondCardID = uuidv4();
+const thirdCardID = uuidv4();
+
 describe('Board aggregate test', () => {
     beforeEach(() => {
         lists = [
-            { id: uuidv4(), boardId: BOARD_ID, position: 0, name: 'BackLog' },
             {
-                id: uuidv4(),
-                boardId: BOARD_ID,
-                position: 1,
-                name: 'In Progress'
+                id: todoListID,
+                name: 'To do',
+                position: 0,
+                boardId: BOARD_ID
             },
-            { id: uuidv4(), boardId: BOARD_ID, position: 2, name: 'Completed' }
+            {
+                id: InProgressListID,
+                name: 'In progress',
+                position: 1,
+                boardId: BOARD_ID
+            },
+            {
+                id: DoneListID,
+                name: 'Done',
+                position: 2,
+                boardId: BOARD_ID
+            }
         ];
 
         cards = [
             {
-                id: uuidv4(),
-                parentListId: lists[0].id,
+                id: firstCardID,
+                parentListId: todoListID,
                 title: "Add What you'd like to work on below",
                 position: 1,
                 labels: [
@@ -77,8 +97,8 @@ describe('Board aggregate test', () => {
                 comments: []
             },
             {
-                id: uuidv4(),
-                parentListId: lists[0].id,
+                id: secondCardID,
+                parentListId: todoListID,
                 title: 'Github Jobs challenge',
                 position: 0,
                 labels: [
@@ -101,8 +121,8 @@ describe('Board aggregate test', () => {
                 description: ''
             },
             {
-                id: uuidv4(),
-                parentListId: lists[2].id,
+                id: thirdCardID,
+                parentListId: DoneListID,
                 title: 'A task well done',
                 position: 0,
                 labels: [
@@ -126,33 +146,41 @@ describe('Board aggregate test', () => {
             }
         ];
 
-        aggregate = new BoardAggregate(BOARD_ID, participants[2].id, {
-            cards,
-            lists,
-            participants: []
-        });
+        aggregate = new BoardAggregate(
+            {
+                id: BOARD_ID,
+                name: 'Dev Challenge Boards',
+                description: '',
+                private: true
+            },
+            {
+                cards,
+                lists,
+                participants: [{ isAdmin: true, member: members[2] }]
+            }
+        );
     });
 
-    it('should show cards organised by list Ids', async () => {
-        const list = aggregate.cardsByLists[lists[0].id];
+    it('should show cards organised by list Ids', () => {
+        const list = aggregate.cardsByLists[todoListID];
         expect(list).toHaveLength(2);
         expect(list).toContainEqual(cards[0]);
 
-        const list2 = aggregate.cardsByLists[lists[1].id];
+        const list2 = aggregate.cardsByLists[InProgressListID];
         expect(list2).toHaveLength(0);
 
-        const list3 = aggregate.cardsByLists[lists[2].id];
+        const list3 = aggregate.cardsByLists[DoneListID];
         expect(list3).toHaveLength(1);
         expect(list3).toContainEqual(cards[2]);
     });
 
-    it('should cards ordered by positions', async () => {
-        const list = aggregate.cardsByLists[lists[0].id];
+    it('should cards ordered by positions', () => {
+        const list = aggregate.cardsByLists[todoListID];
         expect(list[0].position).toBeLessThan(list[1].position);
     });
 
     it('should show lists organised by ids', () => {
-        const list = aggregate.lists[lists[0].id];
+        const list = aggregate.lists[todoListID];
         expect(list).toStrictEqual(lists[0]);
     });
 
@@ -168,14 +196,14 @@ describe('Board aggregate test', () => {
 
     it('should reorder board when a list is inserted', () => {
         aggregate.addList('New List', 1);
-        expect(aggregate.lists[lists[0].id].position).toBe(0);
-        expect(aggregate.lists[lists[1].id].position).toBe(2);
-        expect(aggregate.lists[lists[2].id].position).toBe(3);
+        expect(aggregate.lists[todoListID].position).toBe(0);
+        expect(aggregate.lists[InProgressListID].position).toBe(2);
+        expect(aggregate.lists[DoneListID].position).toBe(3);
     });
 
     it('can add a card to a list', () => {
-        aggregate.addCardToList('New Card', lists[1].id);
-        const list = aggregate.cardsByLists[lists[1].id];
+        aggregate.addCardToList('New Card', InProgressListID);
+        const list = aggregate.cardsByLists[InProgressListID];
         expect(list).toHaveLength(1);
     });
 
@@ -184,51 +212,260 @@ describe('Board aggregate test', () => {
         expect(test).toThrow(ListNotFoundError);
     });
 
-    it.todo('should reorder the list when a card is moved');
-
-    it.todo('should be able to move cards between lists');
-
-    it('can add a member to the Board', () => {
-        aggregate.addMemberToBoard(participants[0]);
-        expect(aggregate.participants).toHaveLength(1);
+    it('can set the visibility of the board', () => {
+        aggregate.setVisibility(false, members[2].id);
+        expect(aggregate.isPrivate).toBe(false);
     });
 
-    it('cannot add an admin in a board', () => {
-        expect.assertions(1);
+    it('cannot set the visibility of the board if not admin', () => {
+        expect(() =>
+            aggregate.setVisibility(false, members[0].id)
+        ).toThrow(OperationUnauthorizedError);
+        expect(aggregate.isPrivate).toBe(true);
+    });
 
-        try {
-            expect(() => aggregate.addMemberToBoard(participants[2])).toThrow(
-                OperationUnauthorizedError
-            );
-
-            expect(true).toBe(false);
-        } catch (e) {
-            // @ts-ignore
-            expect(e.message).toBe('Ce membre participe déjà au tableau');
-            expect(aggregate.participants).toHaveLength(0);
-        }
+    it('can add a member to the Board', () => {
+        aggregate.addMemberToBoard(members[0]);
+        expect(aggregate.participants).toHaveLength(2);
+        expect(aggregate.participants[1].isAdmin).toBe(false);
     });
 
     it('cannot add a member two times in a board', () => {
-        expect.assertions(1);
-        try {
-            expect(() => {
-                aggregate.addMemberToBoard(participants[0]);
-                aggregate.addMemberToBoard(participants[0]);
-            }).toThrow(OperationUnauthorizedError);
-        } catch (e) {
-            // @ts-ignore
-            expect(e.message).toBe('Ce membre participe déjà au tableau');
-            expect(aggregate.participants).toHaveLength(1);
-        }
+        expect(() => {
+            aggregate.addMemberToBoard(members[0]);
+            aggregate.addMemberToBoard(members[0]);
+        }).toThrow(MemberAlreadyInBoardError);
+        expect(aggregate.participants).toHaveLength(2);
     });
 
-    it.todo('should be able to attach a link to a card');
-    it.todo('should be able to add comments to cards');
-    it.todo('should be able to add labels to cards');
+    it('can change the name of the board', () => {
+        aggregate.setName('New Name', members[2].id);
+        expect(aggregate.name).toBe('New Name');
+    });
 
-    it.todo(
-        'should only set dirty flag to differents' +
-            'entity types when an operation is executed'
-    );
+    it('cannot change the name of the board is not admin', () => {
+        expect(() => aggregate.setName('New Name', members[0].id)).toThrow(
+            OperationUnauthorizedError
+        );
+        expect(aggregate.name).toBe('Dev Challenge Boards');
+    });
+
+    it('can grant admin privileges to a participant', () => {
+        // Given
+        aggregate.addMemberToBoard(members[0]);
+
+        // When
+        aggregate.grantPrivileges(members[0], members[2].id);
+
+        // Then
+        const participant = aggregate.participants[1];
+        expect(participant.isAdmin).toBe(true);
+    });
+
+    it('cannot grant admin privileges to a participant if initiator is not admin', () => {
+        // Given
+        aggregate.addMemberToBoard(members[0]);
+
+        // When
+        expect(() => {
+            aggregate.grantPrivileges(members[0], members[0].id);
+        }).toThrow(OperationUnauthorizedError);
+
+        // Then
+        const participant = aggregate.participants[1];
+        expect(participant.isAdmin).toBe(false);
+    });
+
+    it('can change oneself privileges', () => {
+        // Given
+        const admin = members[2];
+
+        // When
+        aggregate.grantPrivileges(admin, admin.id, false);
+
+        // Then
+        const participant = aggregate.participants[0];
+        expect(participant.isAdmin).toBe(false);
+    });
+
+    it('can remove admin privileges to a participant', () => {
+        // Given
+        aggregate.addMemberToBoard(members[0]);
+
+        // When
+        aggregate.grantPrivileges(members[0], members[2].id);
+        aggregate.grantPrivileges(members[0], members[2].id, false);
+
+        // Then
+        const participant = aggregate.participants[1];
+        expect(participant.isAdmin).toBe(false);
+    });
+
+    it('cannot grant or remove admin privileges for a non participant', () => {
+        // Given
+        const nonParticipant = members[0];
+        const admin = members[2];
+
+        expect(() => {
+            // When
+            aggregate.grantPrivileges(nonParticipant, admin.id);
+        }) // Then
+            .toThrow(MemberNotInBoardError);
+    });
+
+    it('cannot remove admin privileges to a participant if initiator is not admin', () => {
+        // Given
+        const admin = members[2];
+        const firstMember = members[0];
+        const secondMember = members[1];
+
+        aggregate.addMemberToBoard(firstMember);
+        aggregate.addMemberToBoard(secondMember);
+
+        // aggregate.grantPrivileges(participants[0], participants[2].id);
+        aggregate.grantPrivileges(firstMember, admin.id);
+
+        expect(
+            () =>
+                // When
+                aggregate.grantPrivileges(
+                    firstMember,
+                    secondMember.id,
+                    false
+                )
+            // Then
+        ).toThrow(OperationUnauthorizedError);
+
+        // Then
+        const participant = aggregate.participants[1];
+        expect(participant.isAdmin).toBe(true);
+    });
+
+    it('can remove participant from the board', () => {
+        // Given
+        aggregate.addMemberToBoard(members[0]);
+
+        // When
+        aggregate.removeMemberFromBoard(members[0], members[2].id);
+
+        // Then
+        expect(aggregate.participants).toHaveLength(1);
+    });
+
+    it('cannot remove member from board if not admin', () => {
+        // Given
+        aggregate.addMemberToBoard(members[0]);
+
+        // When
+        expect(() =>
+            aggregate.removeMemberFromBoard(members[0], members[0].id)
+        ).toThrow(OperationUnauthorizedError);
+
+        // Then
+        expect(aggregate.participants).toHaveLength(2);
+    });
+
+    it('cannot remove oneself from board', () => {
+        expect(() =>
+            aggregate.removeMemberFromBoard(members[2], members[2].id)
+        ).toThrow(OperationUnauthorizedError);
+
+        expect(aggregate.participants).toHaveLength(1);
+    });
+
+    it('cannot remove an admin from the board', () => {
+        // Given
+        aggregate.addMemberToBoard(members[0]);
+        aggregate.grantPrivileges(members[0], members[2].id);
+
+        // When
+        expect(() =>
+            aggregate.removeMemberFromBoard(members[0], members[2].id)
+        ).toThrow(OperationUnauthorizedError);
+
+        // Then
+        expect(aggregate.participants).toHaveLength(2);
+    });
+
+    it('cannot remove a member not in board', () => {
+        expect(() =>
+            aggregate.removeMemberFromBoard(members[0], members[2].id)
+        ).toThrow(MemberNotInBoardError);
+
+        // Then
+        expect(aggregate.participants).toHaveLength(1);
+    });
+
+
+    it('can move cards between lists', () => {
+        // Given
+        aggregate.moveCard(cards[1], InProgressListID, 0);
+
+        const todoList = aggregate.cardsByLists[todoListID];
+
+        // The first list should have only one card left
+        expect(todoList).toHaveLength(1);
+
+        const inProgressList = aggregate.cardsByLists[InProgressListID];
+        // The second list should have one card and the second card should be in the first position
+        expect(inProgressList).toHaveLength(1);
+        expect(inProgressList[0].id).toBe(secondCardID);
+        expect(inProgressList[0].position).toBe(0);
+    });
+
+    it('should reorder the old list when a card is moved', () => {
+        // Given
+        aggregate.moveCard(cards[1], InProgressListID, 0);
+
+        // the cards of the lists should be reordered by position
+        const todoList = aggregate.cardsByLists[todoListID];
+        expect(todoList[0].id).toBe(firstCardID);
+        expect(todoList[0].position).toBe(0);
+    });
+
+    it('should reorder the new list when a card is moved', () => {
+        // Given
+        const cardToMove = cards[2];
+
+        // When
+        aggregate.moveCard(cardToMove, todoListID, 1);
+
+        // the cards of the lists should be reordered by position
+        const todoList = aggregate.cardsByLists[todoListID];
+        expect(todoList).toHaveLength(3);
+
+        // Each card should have its position updated
+        expect(todoList[0].id).toBe(secondCardID);
+        expect(todoList[0].position).toBe(0);
+
+        expect(todoList[1].id).toBe(cardToMove.id);
+        expect(cardToMove.position).toBe(1);
+
+        expect(todoList[2].id).toBe(firstCardID);
+        expect(todoList[2].position).toBe(2);
+    });
+
+    it('should be just reorder the list if the card is moved to the same list', () => {
+        // Given
+        const cardToMove = cards[0];
+
+        // When
+        aggregate.moveCard(cardToMove, todoListID, 0);
+
+        const todoList = aggregate.cardsByLists[todoListID];
+        // Then
+        expect(todoList).toHaveLength(2);
+        expect(todoList[0]).toBe(cardToMove);
+        expect(cardToMove.position).toBe(0);
+    });
+
+    it('cannot move to an inexistant list', () => {
+        // Given
+        const cardToMove = cards[0];
+
+        // When
+        expect(() =>
+            aggregate.moveCard(cardToMove, 'inexistant', 0)
+        ).toThrow(ListNotFoundError);
+   })
 });

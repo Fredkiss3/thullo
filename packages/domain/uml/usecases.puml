@@ -19,7 +19,8 @@ rectangle Thullo {
     (Rechercher membres) as (searchMembers)
     (Ajouter membre au tableau) as (inviteMemberToBoard)
     (Retirer membre du tableau) as (removeMemberFromBoard)
-
+    (Gérer rôles des members) as (ManageMemberRoles)
+    
     (Ajouter liste) as (addList)
     (Renommer liste) as (renameList)
     (Supprimer liste) as (deleteList)
@@ -63,8 +64,8 @@ rectangle Thullo {
     member -- (addAttachement)
     member -- (deleteAttachement)
 
-
     admin -- (removeMemberFromBoard)
+    admin -- (ManageMemberRoles)
     admin -- (renameBoard)
     admin -- (updateBoardDescription)
     admin -- (inviteMemberToBoard)

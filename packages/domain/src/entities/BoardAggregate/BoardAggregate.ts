@@ -2,8 +2,14 @@ import { BoardId } from '../Board';
 import { List, ListId } from '../List';
 import { Card, CardId } from '../Card';
 import { Member, MemberId } from '../Member';
-// import { Label } from '../Label';
 import { randomUUID } from 'crypto';
+import { Participation } from '../Participation';
+import {
+    ListNotFoundError,
+    MemberAlreadyInBoardError,
+    MemberNotInBoardError,
+    OperationUnauthorizedError
+} from './Exceptions';
 
 type CardsByLists = Record<ListId, Card[]>;
 type ListsById = Record<ListId, List>;
@@ -11,46 +17,20 @@ type ListsById = Record<ListId, List>;
 interface BoardAggregateData {
     lists: List[];
     cards: Card[];
-    participants: Member[];
+    participants: Participation[];
 }
 
-export class OperationUnauthorizedError extends Error {
-    constructor(message: string) {
-        super(message);
-
-        if (Error.captureStackTrace) {
-            Error.captureStackTrace(this, ListNotFoundError);
-        }
-
-        // For custom errors, we should explicitly set prototypes
-        // Or else it will considers this as an "Error"
-        Object.setPrototypeOf(this, OperationUnauthorizedError.prototype);
-        this.name = 'OperationUnauthorizedError';
-    }
-}
-export class ListNotFoundError extends Error {
-    constructor(message: string) {
-        super(message);
-
-        if (Error.captureStackTrace) {
-            Error.captureStackTrace(this, ListNotFoundError);
-        }
-
-        // For custom errors, we should explicitly set prototypes
-        // Or else it will considers this as an "Error"
-        Object.setPrototypeOf(this, ListNotFoundError.prototype);
-        this.name = 'ListNotFoundError';
-    }
+interface BoardData {
+    id: BoardId;
+    name: string;
+    description: string;
+    private: boolean;
 }
 
 export class BoardAggregate {
     private _cardsByListIds: CardsByLists;
 
-    constructor(
-        private boardId: BoardId,
-        private _ownerId: MemberId,
-        private _data: BoardAggregateData
-    ) {
+    constructor(private _board: BoardData, private _data: BoardAggregateData) {
         this._cardsByListIds = {};
         this.orderCardsByLists();
     }
@@ -64,19 +44,23 @@ export class BoardAggregate {
     }
 
     addMemberToBoard(member: Member): void {
-        if (member.id !== this._ownerId) {
-            if (
-                this._data.participants.find(({ id }) => id === member.id) ===
-                undefined
-            ) {
-                this._data.participants = [...this._data.participants, member];
-            } else {
-                throw new OperationUnauthorizedError("Ce membre participe déjà au tableau")
-            }
+        if (
+            this._data.participants.find(
+                ({ member: { id } }) => id === member.id
+            ) === undefined
+        ) {
+            this._data.participants = [
+                ...this._data.participants,
+                { isAdmin: false, member }
+            ];
+        } else {
+            throw new MemberAlreadyInBoardError(
+                'Ce membre participe déjà au tableau'
+            );
         }
     }
 
-    get participants(): Readonly<Member>[] {
+    get participants(): Readonly<Participation>[] {
         return this._data.participants;
     }
 
@@ -106,7 +90,7 @@ export class BoardAggregate {
 
         this._data.lists.push({
             id,
-            boardId: this.boardId,
+            boardId: this._board.id,
             position: position ?? this._data.lists.length,
             name
         });
@@ -142,5 +126,139 @@ export class BoardAggregate {
         return card.id;
     }
 
-    get ownerId(): MemberId { return this._ownerId}
+    get isPrivate(): boolean {
+        return this._board.private;
+    }
+
+    setVisibility(isPrivate: boolean, initiatorId: MemberId): void {
+        this.checkAdminOrThrowError(
+            initiatorId,
+            "Vous n'avez pas le droit de changer la visibilité de ce" +
+                " tableau car vous n'êtes pas un admin sur ce tableau"
+        );
+        this._board.private = isPrivate;
+    }
+
+    setName(name: string, initiatorId: MemberId) {
+        this.checkAdminOrThrowError(
+            initiatorId,
+            "Vous n'avez pas le droit de changer le nom de ce" +
+                " tableau car vous n'êtes pas un admin sur ce tableau"
+        );
+        this._board.name = name;
+    }
+
+    private checkAdminOrThrowError(memberId: MemberId, message: string): void {
+        if (
+            this._data.participants.find(
+                ({ member: { id }, isAdmin }) => id === memberId && isAdmin
+            ) === undefined
+        ) {
+            throw new OperationUnauthorizedError(message);
+        }
+    }
+
+    get name() {
+        return this._board.name;
+    }
+
+    removeMemberFromBoard(member: Member, initiatorId: MemberId) {
+        this.checkAdminOrThrowError(
+            initiatorId,
+            "Vous n'avez pas le droit de retirer un membre de ce" +
+                " tableau car vous n'êtes pas un admin sur ce tableau"
+        );
+
+        const memberFound = this._data.participants.find(
+            ({ member: { id } }) => id === member.id
+        );
+
+        if (memberFound === undefined) {
+            throw new MemberNotInBoardError(
+                "Ce membre n'est pas dans ce tableau"
+            );
+        } else if (memberFound.isAdmin) {
+            throw new OperationUnauthorizedError(
+                "Vous n'avez pas le droit de retirer un membre de ce" +
+                    ' tableau car ce membre est admin sur ce tableau'
+            );
+        } else if (member.id === initiatorId) {
+            throw new OperationUnauthorizedError(
+                'Vous ne pouvez pas vous retirer vous-même du tableau'
+            );
+        } else {
+            this._data.participants = this._data.participants.filter(
+                ({ member: { id } }) => id !== member.id
+            );
+        }
+    }
+
+    grantPrivileges(
+        member: Member,
+        initiatorId: MemberId,
+        isAdmin: boolean = true
+    ) {
+        this.checkAdminOrThrowError(
+            initiatorId,
+            "Vous n'avez pas le droit de modifier les privilèges " +
+                "de cet utilisateur car vous n'êtes pas un admin sur ce tableau"
+        );
+
+        const participant = this._data.participants.find(
+            ({ member: { id } }) => id === member.id
+        );
+
+        if (participant === undefined) {
+            throw new MemberNotInBoardError(
+                "Ce membre n'est pas dans ce tableau"
+            );
+        } else {
+            participant.isAdmin = isAdmin;
+        }
+    }
+
+    /**
+     * move a card to another list and
+     * change change the positions of cards which where
+     * present in the old list
+     */
+    moveCard(
+        card: Card,
+        destinationListId: ListId,
+        destinationPosition: number
+    ) {
+        // check if list is present
+        const list = this.lists[destinationListId];
+        if(list === undefined) {
+            throw new ListNotFoundError(
+                "cette liste n'existe pas dans le tableau"
+            );
+        }
+
+        // change the positions of cards which where
+        // present in the old list
+        for (const cardInOldList of this.cardsByLists[card.parentListId]) {
+            if (cardInOldList.position > card.position) {
+                cardInOldList.position--;
+            }
+        }
+
+        card.position = destinationPosition;
+
+        // Ignore update if the card is already in the destination list
+        if (card.parentListId !== destinationListId) {
+            // update the positions of cards which where
+            // present in the new list, so that they are in the right order
+            for (const cardInNewList of this.cardsByLists[destinationListId]) {
+                if (cardInNewList.position >= destinationPosition) {
+                    cardInNewList.position++;
+                }
+            }
+
+            // move the card
+            card.parentListId = destinationListId;
+        }
+
+        this.orderCardsByLists();
+    }
 }
