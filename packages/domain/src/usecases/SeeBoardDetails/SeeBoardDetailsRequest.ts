@@ -1,3 +1,3 @@
 export interface SeeBoardDetailsRequest {
-  // TODO: Request Args
+  id: string;
 }

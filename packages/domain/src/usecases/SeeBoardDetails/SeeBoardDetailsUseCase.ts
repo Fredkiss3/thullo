@@ -3,29 +3,45 @@ import { SeeBoardDetailsPresenter } from './SeeBoardDetailsPresenter';
 import { SeeBoardDetailsResponse } from './SeeBoardDetailsResponse';
 import { FieldErrors } from '../../utils/types';
 import Validator from 'validatorjs';
+import {
+    BoardAggregate,
+    BoardAggregateRepository
+} from '../../entities/BoardAggregate';
 Validator.useLang('fr');
 
 export class SeeBoardDetailsUseCase {
-  // TODO : Add Validation Rules
-  RULES = {};
+    RULES = {
+        id: 'required|string'
+    };
 
-  async execute(
-    request: SeeBoardDetailsRequest,
-    presenter: SeeBoardDetailsPresenter
-  ): Promise<void> {
-    // TODO : UseCase Logic
-    let errors = this.validate(request);
-    presenter.present(new SeeBoardDetailsResponse(errors));
-  }
+    constructor(private repository: BoardAggregateRepository) {}
 
-  validate(request: SeeBoardDetailsRequest): FieldErrors {
-    // TODO : Validation Rules
-    const validation = new Validator(request, this.RULES, {});
+    async execute(
+        request: SeeBoardDetailsRequest,
+        presenter: SeeBoardDetailsPresenter
+    ): Promise<void> {
+        let errors = this.validate(request);
 
-    if (validation.passes()) {
-      return null;
+        const board = await this.repository.getBoardAggregateById(request.id);
+
+        if (board === null) {
+            errors = {
+                id: ["Ce tableau n'existe pas"]
+            };
+        }
+
+        presenter.present(new SeeBoardDetailsResponse(board, errors));
     }
 
-    return validation.errors.all();
-  }
+    validate(request: SeeBoardDetailsRequest): FieldErrors {
+        const validation = new Validator(request, this.RULES, {
+            'required.id': 'Le champ id est requis'
+        });
+
+        if (validation.passes()) {
+            return null;
+        }
+
+        return validation.errors.all();
+    }
 }

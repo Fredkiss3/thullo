@@ -1,6 +1,9 @@
 import { FieldErrors } from '../../utils/types';
+import { BoardAggregate } from '../../entities/BoardAggregate';
 
 export class SeeBoardDetailsResponse {
-  // TODO: Response args
-  constructor(public errors: FieldErrors) {}
+    constructor(
+        public aggregate: BoardAggregate | null,
+        public errors: FieldErrors
+    ) {}
 }
