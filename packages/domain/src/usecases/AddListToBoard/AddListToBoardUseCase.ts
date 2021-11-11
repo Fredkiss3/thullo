@@ -3,14 +3,18 @@ import { AddListToBoardPresenter } from './AddListToBoardPresenter';
 import { AddListToBoardResponse } from './AddListToBoardResponse';
 import { FieldErrors } from '../../utils/types';
 import Validator from 'validatorjs';
-import { BoardAggregateRepository } from '../../entities/BoardAggregate';
+import {
+    BoardAggregateRepository,
+    ListPositionOutOfBoundsError
+} from '../../entities/BoardAggregate';
 import { List } from '../../entities/List';
 Validator.useLang('fr');
 
 export class AddListToBoardUseCase {
     RULES = {
         name: 'required|string',
-        boardId: 'required|string'
+        boardId: 'required|string',
+        position: 'integer'
     };
 
     constructor(private repository: BoardAggregateRepository) {}
@@ -27,9 +31,20 @@ export class AddListToBoardUseCase {
         );
 
         if (boardAggregate !== null) {
-            const id = boardAggregate.addList(request.name);
-            list = boardAggregate.listsByIds[id];
-            await this.repository.saveBoardAggregate(boardAggregate);
+            try {
+                const id = boardAggregate.addList(
+                    request.name,
+                    request.position
+                );
+                list = boardAggregate.listsByIds[id];
+                await this.repository.saveBoardAggregate(boardAggregate);
+            } catch (e) {
+                if (e instanceof ListPositionOutOfBoundsError) {
+                    errors = {
+                        position: [(e as Error).message]
+                    };
+                }
+            }
         } else {
             errors = {
                 boardId: ["Ce tableau n'existe pas"]
@@ -42,7 +57,7 @@ export class AddListToBoardUseCase {
     validate(request: AddListToBoardRequest): FieldErrors {
         const validation = new Validator(request, this.RULES, {
             'required.name': 'Le nom est requis',
-            'required.boardId': 'L\'id du tableau est requis'
+            'required.boardId': "L'id du tableau est requis"
         });
 
         if (validation.passes()) {

@@ -20,7 +20,8 @@ const BOARD_ID = uuidv4();
 
 const request: AddListToBoardRequest = {
     boardId: BOARD_ID,
-    name: 'New List'
+    name: 'New List',
+    position: 0
 };
 
 const aggregate = new BoardAggregate(
@@ -71,13 +72,14 @@ describe('AddListToBoard Use case', () => {
 
         // Then
         expect(presenter.response).not.toBe(null);
+        expect(presenter.response?.errors).toBe(null);
         expect(aggregateExpected).not.toBe(null);
 
         expect(presenter.response?.list).not.toBe(null);
         expect(presenter.response?.list?.name).toBe(request.name);
     });
 
-    it('Should show error is board is inexistant', async () => {
+    it('Should show error if board is inexistant', async () => {
         // Given
         const boardAggregateRepository = new BoardAggregateRepositoryBuilder()
             .withGetBoardAggregateById(async () => {
@@ -91,10 +93,29 @@ describe('AddListToBoard Use case', () => {
         await useCase.execute(request, presenter);
 
         // Then
-        expect(presenter.response).not.toBe(null);
         expect(presenter.response?.errors).not.toBe(null);
         expect(presenter.response?.errors?.boardId).toContainEqual(
             "Ce tableau n'existe pas"
+        );
+    });
+
+    it('Should show error if position is invalid', async () => {
+        // Given
+        const boardAggregateRepository = new BoardAggregateRepositoryBuilder()
+            .withGetBoardAggregateById(async () => {
+                return aggregate;
+            })
+            .build();
+
+        const useCase = new AddListToBoardUseCase(boardAggregateRepository);
+
+        // When
+        await useCase.execute({ ...request, position: -1 }, presenter);
+
+        // Then
+        expect(presenter.response?.errors).not.toBe(null);
+        expect(presenter.response?.errors?.position).toContainEqual(
+            "Position non autorisée"
         );
     });
 

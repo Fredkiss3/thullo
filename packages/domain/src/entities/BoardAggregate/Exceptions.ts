@@ -57,3 +57,19 @@ export class MemberNotInBoardError extends Error {
     this.name = 'ListNotFoundError';
   }
 }
+
+
+export class ListPositionOutOfBoundsError extends Error {
+  constructor(message: string) {
+    super(message);
+
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, ListPositionOutOfBoundsError);
+    }
+
+    // For custom errors, we should explicitly set prototypes
+    // Or else it will considers this as an "Error"
+    Object.setPrototypeOf(this, ListPositionOutOfBoundsError.prototype);
+    this.name = 'ListPositionOutOfBoundsError';
+  }
+}

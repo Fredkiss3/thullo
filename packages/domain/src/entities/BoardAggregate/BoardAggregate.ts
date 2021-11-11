@@ -6,6 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { Participation } from '../Participation';
 import {
     ListNotFoundError,
+    ListPositionOutOfBoundsError,
     MemberAlreadyInBoardError,
     MemberNotInBoardError,
     OperationUnauthorizedError
@@ -81,6 +82,12 @@ export class BoardAggregate {
         const id = uuidv4();
 
         if (position !== undefined) {
+            if (position < 0 || position > this._data.lists.length) {
+                throw new ListPositionOutOfBoundsError(
+                    'Position non autorisée'
+                );
+            }
+
             for (const list of this._data.lists) {
                 if (list.position >= position) {
                     list.position++;
@@ -229,7 +236,7 @@ export class BoardAggregate {
     ) {
         // check if list is present
         const list = this.listsByIds[destinationListId];
-        if(list === undefined) {
+        if (list === undefined) {
             throw new ListNotFoundError(
                 "cette liste n'existe pas dans le tableau"
             );

@@ -4,6 +4,7 @@ import {
     Colors,
     List,
     ListNotFoundError,
+    ListPositionOutOfBoundsError,
     Member,
     MemberAlreadyInBoardError,
     MemberNotInBoardError,
@@ -189,6 +190,15 @@ describe('Board aggregate test', () => {
         expect(Object.values(aggregate.listsByIds)).toHaveLength(4);
     });
 
+    it('cannot add a new list to an invalid position', () => {
+        expect(() => aggregate.addList('New List', -1)).toThrow(
+            ListPositionOutOfBoundsError
+        );
+        expect(() => aggregate.addList('New List', 5)).toThrow(
+            ListPositionOutOfBoundsError
+        );
+    });
+
     it('should set new list position to last if no position specified', () => {
         const lastListId = aggregate.addList('New List');
         expect(aggregate.listsByIds[lastListId].position).toBe(3);
@@ -218,9 +228,9 @@ describe('Board aggregate test', () => {
     });
 
     it('cannot set the visibility of the board if not admin', () => {
-        expect(() =>
-            aggregate.setVisibility(false, members[0].id)
-        ).toThrow(OperationUnauthorizedError);
+        expect(() => aggregate.setVisibility(false, members[0].id)).toThrow(
+            OperationUnauthorizedError
+        );
         expect(aggregate.isPrivate).toBe(true);
     });
 
@@ -328,11 +338,7 @@ describe('Board aggregate test', () => {
         expect(
             () =>
                 // When
-                aggregate.grantPrivileges(
-                    firstMember,
-                    secondMember.id,
-                    false
-                )
+                aggregate.grantPrivileges(firstMember, secondMember.id, false)
             // Then
         ).toThrow(OperationUnauthorizedError);
 
@@ -395,7 +401,6 @@ describe('Board aggregate test', () => {
         // Then
         expect(aggregate.participants).toHaveLength(1);
     });
-
 
     it('can move cards between lists', () => {
         // Given
@@ -464,8 +469,8 @@ describe('Board aggregate test', () => {
         const cardToMove = cards[0];
 
         // When
-        expect(() =>
-            aggregate.moveCard(cardToMove, 'inexistant', 0)
-        ).toThrow(ListNotFoundError);
-   })
+        expect(() => aggregate.moveCard(cardToMove, 'inexistant', 0)).toThrow(
+            ListNotFoundError
+        );
+    });
 });
