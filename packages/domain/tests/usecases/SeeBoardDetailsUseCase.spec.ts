@@ -93,7 +93,7 @@ describe('SeeBoardDetails Use case', () => {
                 label: 'No Id provided',
                 request: {
                     ...request,
-                    id: 'inexistant'
+                    id: ''
                 }
             }
         ];
@@ -105,7 +105,7 @@ describe('SeeBoardDetails Use case', () => {
                 const boardAggregateRepository =
                     new BoardAggregateRepositoryBuilder()
                         .withGetBoardAggregateById(async (id) => {
-                            return id === 'inexistant' ? null : aggregate;
+                            return aggregate;
                         })
                         .build();
                 const useCase = new SeeBoardDetailsUseCase(

@@ -59,6 +59,7 @@ describe('AddBoard Use case', () => {
         const boardRepo: BoardRepository = new BoardRepositoryBuilder()
             .withAddBoard(async (board) => {
                 boardResult = board;
+                return board;
             })
             .build();
 
@@ -70,6 +71,7 @@ describe('AddBoard Use case', () => {
         // Then
         expect(presenter.response?.errors).toBe(null);
         expect(boardResult).not.toBe(null);
+        expect(boardResult).toBe(presenter.response?.board);
         expect(boardResult).toMatchObject(boardExpected);
     });
 
@@ -83,6 +85,7 @@ describe('AddBoard Use case', () => {
         const boardRepo: BoardRepository = new BoardRepositoryBuilder()
             .withAddBoard(async (board) => {
                 boardResult = board;
+                return board;
             })
             .build();
 
@@ -97,6 +100,7 @@ describe('AddBoard Use case', () => {
             "Cet utilisateur n'existe pas"
         );
         expect(boardResult).toBe(null);
+        expect(presenter.response!.board).toBe(null);
     });
 
     describe('Invalid Requests', () => {
@@ -146,6 +150,7 @@ describe('AddBoard Use case', () => {
                 const boardRepo: BoardRepository = new BoardRepositoryBuilder()
                     .withAddBoard(async (board) => {
                         boardResult = board;
+                        return board;
                     })
                     .build();
 
@@ -157,6 +162,7 @@ describe('AddBoard Use case', () => {
                 // Then
                 expect(presenter.response?.errors).not.toBe(null);
                 expect(boardResult).toBe(null);
+                expect(presenter.response!.board).toBe(null);
             }
         );
     });

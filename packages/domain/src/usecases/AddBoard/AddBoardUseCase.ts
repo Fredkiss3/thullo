@@ -4,7 +4,7 @@ import { AddBoardResponse } from './AddBoardResponse';
 import { FieldErrors } from '../../utils/types';
 import Validator from 'validatorjs';
 import { MemberRepository } from '../../entities/Member';
-import { BoardRepository } from '../../entities/Board';
+import { Board, BoardRepository } from "../../entities/Board";
 import { randomUUID as uuidv4 } from 'crypto';
 Validator.useLang('fr');
 
@@ -26,6 +26,7 @@ export class AddBoardUseCase {
         presenter: AddBoardPresenter
     ): Promise<void> {
         let errors = this.validate(request);
+        let board: Board | null = null;
 
         if (null === errors) {
             const owner = await this.memberRepository.getMemberById(
@@ -33,7 +34,7 @@ export class AddBoardUseCase {
             );
 
             if (null !== owner) {
-                this.boardRepository.addBoard({
+                board = await this.boardRepository.addBoard({
                     name: request.name,
                     private: request.private,
                     coverURL: request.coverURL,
@@ -48,7 +49,7 @@ export class AddBoardUseCase {
             }
         }
 
-        presenter.present(new AddBoardResponse(errors));
+        presenter.present(new AddBoardResponse(board, errors));
     }
 
     validate(request: AddBoardRequest): FieldErrors {

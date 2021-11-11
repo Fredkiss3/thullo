@@ -5,8 +5,8 @@ export class BoardRepositoryBuilder {
         memberId: string
     ) => Promise<Board[]> = () => Promise.resolve([]);
 
-    private addBoard: (board: Board) => Promise<void> = (board: Board) =>
-        Promise.resolve();
+    private addBoard: (board: Board) => Promise<Board> = (board: Board) =>
+        Promise.resolve(board);
 
     withGetAllBoardsWhereMemberIsPresentOrIsOwner(
         getAllBoardsWhereMemberIsPresentOrIsOwner: (
@@ -18,7 +18,7 @@ export class BoardRepositoryBuilder {
         return this;
     }
 
-    withAddBoard(addBoard: (board: Board) => Promise<void>) {
+    withAddBoard(addBoard: (board: Board) => Promise<Board>) {
         this.addBoard = addBoard;
         return this;
     }

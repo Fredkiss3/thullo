@@ -2,7 +2,7 @@ import { BoardId } from '../Board';
 import { List, ListId } from '../List';
 import { Card, CardId } from '../Card';
 import { Member, MemberId } from '../Member';
-import { randomUUID } from 'crypto';
+import { v4 as uuidv4 } from 'uuid';
 import { Participation } from '../Participation';
 import {
     ListNotFoundError,
@@ -64,7 +64,7 @@ export class BoardAggregate {
         return this._data.participants;
     }
 
-    get lists(): Readonly<ListsById> {
+    get listsByIds(): Readonly<ListsById> {
         return this._data.lists.reduce((acc, l) => {
             return {
                 ...acc,
@@ -78,7 +78,7 @@ export class BoardAggregate {
     }
 
     addList(name: string, position?: number): ListId {
-        const id = randomUUID();
+        const id = uuidv4();
 
         if (position !== undefined) {
             for (const list of this._data.lists) {
@@ -108,7 +108,7 @@ export class BoardAggregate {
         }
 
         const card: Card = {
-            id: randomUUID(),
+            id: uuidv4(),
             position: 0,
             parentListId: listId,
             title,
@@ -228,7 +228,7 @@ export class BoardAggregate {
         destinationPosition: number
     ) {
         // check if list is present
-        const list = this.lists[destinationListId];
+        const list = this.listsByIds[destinationListId];
         if(list === undefined) {
             throw new ListNotFoundError(
                 "cette liste n'existe pas dans le tableau"

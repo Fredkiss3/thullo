@@ -180,25 +180,25 @@ describe('Board aggregate test', () => {
     });
 
     it('should show lists organised by ids', () => {
-        const list = aggregate.lists[todoListID];
+        const list = aggregate.listsByIds[todoListID];
         expect(list).toStrictEqual(lists[0]);
     });
 
     it('can add a new list', () => {
         aggregate.addList('New List');
-        expect(Object.values(aggregate.lists)).toHaveLength(4);
+        expect(Object.values(aggregate.listsByIds)).toHaveLength(4);
     });
 
     it('should set new list position to last if no position specified', () => {
         const lastListId = aggregate.addList('New List');
-        expect(aggregate.lists[lastListId].position).toBe(3);
+        expect(aggregate.listsByIds[lastListId].position).toBe(3);
     });
 
     it('should reorder board when a list is inserted', () => {
         aggregate.addList('New List', 1);
-        expect(aggregate.lists[todoListID].position).toBe(0);
-        expect(aggregate.lists[InProgressListID].position).toBe(2);
-        expect(aggregate.lists[DoneListID].position).toBe(3);
+        expect(aggregate.listsByIds[todoListID].position).toBe(0);
+        expect(aggregate.listsByIds[InProgressListID].position).toBe(2);
+        expect(aggregate.listsByIds[DoneListID].position).toBe(3);
     });
 
     it('can add a card to a list', () => {
