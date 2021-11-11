@@ -3,6 +3,7 @@ export * from './usecases/Authenticate';
 export * from './usecases/SeeBoards';
 export * from './usecases/AddBoard';
 export * from './usecases/SeeBoardDetails';
+export * from './usecases/AddListToBoard';
 export * from './entities/Member';
 export * from './entities/Board';
 export * from './entities/Label';
