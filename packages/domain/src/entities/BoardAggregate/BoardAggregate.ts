@@ -61,23 +61,6 @@ export class BoardAggregate {
         }
     }
 
-    get participants(): Readonly<Participation>[] {
-        return this._data.participants;
-    }
-
-    get listsByIds(): Readonly<ListsById> {
-        return this._data.lists.reduce((acc, l) => {
-            return {
-                ...acc,
-                [l.id]: l
-            };
-        }, {} as Record<ListId, List>);
-    }
-
-    get cardsByLists(): Readonly<CardsByLists> {
-        return this._cardsByListIds;
-    }
-
     addList(name: string, position?: number): ListId {
         const id = uuidv4();
 
@@ -133,10 +116,6 @@ export class BoardAggregate {
         return card.id;
     }
 
-    get isPrivate(): boolean {
-        return this._board.private;
-    }
-
     setVisibility(isPrivate: boolean, initiatorId: MemberId): void {
         this.checkAdminOrThrowError(
             initiatorId,
@@ -163,10 +142,6 @@ export class BoardAggregate {
         ) {
             throw new OperationUnauthorizedError(message);
         }
-    }
-
-    get name() {
-        return this._board.name;
     }
 
     removeMemberFromBoard(member: Member, initiatorId: MemberId) {
@@ -267,5 +242,31 @@ export class BoardAggregate {
         }
 
         this.orderCardsByLists();
+    }
+
+    // getters & setters
+    get participants(): Readonly<Participation>[] {
+        return this._data.participants;
+    }
+
+    get listsByIds(): Readonly<ListsById> {
+        return this._data.lists.reduce((acc, l) => {
+            return {
+                ...acc,
+                [l.id]: l
+            };
+        }, {} as Record<ListId, List>);
+    }
+
+    get cardsByLists(): Readonly<CardsByLists> {
+        return this._cardsByListIds;
+    }
+
+    get isPrivate(): boolean {
+        return this._board.private;
+    }
+
+    get name() {
+        return this._board.name;
     }
 }

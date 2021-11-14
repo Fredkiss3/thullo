@@ -59,7 +59,7 @@ describe('AddListToBoard Use case', () => {
             .withGetBoardAggregateById(async () => {
                 return aggregate;
             })
-            .withSaveBoardAggregate(async (board: BoardAggregate) => {
+            .withSave(async (board: BoardAggregate) => {
                 aggregateExpected = board;
                 return board;
             })

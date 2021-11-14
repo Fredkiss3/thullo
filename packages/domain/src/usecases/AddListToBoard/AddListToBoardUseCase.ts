@@ -37,7 +37,7 @@ export class AddListToBoardUseCase {
                     request.position
                 );
                 list = boardAggregate.listsByIds[id];
-                await this.repository.saveBoardAggregate(boardAggregate);
+                await this.repository.save(boardAggregate);
             } catch (e) {
                 if (e instanceof ListPositionOutOfBoundsError) {
                     errors = {
