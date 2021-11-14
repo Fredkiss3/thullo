@@ -4,7 +4,6 @@ import { SeeBoardDetailsResponse } from './SeeBoardDetailsResponse';
 import { FieldErrors } from '../../utils/types';
 import Validator from 'validatorjs';
 import {
-    BoardAggregate,
     BoardAggregateRepository
 } from '../../entities/BoardAggregate';
 Validator.useLang('fr');

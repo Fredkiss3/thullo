@@ -4,6 +4,8 @@ export * from './usecases/SeeBoards';
 export * from './usecases/AddBoard';
 export * from './usecases/SeeBoardDetails';
 export * from './usecases/AddListToBoard';
+export * from './usecases/AddCardToList';
+export * from './usecases/SetBoardVisibility';
 export * from './entities/Member';
 export * from './entities/Board';
 export * from './entities/Label';
