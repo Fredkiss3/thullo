@@ -14,7 +14,8 @@ export class AddListToBoardUseCase {
     RULES = {
         name: 'required|string',
         boardId: 'required|string',
-        position: 'integer'
+        position: 'integer',
+        requesterId: 'required|string'
     };
 
     constructor(private repository: BoardAggregateRepository) {}
@@ -31,18 +32,24 @@ export class AddListToBoardUseCase {
         );
 
         if (boardAggregate !== null) {
-            try {
-                const id = boardAggregate.addList(
-                    request.name,
-                    request.position
-                );
-                list = boardAggregate.listsByIds[id];
-                await this.repository.save(boardAggregate);
-            } catch (e) {
-                if (e instanceof ListPositionOutOfBoundsError) {
-                    errors = {
-                        position: [(e as Error).message]
-                    };
+            if (!boardAggregate.isParticipant(request.requesterId)) {
+                errors = {
+                    requesterId: ["Vous n'êtes pas membre de ce tableau"]
+                };
+            } else {
+                try {
+                    const id = boardAggregate.addList(
+                        request.name,
+                        request.position
+                    );
+                    list = boardAggregate.listsByIds[id];
+                    await this.repository.save(boardAggregate);
+                } catch (e) {
+                    if (e instanceof ListPositionOutOfBoundsError) {
+                        errors = {
+                            position: [(e as Error).message]
+                        };
+                    }
                 }
             }
         } else {
@@ -57,7 +64,8 @@ export class AddListToBoardUseCase {
     validate(request: AddListToBoardRequest): FieldErrors {
         const validation = new Validator(request, this.RULES, {
             'required.name': 'Le nom est requis',
-            'required.boardId': "L'id du tableau est requis"
+            'required.boardId': "L'id du tableau est requis",
+            'required.requesterId': "L'id de l'utilisateur est requis"
         });
 
         if (validation.passes()) {
