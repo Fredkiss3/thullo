@@ -175,6 +175,11 @@ describe('Board aggregate test', () => {
         expect(list3).toContainEqual(cards[2]);
     });
 
+    it('Should prevent unwanted participants from having access to the board', () => {
+        expect(aggregate.isParticipant(members[0].id)).toBe(false);
+        expect(aggregate.isParticipant(members[2].id)).toBe(true);
+    });
+
     it('should cards ordered by positions', () => {
         const list = aggregate.cardsByLists[todoListID];
         expect(list[0].position).toBeLessThan(list[1].position);

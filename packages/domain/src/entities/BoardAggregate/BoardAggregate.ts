@@ -269,4 +269,10 @@ export class BoardAggregate {
     get name() {
         return this._board.name;
     }
+
+    isParticipant(memberId: MemberId) {
+        return this._data.participants.some(
+            ({ member: { id } }) => id === memberId
+        );
+    }
 }
