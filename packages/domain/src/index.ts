@@ -6,6 +6,7 @@ export * from './usecases/SeeBoardDetails';
 export * from './usecases/AddListToBoard';
 export * from './usecases/AddCardToList';
 export * from './usecases/SetBoardVisibility';
+export * from './usecases/SearchMembers';
 export * from './entities/Member';
 export * from './entities/Board';
 export * from './entities/Label';

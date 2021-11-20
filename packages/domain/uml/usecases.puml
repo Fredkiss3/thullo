@@ -36,6 +36,7 @@ rectangle Thullo {
     (Modifier commentaire) as (updateComment)
     (supprimer commentaire) as (deleteComment)
     (Changer couverture carte) as (updateCardCover)
+    (Rechercher Images) as (searchImages)
     (Ajouter label) as (addLabelToCard)
     (Retirer label) as (removeLabelFromCard)
 
@@ -61,6 +62,7 @@ rectangle Thullo {
     member -- (removeLabelFromCard)
     member -- (updateCardDescription)
     member -- (updateCardCover)
+    (updateCardCover) ..> (searchImages) : << include >>
     member -- (addAttachement)
     member -- (deleteAttachement)
 
