@@ -231,7 +231,6 @@ describe('Register Use case', () => {
                 await useCase.execute(request, presenter);
 
                 // Then
-                console.log(presenter.response?.errors);
                 expect(presenter.response?.errors).not.toBe(null);
                 expect(memberAdded).toBe(null);
             }
