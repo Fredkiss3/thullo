@@ -18,13 +18,13 @@ const presenter = new (class implements AuthenticatePresenter {
 
 const request: AuthenticateRequest = {
     login: 'fredkiss3',
-    password: 'password'
+    password: 'password123'
 };
 
 const memberExpected: Member = {
     id: 'id',
     ...request,
-    password: '$2a$12$wAw/.WVPaDZXyFT7FIfkGOrCAYTfHPrgXLd7ABu8WBl6.ResQDvSq', // "password123."
+    password: '$2a$12$0cEEf/aHO/mJnUNTgbNi2.4kMDMFUXUzOFs7h8nuCe61wdV.izvWu', // "password123."
     name: 'Fred KISS',
     avatarURL: null
 };
@@ -47,7 +47,7 @@ describe('Authenticate Use case', () => {
         await useCase.execute(request, presenter);
 
         // Then
-        expect(presenter.response?.member).toStrictEqual(memberExpected);
+        expect(presenter.response!.member).toStrictEqual(memberExpected);
     });
 
     it('Should show error if login does not exist', async () => {
