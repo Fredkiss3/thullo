@@ -18,9 +18,19 @@ const presenter = new (class implements InviteMemberToBoardPresenter {
     }
 })();
 
+const admin: Member = {
+    id: uuidv4(),
+    login: 'zeus',
+    password:
+      '$2a$12$wAw/.WVPaDZXyFT7FIfkGOrCAYTfHPrgXLd7ABu8WBl6.ResQDvSq', // "password123."
+    name: 'Zeus God of thunder',
+    avatarURL: 'https://www.photos.com/thunder.png'
+};
+
 const BOARD_ID = uuidv4();
 
 const request: InviteMemberToBoardRequest = {
+    requesterId: admin.id,
     boardId: BOARD_ID,
     memberId: uuidv4()
 };
@@ -28,15 +38,6 @@ const request: InviteMemberToBoardRequest = {
 describe('InviteMemberToBoard Use case', () => {
     it('is successful', async () => {
         // Given
-        const admin: Member = {
-            id: uuidv4(),
-            login: 'zeus',
-            password:
-                '$2a$12$wAw/.WVPaDZXyFT7FIfkGOrCAYTfHPrgXLd7ABu8WBl6.ResQDvSq', // "password123."
-            name: 'Zeus God of thunder',
-            avatarURL: 'https://www.photos.com/thunder.png'
-        };
-
         const aggregate = new BoardAggregate(
             {
                 id: BOARD_ID,
@@ -102,15 +103,6 @@ describe('InviteMemberToBoard Use case', () => {
 
     it('Should show error if member is already present in board', async () => {
         // Given
-        const admin: Member = {
-            id: uuidv4(),
-            login: 'zeus',
-            password:
-                '$2a$12$wAw/.WVPaDZXyFT7FIfkGOrCAYTfHPrgXLd7ABu8WBl6.ResQDvSq', // "password123."
-            name: 'Zeus God of thunder',
-            avatarURL: 'https://www.photos.com/thunder.png'
-        };
-
         const aggregate = new BoardAggregate(
             {
                 id: BOARD_ID,
@@ -171,14 +163,7 @@ describe('InviteMemberToBoard Use case', () => {
                 participants: [
                     {
                         isAdmin: true,
-                        member: {
-                            id: uuidv4(),
-                            login: 'zeus',
-                            password:
-                                '$2a$12$wAw/.WVPaDZXyFT7FIfkGOrCAYTfHPrgXLd7ABu8WBl6.ResQDvSq', // "password123."
-                            name: 'Zeus God of thunder',
-                            avatarURL: 'https://www.photos.com/thunder.png'
-                        }
+                        member: admin
                     }
                 ]
             }
@@ -213,15 +198,6 @@ describe('InviteMemberToBoard Use case', () => {
 
     it('should show error if aggregate does not exists', async () => {
         // Given
-        const admin: Member = {
-            id: uuidv4(),
-            login: 'zeus',
-            password:
-                '$2a$12$wAw/.WVPaDZXyFT7FIfkGOrCAYTfHPrgXLd7ABu8WBl6.ResQDvSq', // "password123."
-            name: 'Zeus God of thunder',
-            avatarURL: 'https://www.photos.com/thunder.png'
-        };
-
         // Given
         const memberRepository = new MemberRepositoryBuilder()
             .withGetMemberById(async () => {
@@ -249,6 +225,63 @@ describe('InviteMemberToBoard Use case', () => {
         expect(presenter.response!.errors!.boardId).toHaveLength(1);
     });
 
+    it("should show error if requesterId is not a participant of the board", async () => {
+        // Given
+        const nonParticipantMember: Member = {
+            id: request.memberId,
+            login: 'poseidon',
+            password:
+              '$2a$12$wAw/.WVPaDZXyFT7FIfkGOrCAYTfHPrgXLd7ABu8WBl6.ResQDvSq', // "password123."
+            name: 'Poseidon God of the sea',
+            avatarURL: 'https://www.photos.com/poseidon.png'
+        };
+
+        const aggregate = new BoardAggregate(
+            {
+                id: BOARD_ID,
+                name: 'Dev Challenge Boards',
+                description: '',
+                private: true
+            },
+            {
+                cards: [],
+                lists: [],
+                participants: [
+                    {
+                        isAdmin: true,
+                        member: admin
+                    }
+                ]
+            }
+        );
+
+        // Given
+        const memberRepository = new MemberRepositoryBuilder()
+            .withGetMemberById(async () => {
+                return nonParticipantMember;
+            })
+            .build();
+
+        const boardAggregateRepository = new BoardAggregateRepositoryBuilder()
+            .withGetBoardAggregateById(async () => {
+                return aggregate;
+            })
+            .build();
+
+        const useCase = new InviteMemberToBoardUseCase(
+            memberRepository,
+            boardAggregateRepository
+        );
+
+        // When
+        await useCase.execute({...request, requesterId: nonParticipantMember.id}, presenter);
+
+        // Then
+        expect(presenter.response).not.toBe(null);
+        expect(presenter.response!.errors).not.toBe(null);
+        expect(presenter.response!.errors!.requesterId).toHaveLength(1);
+    });
+
     describe('Invalid Requests', () => {
         const dataset: {
             label: string;
@@ -267,6 +300,13 @@ describe('InviteMemberToBoard Use case', () => {
                     ...request,
                     memberId: ''
                 }
+            },
+            {
+                label: 'empty requester id',
+                request: {
+                    ...request,
+                    requesterId: ''
+                }
             }
         ];
 
@@ -274,15 +314,6 @@ describe('InviteMemberToBoard Use case', () => {
             'shows errors with invalid request : "$label"',
             async ({ request }) => {
                 // Given
-                const admin: Member = {
-                    id: uuidv4(),
-                    login: 'zeus',
-                    password:
-                      '$2a$12$wAw/.WVPaDZXyFT7FIfkGOrCAYTfHPrgXLd7ABu8WBl6.ResQDvSq', // "password123."
-                    name: 'Zeus God of thunder',
-                    avatarURL: 'https://www.photos.com/thunder.png'
-                };
-
                 const aggregate = new BoardAggregate(
                   {
                       id: BOARD_ID,
@@ -330,7 +361,7 @@ describe('InviteMemberToBoard Use case', () => {
                 await useCase.execute(request, presenter);
 
                 // Then
-                expect(presenter.response?.errors).not.toBe(null);
+                expect(presenter.response!.errors).not.toBe(null);
             }
         );
     });

@@ -13,7 +13,8 @@ Validator.useLang('fr');
 export class InviteMemberToBoardUseCase {
     RULES = {
         boardId: 'required|string',
-        memberId: 'required|string'
+        memberId: 'required|string',
+        requesterId: 'required|string'
     };
 
     constructor(
@@ -27,34 +28,46 @@ export class InviteMemberToBoardUseCase {
     ): Promise<void> {
         let errors = this.validate(request);
 
-        const member = await this.memberRepository.getMemberById(
-            request.memberId
-        );
+        if (!errors) {
+            const member = await this.memberRepository.getMemberById(
+                request.memberId
+            );
 
-        if (member) {
-            const board =
-                await this.boardAggregateRepository.getBoardAggregateById(
-                    request.boardId
-                );
+            if (member) {
+                const board =
+                    await this.boardAggregateRepository.getBoardAggregateById(
+                        request.boardId
+                    );
 
-            if (board) {
-                try {
-                    board.addMemberToBoard(member);
-                    await this.boardAggregateRepository.save(board);
-                } catch (e) {
+                if (board) {
+                    if (!board.isParticipant(request.requesterId)) {
+                        errors = {
+                            requesterId: [
+                                "Vous n'êtes pas membre de ce tableau"
+                            ]
+                        };
+                    } else {
+                        try {
+                            board.addMemberToBoard(member);
+                            await this.boardAggregateRepository.save(board);
+                        } catch (e) {
+                            errors = {
+                                memberId: [
+                                    (e as MemberAlreadyInBoardError).message
+                                ]
+                            };
+                        }
+                    }
+                } else {
                     errors = {
-                        memberId: [(e as MemberAlreadyInBoardError).message]
+                        boardId: ["Ce tableau n'existe pas"]
                     };
                 }
             } else {
                 errors = {
-                    boardId: ["Ce tableau n'existe pas"]
+                    memberId: ["Cet utilisateur n'existe pas"]
                 };
             }
-        } else {
-            errors = {
-                memberId: ["Cet utilisateur n'existe pas"]
-            };
         }
 
         presenter.present(new InviteMemberToBoardResponse(errors));
@@ -63,7 +76,8 @@ export class InviteMemberToBoardUseCase {
     validate(request: InviteMemberToBoardRequest): FieldErrors {
         const validation = new Validator(request, this.RULES, {
             'required.memberId': "Veuillez saisir l'utilisateur à inviter",
-            'required.boardId': 'Veuillez saisir le tableau'
+            'required.boardId': 'Veuillez saisir le tableau',
+            'required.requesterId': "Veuillez saisir l'utilisateur qui invite"
         });
 
         if (validation.passes()) {
