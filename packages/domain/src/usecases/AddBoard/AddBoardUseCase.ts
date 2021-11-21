@@ -5,7 +5,7 @@ import { FieldErrors } from '../../utils/types';
 import Validator from 'validatorjs';
 import { MemberRepository } from '../../entities/Member';
 import { Board, BoardRepository } from "../../entities/Board";
-import { randomUUID as uuidv4 } from 'crypto';
+import { v4 as uuidv4 } from 'uuid';
 Validator.useLang('fr');
 
 export class AddBoardUseCase {

@@ -8,7 +8,7 @@ import {
     BoardRepository,
     Board
 } from '@thullo/domain';
-import { randomUUID as uuidv4 } from 'crypto';
+import { v4 as uuidv4 } from 'uuid';
 import { MemberRepositoryBuilder } from '../builder/MemberRepositoryBuilder';
 import { BoardRepositoryBuilder } from '../builder/BoardRepositoryBuilder';
 
