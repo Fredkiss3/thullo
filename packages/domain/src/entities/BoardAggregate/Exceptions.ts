@@ -3,13 +3,13 @@ export class MemberAlreadyInBoardError extends Error {
     super(message);
 
     if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, ListNotFoundError);
+      Error.captureStackTrace(this, MemberAlreadyInBoardError);
     }
 
     // For custom errors, we should explicitly set prototypes
     // Or else it will considers this as an "Error"
     Object.setPrototypeOf(this, MemberAlreadyInBoardError.prototype);
-    this.name = 'OperationUnauthorizedError';
+    this.name = 'MemberAlreadyInBoardError';
   }
 }
 
@@ -18,7 +18,7 @@ export class OperationUnauthorizedError extends Error {
     super(message);
 
     if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, ListNotFoundError);
+      Error.captureStackTrace(this, OperationUnauthorizedError);
     }
 
     // For custom errors, we should explicitly set prototypes
@@ -54,7 +54,7 @@ export class MemberNotInBoardError extends Error {
     // For custom errors, we should explicitly set prototypes
     // Or else it will considers this as an "Error"
     Object.setPrototypeOf(this, MemberNotInBoardError.prototype);
-    this.name = 'ListNotFoundError';
+    this.name = 'MemberNotInBoardError';
   }
 }
 
