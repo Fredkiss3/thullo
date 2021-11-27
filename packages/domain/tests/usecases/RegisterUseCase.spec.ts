@@ -112,14 +112,14 @@ describe('Register Use case', () => {
 
         // When
         await useCase.execute(request, presenter);
-        expect((memberAdded as unknown as Member).password).not.toBe(
+        expect(memberAdded!.password).not.toBe(
             request.password
         );
 
         // compare hashes
         const match = await bcrypt.compare(
             request.password,
-            (memberAdded as unknown as Member).password
+            memberAdded!.password!
         );
 
         expect(match).toBe(true);
