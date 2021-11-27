@@ -1,7 +1,7 @@
 import { InviteMemberToBoardRequest } from './InviteMemberToBoardRequest';
 import { InviteMemberToBoardPresenter } from './InviteMemberToBoardPresenter';
 import { InviteMemberToBoardResponse } from './InviteMemberToBoardResponse';
-import { FieldErrors } from '../../utils/types';
+import { FieldErrors } from '../../lib/types';
 import Validator from 'validatorjs';
 import {
     BoardAggregateRepository,

@@ -1,7 +1,7 @@
 import { SetBoardVisibilityRequest } from './SetBoardVisibilityRequest';
 import { SetBoardVisibilityPresenter } from './SetBoardVisibilityPresenter';
 import { SetBoardVisibilityResponse } from './SetBoardVisibilityResponse';
-import { FieldErrors } from '../../utils/types';
+import { FieldErrors } from '../../lib/types';
 import Validator from 'validatorjs';
 import {
     BoardAggregateRepository,

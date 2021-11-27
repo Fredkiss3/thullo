@@ -1,7 +1,7 @@
 import { AuthenticateRequest } from './AuthenticateRequest';
 import { AuthenticatePresenter } from './AuthenticatePresenter';
 import { AuthenticateResponse } from './AuthenticateResponse';
-import { FieldErrors } from '../../utils/types';
+import { FieldErrors } from '../../lib/types';
 import Validator from 'validatorjs';
 import { Member, MemberRepository } from '../../entities/Member';
 import bcrypt from 'bcrypt';
@@ -34,7 +34,7 @@ export class AuthenticateUseCase {
             } else {
                 const match = await bcrypt.compare(
                     request.password,
-                    member.password
+                    member.password!
                 );
 
                 if (!match) {

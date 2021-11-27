@@ -1,7 +1,7 @@
 import { AddBoardRequest } from './AddBoardRequest';
 import { AddBoardPresenter } from './AddBoardPresenter';
 import { AddBoardResponse } from './AddBoardResponse';
-import { FieldErrors } from '../../utils/types';
+import { FieldErrors } from '../../lib/types';
 import Validator from 'validatorjs';
 import { MemberRepository } from '../../entities/Member';
 import { Board, BoardRepository } from "../../entities/Board";

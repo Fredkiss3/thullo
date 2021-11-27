@@ -1,4 +1,4 @@
-import { FieldErrors } from '../../utils/types';
+import { FieldErrors } from '../../lib/types';
 import { BoardAggregate } from '../../entities/BoardAggregate';
 
 export class SeeBoardDetailsResponse {

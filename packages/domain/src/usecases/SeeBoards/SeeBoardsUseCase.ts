@@ -1,7 +1,7 @@
 import { SeeBoardsRequest } from './SeeBoardsRequest';
 import { SeeBoardsPresenter } from './SeeBoardsPresenter';
 import { SeeBoardsResponse } from './SeeBoardsResponse';
-import { FieldErrors } from '../../utils/types';
+import { FieldErrors } from '../../lib/types';
 import Validator from 'validatorjs';
 import { Member, MemberRepository } from '../../entities/Member';
 import { Board, BoardRepository } from '../../entities/Board';

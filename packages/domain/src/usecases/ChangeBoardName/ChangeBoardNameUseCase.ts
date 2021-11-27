@@ -1,7 +1,7 @@
 import { ChangeBoardNameRequest } from './ChangeBoardNameRequest';
 import { ChangeBoardNamePresenter } from './ChangeBoardNamePresenter';
 import { ChangeBoardNameResponse } from './ChangeBoardNameResponse';
-import { FieldErrors } from '../../utils/types';
+import { FieldErrors } from '../../lib/types';
 import Validator from 'validatorjs';
 import {
     BoardAggregateRepository,

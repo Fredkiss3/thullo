@@ -1,7 +1,7 @@
 import { SearchMembersRequest } from './SearchMembersRequest';
 import { SearchMembersPresenter } from './SearchMembersPresenter';
 import { SearchMembersResponse } from './SearchMembersResponse';
-import { FieldErrors } from '../../utils/types';
+import { FieldErrors } from '../../lib/types';
 import Validator from 'validatorjs';
 import { MemberRepository } from '../../entities/Member';
 Validator.useLang('fr');

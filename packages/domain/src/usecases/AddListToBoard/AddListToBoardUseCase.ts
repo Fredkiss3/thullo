@@ -1,7 +1,7 @@
 import { AddListToBoardRequest } from './AddListToBoardRequest';
 import { AddListToBoardPresenter } from './AddListToBoardPresenter';
 import { AddListToBoardResponse } from './AddListToBoardResponse';
-import { FieldErrors } from '../../utils/types';
+import { FieldErrors } from '../../lib/types';
 import Validator from 'validatorjs';
 import {
     BoardAggregateRepository,

@@ -4,7 +4,7 @@ export interface Member {
     id: MemberId;
     name: string;
     login: string;
-    password: string;
+    password?: string;
     avatarURL: string | null;
 }
 

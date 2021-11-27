@@ -1,4 +1,4 @@
-import { FieldErrors } from '../../utils/types';
+import { FieldErrors } from '../../lib/types';
 import { Member } from "../../entities/Member";
 
 export class AuthenticateResponse {

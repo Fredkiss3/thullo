@@ -1,7 +1,7 @@
 import { RegisterRequest } from './RegisterRequest';
 import { RegisterPresenter } from './RegisterPresenter';
 import { RegisterResponse } from './RegisterResponse';
-import { FieldErrors } from '../../utils/types';
+import { FieldErrors } from '../../lib/types';
 import Validator from 'validatorjs';
 import { MemberRepository } from '../../entities/Member';
 import bcrypt from 'bcrypt';

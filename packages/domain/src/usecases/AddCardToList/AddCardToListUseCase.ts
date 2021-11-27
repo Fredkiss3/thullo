@@ -1,7 +1,7 @@
 import { AddCardToListRequest } from './AddCardToListRequest';
 import { AddCardToListPresenter } from './AddCardToListPresenter';
 import { AddCardToListResponse } from './AddCardToListResponse';
-import { FieldErrors } from '../../utils/types';
+import { FieldErrors } from '../../lib/types';
 import Validator from 'validatorjs';
 import {
     BoardAggregateRepository,
