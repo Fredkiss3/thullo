@@ -1,0 +1,31 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+title OAuth2 Authorization Flow
+
+autonumber
+
+actor  user
+participant  react
+participant express
+participant  auth0
+
+user --> react : Register
+react --> auth0 : Redirect
+user --> auth0 : Login & consent
+auth0 --> react : Redirect w/ code
+react --> express : Request w/ code
+activate express
+
+express --> auth0 : request w/ code, client ID, client secret
+auth0 --> express : access token + Id token
+express --> auth0 : Get User Info w/ access token + Id token
+auth0 --> express : User Info
+
+express --> express : Save User Info if not exists
+
+express --> react : User Info
+
+deactivate express
+
+
+@enduml

@@ -1,5 +1,6 @@
 export * from './usecases/Register';
 export * from './usecases/Authenticate';
+export * from './usecases/AuthenticateWithOauth';
 export * from './usecases/SeeBoards';
 export * from './usecases/AddBoard';
 export * from './usecases/SeeBoardDetails';
