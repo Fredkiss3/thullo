@@ -43,14 +43,15 @@ describe('__UC__ Use case', () => {
         it.each(dataset)(
             'shows errors with invalid request : "$label"',
             async ({ request }) => {
-                // Given
-                const useCase = new __UC__UseCase();
-
-                // When
-                await useCase.execute(request, presenter);
-
-                // Then
-                expect(presenter.response?.errors).not.toBe(null);
+                // // Given
+                // const useCase = new __UC__UseCase();
+                //
+                // // When
+                // await useCase.execute(request, presenter);
+                //
+                // // Then
+                // expect(presenter.response!.errors).not.toBe(null);
+                expect(true).toBe(false);
             }
         );
     });
