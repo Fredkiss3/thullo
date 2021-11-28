@@ -1,0 +1,67 @@
+.App {
+  text-align: center;
+
+.AppLogo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+.AppHeader {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.AppLink {
+  color: #61dafb;
+
+&:visited {
+   color: darken($color: #61dafb, $amount: 23);
+ }
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .AppLogo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+@mixin mobile-only {
+  @media screen and (max-width: 640px) {
+    @content;
+  }
+}
+
+.button {
+  font-size: calc(10px + 2vmin);
+  background-color: #3498db;
+  color: #fff;
+  border-width: 0px;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+
+&:hover {
+   background-color: #2e86c1;
+ }
+
+&:focus,
+&:active {
+   box-shadow: 0 0 0 0.25rem transparentize($color: #2e86c1, $amount: 0.4);
+ }
+}
