@@ -2,6 +2,7 @@
   "name": "@thullo/front",
   "version": "1.0.0",
   "scripts": {
+    "test": "echo \"Testing the app\" && exit 0",
     "dev": "vite",
     "build": "tsc && vite build",
     "serve": "vite preview"
@@ -15,6 +16,7 @@
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
     "@vitejs/plugin-react": "^1.0.0",
+    "netlify-cli": "^8.0.3",
     "prettier": "^2.5.0",
     "typescript": "^4.3.2",
     "vite": "^2.6.4"
