@@ -18,5 +18,5 @@ app.get('/', (_, res) => {
 });
 
 app.listen(process.env.PORT, () =>
-    console.log(`@thullo/api is running on PORT ${process.env.PORT}`)
+    console.log(`@thullo/api is running on PORT ${process.env.PORT} on Qovery ?`),
 );
