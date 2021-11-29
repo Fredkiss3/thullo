@@ -9,7 +9,7 @@ function App() {
       <div className={cls.App}>
         <header className={cls.AppHeader}>
           <img src={logo} className={cls.AppLogo} alt="logo" />
-          <p>Hello Vite + React!</p>
+          <p>This is the base of the Thullo Frontend !</p>
           <p>
             <button
                 className={cls.button}
