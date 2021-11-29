@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "scripts": {
     "test": "echo \"Testing the app\" && exit 0",
-    "dev": "vite",
+    "start": "vite",
     "build": "tsc && vite build",
-    "serve": "vite preview"
+    "serve": "vite preview",
+    "deploy": "netlify deploy"
   },
   "dependencies": {
     "react": "^17.0.0",

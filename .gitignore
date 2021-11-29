@@ -6,3 +6,6 @@ dist/
 /.idea/codeStyles/Project.xml
 /.idea/vcs.xml
 *.iml
+notes.md
+# Local Netlify folder
+.netlify

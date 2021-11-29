@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "scripts": {
     "postinstall": "lerna bootstrap",
-    "test": "jest --testPathIgnorePatterns=/scripts/templates/usecases/"
+    "test": "jest --testPathIgnorePatterns=/scripts/templates/usecases/",
+    "front": "npm run start --prefix packages/front",
+    "api": "npm run dev --prefix packages/api"
   },
   "devDependencies": {
     "@types/jest": "^27.0.2",
