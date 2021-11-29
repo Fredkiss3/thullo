@@ -41,17 +41,11 @@
   }
 }
 
-@mixin mobile-only {
-  @media screen and (max-width: 640px) {
-    @content;
-  }
-}
-
 .button {
   font-size: calc(10px + 2vmin);
   background-color: #3498db;
   color: #fff;
-  border-width: 0px;
+  border-width: 0;
   border-radius: 5px;
   padding: 5px 10px;
   cursor: pointer;
