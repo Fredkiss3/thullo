@@ -4,10 +4,11 @@
   "version": "1.0.0",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "echo \"Testing the app\" && exit 0",
     "build": "tsc",
-    "start": "cross-env NODE_ENV=prod node dist/app.js",
-    "dev": "cross-env NODE_ENV=dev nodemon src/app.ts"
+    "deploy" : "vercel deploy --prod --scope fredkiss3 --token $VERCEL_TOKEN",
+    "preview" : "vercel deploy --scope fredkiss3 --token $VERCEL_TOKEN",
+    "dev": "cross-env NODE_ENV=dev nodemon api/index.ts"
   },
   "keywords": [],
   "author": "",
@@ -17,7 +18,8 @@
     "cross-env": "^7.0.3",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
-    "express-promise-router": "^4.1.0"
+    "express-promise-router": "^4.1.0",
+    "vercel": "^23.1.2"
   },
   "devDependencies": {
     "@types/cors": "^2.8.12",
