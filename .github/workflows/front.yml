@@ -35,6 +35,8 @@ jobs:
         with:
           node-version: 16.x
           cache: 'pnpm'
+
+      - name: Install dependencies
         run: pnpm i --prefix packages/front
 
       - name: Build the frontend
