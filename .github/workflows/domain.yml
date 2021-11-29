@@ -6,6 +6,9 @@ name: Continous Integration For Domain
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
   push:
+    paths:
+      - 'packages/domain/**'
+      - .github/workflows/domain.yml
     branches:
       - develop
 
