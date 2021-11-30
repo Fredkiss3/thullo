@@ -8,7 +8,8 @@
     "build": "tsc",
     "deploy" : "vercel deploy --prod --scope fredkiss3 --token $VERCEL_TOKEN",
     "preview" : "vercel deploy --scope fredkiss3 --token $VERCEL_TOKEN",
-    "dev": "cross-env NODE_ENV=dev nodemon api/index.ts"
+    "start": "cross-env NODE_ENV=dev nodemon api/index.ts",
+    "vercel:dev": "vercel dev --listen localhost:3031"
   },
   "keywords": [],
   "author": "",
