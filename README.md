@@ -1,13 +1,113 @@
-# Thullo : A Trello Clone
+<p align="center">
+  <a href="https://thullo-by-fredkiss.netlify.app">
+    <img alt="Logo Thullo" src="logo.png" width="200" />
+  </a>
+</p>
 
 ![Build Status Domain](https://github.com/Fredkiss3/thullo/workflows/Continous%20Integration%20For%20Domain/badge.svg?branch=develop)
-
 ![Build Status Front](https://github.com/Fredkiss3/thullo/workflows/CI%2FCD%20For%20the%20Frontend/badge.svg?branch=develop)
-
 ![Build Status Express](https://github.com/Fredkiss3/thullo/workflows/CI%2FCD%20For%20Express%20API/badge.svg?branch=develop)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/0640fc2d-a1e7-4431-a079-d7fb8788dcac/deploy-status)](https://thullo-by-fredkiss.netlify.app/)
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/0640fc2d-a1e7-4431-a079-d7fb8788dcac/deploy-status)](https://app.netlify.com/sites/xenodochial-dijkstra-c6ac91/deploys)
 
-This project was made for a challenge Thullo by [devChallenges.io](https://devchallenges.io/challenges/wP0LbGgEeKhpFHUpPpDh). 
+# Thullo : A Trello Clone
 
-https://console.clever-cloud.com/users/me/addons/addon_a86d23ff-0a06-4720-ac7a-3817132fd8f9/informations
+This project was made for a challenge Thullo by [devChallenges.io](https://devchallenges.io/challenges/wP0LbGgEeKhpFHUpPpDh).
+
+
+# Requirements
+
+- Node >= v16.6.2
+- NPM >= v6.14.5 or [pnpm](https://pnpm.io/installation) >= v6.22.2
+- [MongoDB](https://docs.mongodb.com/manual/installation/) >= v5.0.4
+
+## 🚀 How to work on the project ?
+
+1. First you have to clone the repository
+    
+    ```bash
+    git clone https://github.com/Fredkiss3/thullo.git
+    ```    
+
+2. **Then, You have to install the dependencies :**
+
+    ```bash
+    npm install
+    ```    
+
+3. You have to start a mongoDB instance for the database :
+
+    ```bash
+    mongod --dbpath ./data
+    ```
+4. You have to rename the `.env.example` located in `packages/express/src/config` to `.env.local` And change the config to your needs :
+
+    ```dotenv
+    # express server
+    PORT=3031
+    # mongo database
+    DB_HOST = 'localhost' # Use localhost if you are using MongoDB locally
+    DB_PORT = 27017 # Default port for MongoDB
+    DB_NAME = 'thullo' # Name of the database
+    ```
+
+5. **And launch the project :**
+
+    ```bash
+    npm run dev
+    ```
+
+    The dev script will launch the server at [http://localhost:3031](http://localhost:3031) and the client at [http://localhost:3000](http://localhost:3000).
+
+6. **Open the source code and start rocking ! 😎**
+
+
+## 🧐 Project structure
+
+A quick look at the top-level files and directories you will see in this project.
+
+    .
+    ├── .github/
+    │    └── workflows
+    │        ├── express.yml
+    │        ├── domain.yml
+    │        └── front.yml
+    ├── packages/
+    │   ├── domain
+    │   ├── express
+    │   ├── adapters
+    │   └── front
+    ├── .prettierrc
+    ├── jest.config.json
+    ├── lerna.json
+    ├── pnpm-lock.yaml
+    └── tsconfig.json
+
+1. **`.github/`**: this folder contains the GitHub Actions workflow configuration for Continuous Integration/Continuous Deployment.
+   Given that this project is a [monorepo](https://www.wikiwand.com/en/Monorepo), there is muliples workflows for the different packages, with each one targeting a specific environment :
+   
+    1. **`domain.yml`** : this workflow is used to test the domain.
+   
+    2. **`express.yml`** : this workflow is used to deploy the express app to [vercel](https://vercel.com/).
+   
+    3. **`front.yml`** : this workflow is used to test and deploy the frontend app to [netlify](https://netlify.com/).
+   
+2. **`packages/`**: this folder contains the monorepo packages, each package is a sub-folder :
+
+    1. **`domain`** : this package contains the domain logic used by the express App
+   
+    2. **`express`** : this package contains the express API.
+   
+    3. **`adapters`** : this package contains the implementations of all the interfaces in the domain that the express API will use.
+   
+    4. **`front`** : this package contains the frontend app written in React.
+    
+3. **`.prettierrc`**: this file contains the configuration for prettier to enable autoformatting.
+
+4. **`jest.config.json`**: this file contains the configuration for Jest, that are used by the all the underlying packages
+
+5. **`lerna.json`**: this file contains the configuration for the monorepo.
+
+6. **`pnpm-lock.yaml`**: this file contains the dependencies lock for the monorepo.
+
+7. **`tsconfig.json`**: this file contains the configuration for typescript, that are used by the all the underlying packages
