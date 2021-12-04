@@ -1,44 +1,42 @@
 {
-  "name": "@thullo/domain",
-  "version": "0.0.1",
-  "description": "Trello Clone",
-  "main": "dist/src/index.js",
-  "types": "dist/src/index.d.ts",
-  "files": [
-    "dist/**/*"
-  ],
-  "directories": {
-    "test": "tests"
-  },
-  "scripts": {
-    "gen": "node ./scripts/generate.js",
-    "build": "rm -r dist/ && tsc",
-    "test": "FORCE_COLOR=true jest --verbose --testPathPattern=./tests/usecases/ --testPathIgnorePatterns=/scripts/templates/usecases/",
-    "watch": "jest --watchAll --verbose --testPathPattern=./tests/usecases/ --testPathIgnorePatterns=/scripts/templates/usecases/"
-  },
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "@types/faker": "^5.5.9",
-    "@types/jest": "^27.0.2",
-    "@typescript-eslint/eslint-plugin": "^5.0.0",
-    "@typescript-eslint/parser": "^5.0.0",
-    "eslint": "7.28.0",
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-prettier": "^4.0.0",
-    "faker": "^5.5.3",
-    "generate-template-files": "^3.2.0",
-    "jest": "^27.3.1",
-    "prettier": "^2.4.1",
-    "ts-jest": "^27.0.7",
-    "typescript": "^4.4.4"
-  },
-  "dependencies": {
-    "@types/bcrypt": "^5.0.0",
-    "@types/uuid": "^8.3.1",
-    "@types/validatorjs": "^3.15.0",
-    "bcrypt": "^5.0.1",
-    "uuid": "^8.3.2",
-    "validatorjs": "^3.22.1"
-  }
+    "name": "@thullo/domain",
+    "version": "0.0.1",
+    "description": "Trello Clone",
+    "main": "dist/src/index.js",
+    "types": "dist/src/index.d.ts",
+    "files": [
+        "dist/**/*"
+    ],
+    "directories": {
+        "test": "tests"
+    },
+    "scripts": {
+        "gen": "node ./scripts/generate.js",
+        "build": "rm -r dist/ && tsc",
+        "test": "jest",
+        "watch": "jest --watchAll --verbose --testPathPattern=./tests/usecases/ --testPathIgnorePatterns=/scripts/templates/usecases/"
+    },
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "@types/faker": "^5.5.9",
+        "@types/jest": "^27.0.2",
+        "@typescript-eslint/eslint-plugin": "^5.0.0",
+        "@typescript-eslint/parser": "^5.0.0",
+        "eslint": "7.28.0",
+        "eslint-config-prettier": "^8.3.0",
+        "eslint-plugin-prettier": "^4.0.0",
+        "faker": "^5.5.3",
+        "generate-template-files": "^3.2.0",
+        "jest": "^27.3.1",
+        "prettier": "^2.4.1",
+        "ts-jest": "^27.0.7",
+        "typescript": "^4.4.4"
+    },
+    "dependencies": {
+        "@types/uuid": "^8.3.1",
+        "@types/validatorjs": "^3.15.0",
+        "uuid": "^8.3.2",
+        "validatorjs": "^3.22.1"
+    }
 }
