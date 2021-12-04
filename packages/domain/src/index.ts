@@ -17,3 +17,4 @@ export * from './usecases/SearchMembers';
 export * from './usecases/SeeBoardDetails';
 export * from './usecases/SeeBoards';
 export * from './usecases/SetBoardVisibility';
+export * from './usecases/UpdateBoardDescription';

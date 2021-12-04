@@ -1,8 +1,8 @@
-import { BoardId } from '../Board';
-import { List, ListId } from '../List';
-import { Card, CardId } from '../Card';
-import { Member, MemberId } from '../Member';
 import { v4 as uuidv4 } from 'uuid';
+import { BoardId } from '../Board';
+import { Card, CardId } from '../Card';
+import { List, ListId } from '../List';
+import { Member, MemberId } from '../Member';
 import { Participation } from '../Participation';
 import {
     ListNotFoundError,
@@ -24,7 +24,7 @@ interface BoardAggregateData {
 interface BoardData {
     id: BoardId;
     name: string;
-    description: string;
+    description: string | null;
     private: boolean;
 }
 
@@ -132,6 +132,15 @@ export class BoardAggregate {
                 " tableau car vous n'êtes pas un admin sur ce tableau"
         );
         this._board.name = name;
+    }
+
+    setDescription(description: string | null, initiatorId: MemberId) {
+        this.checkAdminOrThrowError(
+            initiatorId,
+            "Vous n'avez pas le droit de changer la description de ce" +
+                " tableau car vous n'êtes pas un admin sur ce tableau"
+        );
+        this._board.description = description;
     }
 
     private checkAdminOrThrowError(memberId: MemberId, message: string): void {
@@ -244,6 +253,20 @@ export class BoardAggregate {
         this.orderCardsByLists();
     }
 
+    isParticipant(memberId: MemberId) {
+        return this._data.participants.some(
+            ({ member: { id } }) => id === memberId
+        );
+    }
+
+    isAdmin(memberId: MemberId) {
+        const member = this._data.participants.find(
+            ({ member: { id } }) => id === memberId
+        );
+
+        return member?.isAdmin ?? false;
+    }
+
     // getters & setters
     get participants(): Readonly<Participation>[] {
         return this._data.participants;
@@ -266,21 +289,15 @@ export class BoardAggregate {
         return this._board.private;
     }
 
-    get name() {
+    get name(): string {
         return this._board.name;
     }
 
-    isParticipant(memberId: MemberId) {
-        return this._data.participants.some(
-            ({ member: { id } }) => id === memberId
-        );
+    get description(): string | null {
+        return this._board.description;
     }
 
-    isAdmin(memberId: MemberId) {
-        const member = this._data.participants.find(
-            ({ member: { id } }) => id === memberId
-        );
-
-        return member?.isAdmin ?? false;
+    get boardId(): BoardId {
+        return this._board.id;
     }
 }
