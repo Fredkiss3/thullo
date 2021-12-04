@@ -4,7 +4,6 @@ import {
     SearchMembersPresenter,
     SearchMembersResponse,
     MemberRepository,
-    Member,
     SearchMembersResult
 } from '@thullo/domain';
 import { MemberRepositoryBuilder } from '../builder/MemberRepositoryBuilder';

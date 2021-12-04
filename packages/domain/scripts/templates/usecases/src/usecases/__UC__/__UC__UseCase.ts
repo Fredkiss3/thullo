@@ -1,7 +1,7 @@
 import { __UC__Request } from './__UC__Request';
 import { __UC__Presenter } from './__UC__Presenter';
 import { __UC__Response } from './__UC__Response';
-import { FieldErrors } from '../../utils/types';
+import { FieldErrors } from '../../lib/types';
 import Validator from 'validatorjs';
 Validator.useLang('fr');
 

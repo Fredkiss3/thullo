@@ -1,25 +1,23 @@
-import { InviteMemberToBoardRequest } from './InviteMemberToBoardRequest';
-import { InviteMemberToBoardPresenter } from './InviteMemberToBoardPresenter';
-import { InviteMemberToBoardResponse } from './InviteMemberToBoardResponse';
-import { FieldErrors } from '../../lib/types';
 import Validator from 'validatorjs';
-import {
-    BoardAggregateRepository,
-    MemberAlreadyInBoardError
-} from '../../entities/BoardAggregate';
+import { BoardAggregateRepository } from '../../entities/BoardAggregate';
 import { MemberRepository } from '../../entities/Member';
+import { FieldErrors } from '../../lib/types';
+import { MemberAlreadyInBoardError } from './../../entities/BoardAggregate/Exceptions';
+import { InviteMemberToBoardPresenter } from './InviteMemberToBoardPresenter';
+import { InviteMemberToBoardRequest } from './InviteMemberToBoardRequest';
+import { InviteMemberToBoardResponse } from './InviteMemberToBoardResponse';
 Validator.useLang('fr');
 
 export class InviteMemberToBoardUseCase {
     RULES = {
         boardId: 'required|string',
-        memberId: 'required|string',
-        requesterId: 'required|string'
+        initiatorId: 'required|string',
+        memberId: 'required|string'
     };
 
     constructor(
         private memberRepository: MemberRepository,
-        private boardAggregateRepository: BoardAggregateRepository
+        private boardRepository: BoardAggregateRepository
     ) {}
 
     async execute(
@@ -28,46 +26,41 @@ export class InviteMemberToBoardUseCase {
     ): Promise<void> {
         let errors = this.validate(request);
 
-        if (!errors) {
-            const member = await this.memberRepository.getMemberById(
-                request.memberId
-            );
+        const board = await this.boardRepository.getBoardAggregateById(
+            request.boardId
+        );
 
-            if (member) {
-                const board =
-                    await this.boardAggregateRepository.getBoardAggregateById(
-                        request.boardId
-                    );
+        const member = await this.memberRepository.getMemberById(
+            request.memberId
+        );
 
-                if (board) {
-                    if (!board.isParticipant(request.requesterId)) {
+        if (member != null) {
+            if (board != null) {
+                if (board.isParticipant(request.initiatorId)) {
+                    try {
+                        board.addMemberToBoard(member);
+                        await this.boardRepository.save(board);
+                    } catch (e) {
                         errors = {
-                            requesterId: [
-                                "Vous n'êtes pas membre de ce tableau"
-                            ]
+                            memberId: [(e as MemberAlreadyInBoardError).message]
                         };
-                    } else {
-                        try {
-                            board.addMemberToBoard(member);
-                            await this.boardAggregateRepository.save(board);
-                        } catch (e) {
-                            errors = {
-                                memberId: [
-                                    (e as MemberAlreadyInBoardError).message
-                                ]
-                            };
-                        }
                     }
                 } else {
                     errors = {
-                        boardId: ["Ce tableau n'existe pas"]
+                        initiatorId: [
+                            "Ce membre n'est pas un participant de ce tableau."
+                        ]
                     };
                 }
             } else {
                 errors = {
-                    memberId: ["Cet utilisateur n'existe pas"]
+                    boardId: ["Ce tableau n'existe pas."]
                 };
             }
+        } else {
+            errors = {
+                memberId: ["Cet utilisateur n'existe pas."]
+            };
         }
 
         presenter.present(new InviteMemberToBoardResponse(errors));
@@ -75,9 +68,9 @@ export class InviteMemberToBoardUseCase {
 
     validate(request: InviteMemberToBoardRequest): FieldErrors {
         const validation = new Validator(request, this.RULES, {
-            'required.memberId': "Veuillez saisir l'utilisateur à inviter",
-            'required.boardId': 'Veuillez saisir le tableau',
-            'required.requesterId': "Veuillez saisir l'utilisateur qui invite"
+            'required.boardId': 'Le tableau est requis.',
+            'required.initiatorId': "L'initiateur de l'action est requis.",
+            'required.memberId': 'Le membre est requis.'
         });
 
         if (validation.passes()) {

@@ -1,8 +1,8 @@
-import { BoardId } from "../../entities/Board";
-import { MemberId } from "../../entities/Member";
+import { MemberId } from '../../entities/Member';
+import { BoardId } from '../../entities/Board';
 
 export interface InviteMemberToBoardRequest {
-  requesterId: MemberId;
-  boardId: BoardId;
   memberId: MemberId;
+  initiatorId: MemberId;
+  boardId: BoardId;
 }

@@ -275,4 +275,12 @@ export class BoardAggregate {
             ({ member: { id } }) => id === memberId
         );
     }
+
+    isAdmin(memberId: MemberId) {
+        const member = this._data.participants.find(
+            ({ member: { id } }) => id === memberId
+        );
+
+        return member?.isAdmin ?? false;
+    }
 }

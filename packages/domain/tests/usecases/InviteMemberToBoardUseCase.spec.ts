@@ -1,14 +1,15 @@
 import {
-    InviteMemberToBoardRequest,
-    InviteMemberToBoardUseCase,
-    InviteMemberToBoardPresenter,
-    InviteMemberToBoardResponse,
     BoardAggregate,
-    Member
+    InviteMemberToBoardPresenter,
+    InviteMemberToBoardRequest,
+    InviteMemberToBoardResponse,
+    InviteMemberToBoardUseCase,
+    Member,
+    MemberRepository
 } from '@thullo/domain';
 import { v4 as uuidv4 } from 'uuid';
-import { MemberRepositoryBuilder } from '../builder/MemberRepositoryBuilder';
 import { BoardAggregateRepositoryBuilder } from '../builder/BoardAggregateRepositoryBuilder';
+import { MemberRepositoryBuilder } from '../builder/MemberRepositoryBuilder';
 
 const presenter = new (class implements InviteMemberToBoardPresenter {
     response?: InviteMemberToBoardResponse | null;
@@ -18,21 +19,26 @@ const presenter = new (class implements InviteMemberToBoardPresenter {
     }
 })();
 
+const BOARD_ID = uuidv4();
+
 const admin: Member = {
     id: uuidv4(),
     login: 'zeus',
-    password:
-      '$2a$12$wAw/.WVPaDZXyFT7FIfkGOrCAYTfHPrgXLd7ABu8WBl6.ResQDvSq', // "password123."
     name: 'Zeus God of thunder',
     avatarURL: 'https://www.photos.com/thunder.png'
 };
 
-const BOARD_ID = uuidv4();
+const memberToAdd: Member = {
+    id: uuidv4(),
+    login: 'poseidon',
+    name: 'Poseidon God of the sea',
+    avatarURL: 'https://www.photos.com/poseidon.png'
+};
 
 const request: InviteMemberToBoardRequest = {
-    requesterId: admin.id,
-    boardId: BOARD_ID,
-    memberId: uuidv4()
+    memberId: memberToAdd.id,
+    initiatorId: admin.id,
+    boardId: BOARD_ID
 };
 
 describe('InviteMemberToBoard Use case', () => {
@@ -57,20 +63,10 @@ describe('InviteMemberToBoard Use case', () => {
             }
         );
 
-        const expectedMember: Member = {
-            id: request.memberId,
-            login: 'poseidon',
-            password:
-                '$2a$12$wAw/.WVPaDZXyFT7FIfkGOrCAYTfHPrgXLd7ABu8WBl6.ResQDvSq', // "password123."
-            name: 'Poseidon God of the sea',
-            avatarURL: 'https://www.photos.com/poseidon.png'
-        };
-
-        let expectedAggregate: BoardAggregate | null = null;
-
-        const memberRepository = new MemberRepositoryBuilder()
-            .withGetMemberById(async () => {
-                return expectedMember;
+        let boardExpected: BoardAggregate;
+        const memberRepository: MemberRepository = new MemberRepositoryBuilder()
+            .withGetMemberById(async (id) => {
+                return memberToAdd;
             })
             .build();
 
@@ -78,9 +74,9 @@ describe('InviteMemberToBoard Use case', () => {
             .withGetBoardAggregateById(async () => {
                 return aggregate;
             })
-            .withSave(async (aggregate) => {
-                expectedAggregate = aggregate;
-                return aggregate;
+            .withSave(async (boardAggregate) => {
+                boardExpected = boardAggregate;
+                return boardAggregate;
             })
             .build();
 
@@ -94,15 +90,17 @@ describe('InviteMemberToBoard Use case', () => {
 
         // Then
         expect(presenter.response).not.toBe(null);
-        expect(expectedAggregate).not.toBe(null);
-        expect(expectedAggregate!.participants.length).toBe(2);
-        expect(expectedAggregate!.participants[1].member).toEqual(
-            expectedMember
-        );
+        expect(presenter.response!.errors).toBe(null);
+
+        expect(boardExpected!).not.toBeFalsy();
+        expect(boardExpected!).toBe(aggregate);
+        expect(boardExpected!.participants).toHaveLength(2);
+        expect(boardExpected!.participants[1].member).toBe(memberToAdd);
     });
 
-    it('Should show error if member is already present in board', async () => {
+    it('should show errors if initiator is not a member of the board', async () => {
         // Given
+        let boardExpected: BoardAggregate | null = null;
         const aggregate = new BoardAggregate(
             {
                 id: BOARD_ID,
@@ -121,16 +119,78 @@ describe('InviteMemberToBoard Use case', () => {
                 ]
             }
         );
-
-        const memberRepository = new MemberRepositoryBuilder()
-            .withGetMemberById(async () => {
-                return admin;
+        const memberRepository: MemberRepository = new MemberRepositoryBuilder()
+            .withGetMemberById(async (id) => {
+                return memberToAdd;
             })
             .build();
 
         const boardAggregateRepository = new BoardAggregateRepositoryBuilder()
             .withGetBoardAggregateById(async () => {
                 return aggregate;
+            })
+            .withSave(async (boardAggregate) => {
+                boardExpected = boardAggregate;
+                return boardAggregate;
+            })
+            .build();
+
+        const useCase = new InviteMemberToBoardUseCase(
+            memberRepository,
+            boardAggregateRepository
+        );
+
+        // When
+        await useCase.execute(
+            { ...request, initiatorId: memberToAdd.id },
+            presenter
+        );
+
+        // Then
+        expect(presenter.response).not.toBe(null);
+        expect(presenter.response!.errors).not.toBe(null);
+        expect(presenter.response!.errors!.initiatorId).toHaveLength(1);
+        expect(boardExpected!).toBe(null);
+    });
+
+    it('Should show errors if member already present in board', async () => {
+        // Given
+        let boardExpected: BoardAggregate | null = null;
+        const aggregate = new BoardAggregate(
+            {
+                id: BOARD_ID,
+                name: 'Dev Challenge Boards',
+                description: '',
+                private: true
+            },
+            {
+                cards: [],
+                lists: [],
+                participants: [
+                    {
+                        isAdmin: true,
+                        member: admin
+                    },
+                    {
+                        isAdmin: false,
+                        member: memberToAdd
+                    }
+                ]
+            }
+        );
+        const memberRepository: MemberRepository = new MemberRepositoryBuilder()
+            .withGetMemberById(async (id) => {
+                return memberToAdd;
+            })
+            .build();
+
+        const boardAggregateRepository = new BoardAggregateRepositoryBuilder()
+            .withGetBoardAggregateById(async () => {
+                return aggregate;
+            })
+            .withSave(async (boardAggregate) => {
+                boardExpected = boardAggregate;
+                return boardAggregate;
             })
             .build();
 
@@ -146,10 +206,12 @@ describe('InviteMemberToBoard Use case', () => {
         expect(presenter.response).not.toBe(null);
         expect(presenter.response!.errors).not.toBe(null);
         expect(presenter.response!.errors!.memberId).toHaveLength(1);
-        expect(aggregate.participants.length).toBe(1);
+        expect(boardExpected!).toBe(null);
     });
 
-    it('should show error if member does not exists', async () => {
+    it('should show errors if member does not exist', async () => {
+        // Given
+        let boardExpected: BoardAggregate | null = null;
         const aggregate = new BoardAggregate(
             {
                 id: BOARD_ID,
@@ -168,10 +230,8 @@ describe('InviteMemberToBoard Use case', () => {
                 ]
             }
         );
-
-        // Given
-        const memberRepository = new MemberRepositoryBuilder()
-            .withGetMemberById(async () => {
+        const memberRepository: MemberRepository = new MemberRepositoryBuilder()
+            .withGetMemberById(async (id) => {
                 return null;
             })
             .build();
@@ -179,6 +239,10 @@ describe('InviteMemberToBoard Use case', () => {
         const boardAggregateRepository = new BoardAggregateRepositoryBuilder()
             .withGetBoardAggregateById(async () => {
                 return aggregate;
+            })
+            .withSave(async (boardAggregate) => {
+                boardExpected = boardAggregate;
+                return boardAggregate;
             })
             .build();
 
@@ -194,20 +258,25 @@ describe('InviteMemberToBoard Use case', () => {
         expect(presenter.response).not.toBe(null);
         expect(presenter.response!.errors).not.toBe(null);
         expect(presenter.response!.errors!.memberId).toHaveLength(1);
+        expect(boardExpected!).toBe(null);
     });
 
-    it('should show error if aggregate does not exists', async () => {
+    it('Should show errors if board does not exist', async () => {
         // Given
-        // Given
-        const memberRepository = new MemberRepositoryBuilder()
-            .withGetMemberById(async () => {
-                return admin;
+        let boardExpected: BoardAggregate | null = null;
+        const memberRepository: MemberRepository = new MemberRepositoryBuilder()
+            .withGetMemberById(async (id) => {
+                return memberToAdd;
             })
             .build();
 
         const boardAggregateRepository = new BoardAggregateRepositoryBuilder()
             .withGetBoardAggregateById(async () => {
                 return null;
+            })
+            .withSave(async (boardAggregate) => {
+                boardExpected = boardAggregate;
+                return boardAggregate;
             })
             .build();
 
@@ -223,63 +292,7 @@ describe('InviteMemberToBoard Use case', () => {
         expect(presenter.response).not.toBe(null);
         expect(presenter.response!.errors).not.toBe(null);
         expect(presenter.response!.errors!.boardId).toHaveLength(1);
-    });
-
-    it("should show error if requesterId is not a participant of the board", async () => {
-        // Given
-        const nonParticipantMember: Member = {
-            id: request.memberId,
-            login: 'poseidon',
-            password:
-              '$2a$12$wAw/.WVPaDZXyFT7FIfkGOrCAYTfHPrgXLd7ABu8WBl6.ResQDvSq', // "password123."
-            name: 'Poseidon God of the sea',
-            avatarURL: 'https://www.photos.com/poseidon.png'
-        };
-
-        const aggregate = new BoardAggregate(
-            {
-                id: BOARD_ID,
-                name: 'Dev Challenge Boards',
-                description: '',
-                private: true
-            },
-            {
-                cards: [],
-                lists: [],
-                participants: [
-                    {
-                        isAdmin: true,
-                        member: admin
-                    }
-                ]
-            }
-        );
-
-        // Given
-        const memberRepository = new MemberRepositoryBuilder()
-            .withGetMemberById(async () => {
-                return nonParticipantMember;
-            })
-            .build();
-
-        const boardAggregateRepository = new BoardAggregateRepositoryBuilder()
-            .withGetBoardAggregateById(async () => {
-                return aggregate;
-            })
-            .build();
-
-        const useCase = new InviteMemberToBoardUseCase(
-            memberRepository,
-            boardAggregateRepository
-        );
-
-        // When
-        await useCase.execute({...request, requesterId: nonParticipantMember.id}, presenter);
-
-        // Then
-        expect(presenter.response).not.toBe(null);
-        expect(presenter.response!.errors).not.toBe(null);
-        expect(presenter.response!.errors!.requesterId).toHaveLength(1);
+        expect(boardExpected!).toBe(null);
     });
 
     describe('Invalid Requests', () => {
@@ -288,24 +301,24 @@ describe('InviteMemberToBoard Use case', () => {
             request: InviteMemberToBoardRequest;
         }[] = [
             {
-                label: 'empty board id',
-                request: {
-                    ...request,
-                    boardId: ''
-                }
-            },
-            {
-                label: 'empty member id',
+                label: 'MemberId empty',
                 request: {
                     ...request,
                     memberId: ''
                 }
             },
             {
-                label: 'empty requester id',
+                label: 'BoardId empty',
                 request: {
                     ...request,
-                    requesterId: ''
+                    boardId: ''
+                }
+            },
+            {
+                label: 'initiatorId empty',
+                request: {
+                    ...request,
+                    initiatorId: ''
                 }
             }
         ];
@@ -315,53 +328,53 @@ describe('InviteMemberToBoard Use case', () => {
             async ({ request }) => {
                 // Given
                 const aggregate = new BoardAggregate(
-                  {
-                      id: BOARD_ID,
-                      name: 'Dev Challenge Boards',
-                      description: '',
-                      private: true
-                  },
-                  {
-                      cards: [],
-                      lists: [],
-                      participants: [
-                          {
-                              isAdmin: true,
-                              member: admin
-                          }
-                      ]
-                  }
+                    {
+                        id: BOARD_ID,
+                        name: 'Dev Challenge Boards',
+                        description: '',
+                        private: true
+                    },
+                    {
+                        cards: [],
+                        lists: [],
+                        participants: [
+                            {
+                                isAdmin: true,
+                                member: admin
+                            }
+                        ]
+                    }
                 );
 
-                const memberRepository = new MemberRepositoryBuilder()
-                  .withGetMemberById(async () => {
-                      return {
-                          id: request.memberId,
-                          login: 'poseidon',
-                          password:
-                            '$2a$12$wAw/.WVPaDZXyFT7FIfkGOrCAYTfHPrgXLd7ABu8WBl6.ResQDvSq', // "password123."
-                          name: 'Poseidon God of the sea',
-                          avatarURL: 'https://www.photos.com/poseidon.png'
-                      };
-                  })
-                  .build();
+                let boardExpected: BoardAggregate;
+                const memberRepository: MemberRepository =
+                    new MemberRepositoryBuilder()
+                        .withGetMemberById(async (id) => {
+                            return memberToAdd;
+                        })
+                        .build();
 
-                const boardAggregateRepository = new BoardAggregateRepositoryBuilder()
-                  .withGetBoardAggregateById(async () => {
-                      return aggregate;
-                  })
-                  .build();
+                const boardAggregateRepository =
+                    new BoardAggregateRepositoryBuilder()
+                        .withGetBoardAggregateById(async () => {
+                            return aggregate;
+                        })
+                        .withSave(async (boardAggregate) => {
+                            boardExpected = boardAggregate;
+                            return boardAggregate;
+                        })
+                        .build();
 
                 const useCase = new InviteMemberToBoardUseCase(
-                  memberRepository,
-                  boardAggregateRepository
+                    memberRepository,
+                    boardAggregateRepository
                 );
 
                 // When
                 await useCase.execute(request, presenter);
 
                 // Then
-                expect(presenter.response!.errors).not.toBe(null);
+                expect(presenter.response!.errors).not.toBeNull();
             }
         );
     });
