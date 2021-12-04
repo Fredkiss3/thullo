@@ -13,7 +13,7 @@
     "scripts": {
         "gen": "node ./scripts/generate.js",
         "build": "rm -r dist/ && tsc",
-        "test": "jest",
+        "test": "FORCE_COLOR=true jest --verbose --testPathPattern=./tests/usecases/ --testPathIgnorePatterns=/scripts/templates/usecases/",
         "watch": "jest --watchAll --verbose --testPathPattern=./tests/usecases/ --testPathIgnorePatterns=/scripts/templates/usecases/"
     },
     "author": "",
