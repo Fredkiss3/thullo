@@ -6,20 +6,25 @@
   "scripts": {
     "test": "echo \"Testing the app\" && exit 0",
     "build": "tsc",
-    "deploy" : "vercel deploy --prod --scope fredkiss3 --token $VERCEL_TOKEN",
-    "preview" : "vercel deploy --scope fredkiss3 --token $VERCEL_TOKEN",
-    "start": "cross-env NODE_ENV=dev nodemon api/index.ts",
+    "deploy": "vercel deploy --prod --scope fredkiss3 --token $VERCEL_TOKEN",
+    "preview": "vercel deploy --scope fredkiss3 --token $VERCEL_TOKEN",
+    "dev": "cross-env NODE_ENV=dev nodemon api/index.ts",
     "vercel:dev": "vercel dev --listen localhost:3031"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@thullo/adapters": "workspace:^1.0.0",
+    "@thullo/domain": "workspace:^1.0.0",
+    "@types/node": "^16.11.11",
     "cors": "^2.8.5",
     "cross-env": "^7.0.3",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
-    "express-promise-router": "^4.1.0",
+    "express-promise-router": "^4.1.1",
+    "reflect-metadata": "^0.1.13",
+    "tsyringe": "^4.6.0",
     "vercel": "^23.1.2"
   },
   "devDependencies": {
