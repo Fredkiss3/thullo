@@ -1,26 +1,28 @@
 import config from './config';
 config();
 
-import express from 'express';
-import type { Application } from 'express';
 import cors from 'cors';
+import express from 'express';
+import 'reflect-metadata';
 
-const app: Application = express();
+import { boardRouter } from './routes/board';
+import { memberRouter } from './routes/member';
+
+const app = express();
 
 // Cors to support cross-origin requests from browser
 // JSON to support JSON requests and send JSON responses
 app.use(cors());
 app.use(express.json());
 
+/* =================================================== */
+/* ====================== ROUTES ===================== */
+/* =================================================== */
+app.use('/api/boards', boardRouter);
+app.use('/api/members', memberRouter);
 app.get('/api/ping', (req, res) => {
     return res.json({
         message: 'pong',
-    });
-});
-
-app.get('/api', (_, res) => {
-    res.send({
-        success: `@thullo/api is up and running in environment '${process.env.NODE_ENV}'`,
     });
 });
 
