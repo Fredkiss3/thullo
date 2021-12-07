@@ -18,7 +18,9 @@ This project was made for a challenge Thullo by [devChallenges.io](https://devch
 # Requirements
 
 - Node >= v16.6.2
-- NPM >= v6.14.5 or [pnpm](https://pnpm.io/installation) >= v6.22.2
+- [docker](https://docs.docker.com/engine/install/)
+- [docker-compose](https://docs.docker.com/compose/install/)  
+- [PNPM](https://pnpm.io/installation) >= v6.22.2
 - [MongoDB](https://docs.mongodb.com/manual/installation/) >= v5.0.4
 
 ## 🚀 How to work on the project ?
@@ -29,35 +31,35 @@ This project was made for a challenge Thullo by [devChallenges.io](https://devch
     git clone https://github.com/Fredkiss3/thullo.git
     ```    
 
-2. **Then, You have to install the dependencies :**
+2. **Then, Install the dependencies :**
 
     ```bash
-    npm install
+    pnpm install
     ```    
 
-3. You have to start a mongoDB instance for the database :
+3. **Launch the docker-compose server to start a mongodb server :**
 
     ```bash
-    mongod --dbpath ./data
+    docker-compose up -d
     ```
-4. You have to rename the `.env.example` located in `packages/express/src/config` to `.env.local` And change the config to your needs :
+4. Rename the `.env.example` located in `packages/express/src/config` to `.env.local` And change the file to your needs, 
+   by default you have :
 
     ```dotenv
-    # express server
-    PORT=3031
-    # mongo database
-    DB_HOST = 'localhost' # Use localhost if you are using MongoDB locally
-    DB_PORT = 27017 # Default port for MongoDB
-    DB_NAME = 'thullo' # Name of the database
-    ```
+   # server
+   PORT = 3031
+
+   # mongo database
+   MONGO_URI='mongodb://root:password@localhost:27017/thullo?authSource=admin'
+   ```
 
 5. **And launch the project :**
 
     ```bash
-    npm run dev
+    pnpm run dev --parallel
     ```
 
-    The dev script will launch the server at [http://localhost:3031](http://localhost:3031) and the client at [http://localhost:3000](http://localhost:3000).
+    The express API will be available at [http://localhost:3031](http://localhost:3031) and the frontend client at [http://localhost:3000](http://localhost:3000).
 
 6. **Open the source code and start rocking ! 😎**
 

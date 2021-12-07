@@ -16,7 +16,8 @@
     "forceConsistentCasingInFileNames": true,
     "declaration": true,
     "paths": {
-      "@thullo/domain": ["domain/src"]
+      "@thullo/domain": ["domain/src"],
+      "@thullo/adapters": ["adapters/src"]
     }
   }
 }
