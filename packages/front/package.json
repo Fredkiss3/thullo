@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "test": "echo \"Testing the app\" && exit 0",
-    "start": "vite",
+    "dev": "vite",
     "build": "tsc && vite build",
     "serve": "vite preview",
     "deploy": "netlify deploy",
@@ -17,7 +17,6 @@
   },
   "devDependencies": {
     "@types/chai": "^4.2.22",
-    "@types/cypress": "^1.1.3",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
     "@vitejs/plugin-react": "^1.0.0",
