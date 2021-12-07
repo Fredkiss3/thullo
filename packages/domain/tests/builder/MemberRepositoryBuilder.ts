@@ -1,8 +1,11 @@
-import { Member, MemberRepository, SearchMembersResult } from "@thullo/domain";
+import { Member, MemberRepository } from "@thullo/domain";
 
 export class MemberRepositoryBuilder {
-    private getMemberByLogin: (login: string) => Promise<Member | null> = () =>
+    private getMembersByLogin: (login: string) => Promise<Member[]> = () =>
+        Promise.resolve([]);
+    private getMemberByIdToken: (idToken: string) => Promise<Member | null> = () =>
         Promise.resolve(null);
+
     private getMemberById: (id: string) => Promise<Member | null> = () =>
         Promise.resolve(null);
     private register: (member: Member) => Promise<void> = () =>
@@ -11,12 +14,19 @@ export class MemberRepositoryBuilder {
     private searchMembersNotInBoard: (
         boardId: string,
         loginOrName: string
-    ) => Promise<SearchMembersResult[]> = () => Promise.resolve([]);
+    ) => Promise<Member[]> = () => Promise.resolve([]);
 
-    withGetMemberByLogin(
-        getMemberByLogin: (login: string) => Promise<Member | null>
-    ) {
-        this.getMemberByLogin = getMemberByLogin;
+    withGetMembersByLogin(
+        getMembersByLogin: (login: string) => Promise<Member[]>
+    ): MemberRepositoryBuilder {
+        this.getMembersByLogin = getMembersByLogin;
+        return this;
+    }
+
+    withGetMemberByIdToken(
+        getMemberByIdToken: (idToken: string) => Promise<Member | null>
+    ): MemberRepositoryBuilder {
+        this.getMemberByIdToken = getMemberByIdToken;
         return this;
     }
 
@@ -34,7 +44,7 @@ export class MemberRepositoryBuilder {
         searchMembersNotInBoard: (
             boardId: string,
             loginOrName: string
-        ) => Promise<SearchMembersResult[]>
+        ) => Promise<Member[]>
     ) {
         this.searchMembersNotInBoard = searchMembersNotInBoard;
         return this;
@@ -43,9 +53,10 @@ export class MemberRepositoryBuilder {
     build(): MemberRepository {
         return {
             getMemberById: this.getMemberById,
-            getMemberByLogin: this.getMemberByLogin,
+            getMembersByLogin: this.getMembersByLogin,
             register: this.register,
-            searchMembersNotInBoard: this.searchMembersNotInBoard
+            searchMembersNotInBoard: this.searchMembersNotInBoard,
+            getMemberByIdToken: this.getMemberByIdToken
         };
     }
 }

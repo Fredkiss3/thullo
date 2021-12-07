@@ -44,7 +44,7 @@ export class AddBoardUseCase {
                 });
             } else {
                 errors = {
-                    ownerId: ["Cet utilisateur n'existe pas"]
+                    memberId: ["Cet utilisateur n'existe pas"]
                 };
             }
         }

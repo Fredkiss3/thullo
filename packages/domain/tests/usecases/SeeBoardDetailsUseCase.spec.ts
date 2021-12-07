@@ -23,7 +23,6 @@ const BOARD_ID = uuidv4();
 const admin: Member = {
     id: uuidv4(),
     login: 'zeus',
-    password: '$2a$12$wAw/.WVPaDZXyFT7FIfkGOrCAYTfHPrgXLd7ABu8WBl6.ResQDvSq', // "password123."
     name: 'Zeus God of thunder',
     avatarURL: 'https://www.photos.com/thunder.png'
 };
@@ -110,8 +109,6 @@ describe('SeeBoardDetails Use case', () => {
         const nonParticipantMember: Member = {
             id: uuidv4(),
             login: 'poseidon',
-            password:
-                '$2a$12$wAw/.WVPaDZXyFT7FIfkGOrCAYTfHPrgXLd7ABu8WBl6.ResQDvSq', // "password123."
             name: 'Poseidon God of the sea',
             avatarURL: 'https://www.photos.com/poseidon.png'
         };
@@ -148,8 +145,6 @@ describe('SeeBoardDetails Use case', () => {
         const nonParticipantMember: Member = {
             id: uuidv4(),
             login: 'poseidon',
-            password:
-                '$2a$12$wAw/.WVPaDZXyFT7FIfkGOrCAYTfHPrgXLd7ABu8WBl6.ResQDvSq', // "password123."
             name: 'Poseidon God of the sea',
             avatarURL: 'https://www.photos.com/poseidon.png'
         };

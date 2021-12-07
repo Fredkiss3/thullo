@@ -18,3 +18,6 @@ export * from './usecases/SeeBoardDetails';
 export * from './usecases/SeeBoards';
 export * from './usecases/SetBoardVisibility';
 export * from './usecases/UpdateBoardDescription';
+export * from './builder/BoardAggregateBuilder';
+export * from './lib/OAuthGateway';
+export * from './lib/types';

@@ -31,24 +31,18 @@ const participants: Record<string, Member> = {
     adam: {
         id: uuidv4(),
         login: 'adamthe1',
-        password:
-            '$2a$12$wAw/.WVPaDZXyFT7FIfkGOrCAYTfHPrgXLd7ABu8WBl6.ResQDvSq', // "password123."
         name: 'Adam the first man',
         avatarURL: 'https://photos.com/adam-naked.png'
     },
     kratos: {
         id: uuidv4(),
         login: 'kratos123',
-        password:
-            '$2a$12$wAw/.WVPaDZXyFT7FIfkGOrCAYTfHPrgXLd7ABu8WBl6.ResQDvSq', // "password123."
         name: 'Kratos the God of war',
         avatarURL: 'https://photos.com/kratos-killing-gods.png'
     },
     zeus: {
         id: ZEUS_ID,
         login: 'zeus',
-        password:
-            '$2a$12$wAw/.WVPaDZXyFT7FIfkGOrCAYTfHPrgXLd7ABu8WBl6.ResQDvSq', // "password123."
         name: 'Zeus God of thunder',
         avatarURL: 'https://photos.com/thunder.png'
     }
@@ -95,7 +89,7 @@ describe('SeeBoards Use case', () => {
             .build();
 
         const boardRepo: BoardRepository = new BoardRepositoryBuilder()
-            .withGetAllBoardsWhereMemberIsPresentOrIsOwner(async (memberId) =>
+            .withGetAllBoardsWhereMemberIsPresent(async () =>
                 boardsExpected.slice(0, 2)
             )
             .build();

@@ -50,12 +50,13 @@ export class AuthenticateWithOauthUseCase {
                     errors = {
                         global: [
                             "Une erreur d'authentification est survenue, " +
+                            "(invalid accessToken or invalid idToken)" +
                                 "veuillez vous recommencer l'opération."
                         ]
                     };
                 } else {
-                    member = await this.memberRepository.getMemberByLogin(
-                        userInfo.loginOrEmail
+                    member = await this.memberRepository.getMemberByIdToken(
+                        authResult.idToken
                     );
 
                     if (member === null) {
@@ -63,7 +64,8 @@ export class AuthenticateWithOauthUseCase {
                             id: uuidv4(),
                             login: userInfo.loginOrEmail,
                             avatarURL: userInfo.avatarURL,
-                            name: userInfo.name
+                            name: userInfo.name,
+                            idToken: authResult.idToken,
                         };
 
                         await this.memberRepository.register(member);

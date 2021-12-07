@@ -1,6 +1,9 @@
-import { BoardAggregate, Card, List, Participation } from '@thullo/domain';
 import { v4 as uuidv4 } from 'uuid';
-import { BoardId } from './../../src/entities/Board/Board';
+import { BoardId } from '../entities/Board';
+import { BoardAggregate } from '../entities/BoardAggregate';
+import { Card } from '../entities/Card';
+import { List } from '../entities/List';
+import { Participation } from '../entities/Participation';
 
 export class BoardAggregateBuilder {
     private participants: Participation[] = [];

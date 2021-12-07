@@ -1,5 +1,6 @@
 import {
     BoardAggregate,
+    BoardAggregateBuilder,
     Member,
     UpdateBoardDescriptionPresenter,
     UpdateBoardDescriptionRequest,
@@ -7,7 +8,6 @@ import {
     UpdateBoardDescriptionUseCase
 } from '@thullo/domain';
 import { v4 as uuidv4 } from 'uuid';
-import { BoardAggregateBuilder } from '../builder/BoardAggregateBuilder';
 import { BoardAggregateRepositoryBuilder } from '../builder/BoardAggregateRepositoryBuilder';
 
 const presenter = new (class implements UpdateBoardDescriptionPresenter {

@@ -85,7 +85,7 @@ describe('Authenticate With Oauth Use case', () => {
             .build();
 
         const memberRepository = new MemberRepositoryBuilder()
-            .withGetMemberByLogin(async (login) => {
+            .withGetMemberByIdToken(async (token) => {
                 return memberToReturn;
             })
             .withRegister(async (member) => {

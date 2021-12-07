@@ -4,10 +4,12 @@ import {
     SearchMembersPresenter,
     SearchMembersResponse,
     MemberRepository,
-    SearchMembersResult
+    BoardRepository,
+    Member
 } from '@thullo/domain';
 import { MemberRepositoryBuilder } from '../builder/MemberRepositoryBuilder';
 import { v4 as uuidv4 } from 'uuid';
+import { BoardRepositoryBuilder } from '../builder/BoardRepositoryBuilder';
 
 const presenter = new (class implements SearchMembersPresenter {
     response?: SearchMembersResponse | null;
@@ -26,21 +28,38 @@ const request: SearchMembersRequest = {
 describe('SearchMembers Use case', () => {
     it('is successful', async () => {
         // Given
-        const expectedResult: SearchMembersResult[] = [
+        const expectedResult: Member[] = [
             {
                 id: uuidv4(),
                 name: 'Adam the first man',
-                avatarURL: 'https://www.photos.com/adam-naked.png'
+                avatarURL: 'https://www.photos.com/adam-naked.png',
+                login: 'adam'
             }
         ];
 
-        const repository: MemberRepository = new MemberRepositoryBuilder()
+        const memberRepository: MemberRepository = new MemberRepositoryBuilder()
             .withSearchMembersNotInBoard(async () => {
                 return expectedResult;
             })
             .build();
 
-        const useCase = new SearchMembersUseCase(repository);
+        const boardRepository: BoardRepository = new BoardRepositoryBuilder()
+            .withGetBoardById(async (id) => {
+                return {
+                    id,
+                    name: 'Board name',
+                    description: 'Board description',
+                    participants: [],
+                    coverURL: 'https://www.photos.com/board-cover.png',
+                    private: false
+                };
+            })
+            .build();
+
+        const useCase = new SearchMembersUseCase(
+            memberRepository,
+            boardRepository
+        );
 
         // When
         await useCase.execute(request, presenter);
@@ -53,36 +72,56 @@ describe('SearchMembers Use case', () => {
 
     it('Should limit the results to the one we set in request', async () => {
         // Given
-        const expectedResults: SearchMembersResult[] = [
+        const expectedResults: Member[] = [
             {
                 id: uuidv4(),
                 name: 'Adam the first',
-                avatarURL: 'https://www.photos.com/adam-naked.png'
+                avatarURL: 'https://www.photos.com/adam-naked.png',
+                login: 'adam'
             },
             {
                 id: uuidv4(),
                 name: 'Adam the second',
-                avatarURL: 'https://www.photos.com/adam-naked.png'
+                avatarURL: 'https://www.photos.com/adam-naked.png',
+                login: 'adam-second'
             },
             {
                 id: uuidv4(),
                 name: 'Adam the third',
-                avatarURL: 'https://www.photos.com/adam-naked.png'
+                avatarURL: 'https://www.photos.com/adam-naked.png',
+                login: 'adam-third'
             },
             {
                 id: uuidv4(),
                 name: 'Adam the other',
-                avatarURL: 'https://www.photos.com/adam-naked.png'
+                avatarURL: 'https://www.photos.com/adam-naked.png',
+                login: 'adam-other'
             }
         ];
 
-        const repository: MemberRepository = new MemberRepositoryBuilder()
+        const memberRepository: MemberRepository = new MemberRepositoryBuilder()
             .withSearchMembersNotInBoard(async () => {
                 return expectedResults;
             })
             .build();
 
-        const useCase = new SearchMembersUseCase(repository);
+        const boardRepository: BoardRepository = new BoardRepositoryBuilder()
+            .withGetBoardById(async (id) => {
+                return {
+                    id,
+                    name: 'Board name',
+                    description: 'Board description',
+                    participants: [],
+                    coverURL: 'https://www.photos.com/board-cover.png',
+                    private: false
+                };
+            })
+            .build();
+
+        const useCase = new SearchMembersUseCase(
+            memberRepository,
+            boardRepository
+        );
 
         // When
         await useCase.execute({ ...request, limit: 3 }, presenter);
@@ -93,6 +132,34 @@ describe('SearchMembers Use case', () => {
         expect(presenter.response!.members).toStrictEqual(
             expectedResults.slice(0, 3)
         );
+    });
+
+    it('should should show errors if boardId does not exists', async () => {
+        // Given
+        const memberRepository: MemberRepository = new MemberRepositoryBuilder()
+            .withSearchMembersNotInBoard(async () => {
+                return [];
+            })
+            .build();
+
+        const boardRepository: BoardRepository = new BoardRepositoryBuilder()
+            .withGetBoardById(async (id) => {
+                return null;
+            })
+            .build();
+
+        const useCase = new SearchMembersUseCase(
+            memberRepository,
+            boardRepository
+        );
+
+        // When
+        await useCase.execute(request, presenter);
+
+        // Then
+        expect(presenter.response).not.toBe(null);
+        expect(presenter.response!.errors).not.toBeNull();
+        expect(presenter.response!.errors!.boardId).toHaveLength(1);
     });
 
     describe('Invalid Requests', () => {
@@ -131,10 +198,40 @@ describe('SearchMembers Use case', () => {
             'shows errors with invalid request : "$label"',
             async ({ request }) => {
                 // Given
-                const repository: MemberRepository = new MemberRepositoryBuilder()
-                    .build();
+                const memberRepository: MemberRepository =
+                    new MemberRepositoryBuilder()
+                        .withSearchMembersNotInBoard(async () => {
+                            return [
+                                {
+                                    id: uuidv4(),
+                                    name: 'Adam the first man',
+                                    avatarURL:
+                                        'https://www.photos.com/adam-naked.png',
+                                    login: 'adam'
+                                }
+                            ];
+                        })
+                        .build();
 
-                const useCase = new SearchMembersUseCase(repository);
+                const boardRepository: BoardRepository =
+                    new BoardRepositoryBuilder()
+                        .withGetBoardById(async (id) => {
+                            return {
+                                id,
+                                name: 'Board name',
+                                description: 'Board description',
+                                participants: [],
+                                coverURL:
+                                    'https://www.photos.com/board-cover.png',
+                                private: false
+                            };
+                        })
+                        .build();
+
+                const useCase = new SearchMembersUseCase(
+                    memberRepository,
+                    boardRepository
+                );
 
                 // When
                 await useCase.execute(request, presenter);

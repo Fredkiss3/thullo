@@ -23,7 +23,6 @@ const presenter = new (class implements AddBoardPresenter {
 const zeus: Member = {
     id: uuidv4(),
     login: 'zeus',
-    password: '$2a$12$wAw/.WVPaDZXyFT7FIfkGOrCAYTfHPrgXLd7ABu8WBl6.ResQDvSq', // "password123."
     name: 'Zeus God of thunder',
     avatarURL: 'https://placekitten.com/200/300'
 };

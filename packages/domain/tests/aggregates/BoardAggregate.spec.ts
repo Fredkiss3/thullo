@@ -18,24 +18,18 @@ const members: Member[] = [
     {
         id: uuidv4(),
         login: 'adamthe1',
-        password:
-            '$2a$12$wAw/.WVPaDZXyFT7FIfkGOrCAYTfHPrgXLd7ABu8WBl6.ResQDvSq', // "password123."
         name: 'Adam the first man',
         avatarURL: 'https://www.photos.com/adam-naked.png'
     },
     {
         id: uuidv4(),
         login: 'kratos123',
-        password:
-            '$2a$12$wAw/.WVPaDZXyFT7FIfkGOrCAYTfHPrgXLd7ABu8WBl6.ResQDvSq', // "password123."
         name: 'Kratos the God of war',
         avatarURL: 'https://www.photos.com/kratos-killing-gods.png'
     },
     {
         id: uuidv4(),
         login: 'zeus',
-        password:
-            '$2a$12$wAw/.WVPaDZXyFT7FIfkGOrCAYTfHPrgXLd7ABu8WBl6.ResQDvSq', // "password123."
         name: 'Zeus God of thunder',
         avatarURL: 'https://www.photos.com/thunder.png'
     }

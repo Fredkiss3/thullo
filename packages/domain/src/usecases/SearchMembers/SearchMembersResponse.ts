@@ -1,7 +1,7 @@
 import { FieldErrors } from '../../lib/types';
-import { SearchMembersResult } from "../../entities/Member";
+import { Member } from "../../entities/Member";
 
 
 export class SearchMembersResponse {
-    constructor(public members: SearchMembersResult[], public errors: FieldErrors) {}
+    constructor(public members: Member[], public errors: FieldErrors) {}
 }

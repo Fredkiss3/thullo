@@ -1,12 +1,13 @@
-import { Member, SearchMembersResult } from './Member';
+import { Member, MemberId } from "./Member";
 import { BoardId } from '../Board';
 
 export interface MemberRepository {
-    getMemberByLogin(login: string): Promise<Member | null>;
+    getMembersByLogin(login: string): Promise<Member[]>;
+    getMemberByIdToken(idToken: string): Promise<Member | null>;
     searchMembersNotInBoard(
         loginOrName: string,
         boardId: BoardId
-    ): Promise<SearchMembersResult[]>;
-    getMemberById(id: string): Promise<Member | null>;
+    ): Promise<Member[]>;
+    getMemberById(id: MemberId): Promise<Member | null>;
     register(member: Member): Promise<void>;
 }
