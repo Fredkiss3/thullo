@@ -12,3 +12,7 @@ notes.md
 .DS_Store
 *.http
 .vercel
+.git
+.github
+.vercel
+docker-compose.yml

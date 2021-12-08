@@ -1,6 +1,14 @@
 version: '3.1'
 
 services:
+  express:
+    build: .
+    environment:
+      NODE_ENV: production
+      PORT: 8080
+      MONGO_URI: mongodb://root:password@mongo:27017/thullo?authSource=admin
+    ports:
+      - "8082:8080"
 
   mongo:
     image: mongo
