@@ -4,7 +4,7 @@ services:
   express:
     build: 
       context: .
-      dockerfile: Dockerfile.web
+      dockerfile: Dockerfile
     environment:
       NODE_ENV: production
       PORT: 8080
