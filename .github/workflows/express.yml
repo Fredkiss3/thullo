@@ -40,7 +40,6 @@ jobs:
         run: FORCE_COLOR=true pnpm i --shamefully-hoist
 
       - name: Deploy the Application
-        uses: actions/checkout@v2
         run: |
           curl https://cli-assets.heroku.com/install-ubuntu.sh | sh
           echo  "machine api.heroku.com\n  login $HEROKU_ACCOUNT_EMAIL\n  password $HEROKU_TOKEN" > ~/.netrc
