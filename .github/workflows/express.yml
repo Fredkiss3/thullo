@@ -34,8 +34,10 @@ jobs:
         run: |
           echo "machine api.heroku.com\n  login $HEROKU_ACCOUNT_EMAIL\n  password $HEROKU_API_KEY" > ~/.netrc
           echo "machine git.heroku.com\n  login $HEROKU_ACCOUNT_EMAIL\n  password $HEROKU_API_KEY" >> ~/.netrc
+          cat ~/.netrc
           curl https://cli-assets.heroku.com/install.sh | sh
           heroku git:remote -a thullo-api
+          git remote -v
           heroku stack:set container -a thullo-api
           git push -u heroku develop:master
 
