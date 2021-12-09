@@ -45,6 +45,7 @@ jobs:
           heroku stack:set container -a thullo-api
           git checkout -b master
           git fetch
+          git config pull.rebase false 
           git pull heroku master
           git push -u heroku master
 
