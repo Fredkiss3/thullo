@@ -2,7 +2,9 @@ version: '3.1'
 
 services:
   express:
-    build: .
+    build: 
+      context: .
+      dockerfile: Dockerfile.web
     environment:
       NODE_ENV: production
       PORT: 8080
