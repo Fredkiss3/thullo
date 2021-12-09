@@ -43,7 +43,9 @@ jobs:
           curl https://cli-assets.heroku.com/install.sh | sh
           heroku git:remote -a thullo-api
           heroku stack:set container -a thullo-api
-          git push -u -f heroku develop:master
+          git fetch
+          git pull heroku master
+          git push --force -u heroku develop:master
 
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_TOKEN }}
