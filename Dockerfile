@@ -17,7 +17,8 @@ RUN pnpm install --prefix packages/domain  --shamefully-hoist \
 RUN pnpm install --prefix packages/adapters  --shamefully-hoist \
     && pnpm --prefix packages/adapters run build 
 
-RUN pnpm --prefix packages/express run build 
+RUN pnpm install --prefix packages/express  --shamefully-hoist \
+    && pnpm --prefix packages/express run build 
 
 
 CMD [ "pnpm", "run", "start", "--prefix", "packages/express" ]
