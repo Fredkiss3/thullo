@@ -41,8 +41,8 @@ jobs:
             password $HEROKU_API_KEY
           EOF
           curl https://cli-assets.heroku.com/install.sh | sh
-          heroku git:remote -a thullo-api
           git fetch --all --unshallow
+          heroku git:remote -a thullo-api
           heroku stack:set container -a thullo-api
           git push -u heroku develop:master
 
