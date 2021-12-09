@@ -32,13 +32,13 @@ jobs:
 
       - name: Build and Deploy the Application
         run: |
-          echo "machine api.heroku.com\n  login $HEROKU_ACCOUNT_EMAIL\n  password $HEROKU_TOKEN" > ~/.netrc
-          echo "machine git.heroku.com\n  login $HEROKU_ACCOUNT_EMAIL\n  password $HEROKU_TOKEN" >> ~/.netrc
+          echo "machine api.heroku.com\n  login $HEROKU_ACCOUNT_EMAIL\n  password $HEROKU_API_KEY" > ~/.netrc
+          echo "machine git.heroku.com\n  login $HEROKU_ACCOUNT_EMAIL\n  password $HEROKU_API_KEY" >> ~/.netrc
           curl https://cli-assets.heroku.com/install.sh | sh
           heroku git:remote -a thullo-api
           heroku stack:set container -a thullo-api
           git push -u heroku develop:master
 
         env:
-          HEROKU_TOKEN: ${{ secrets.HEROKU_TOKEN }}
+          HEROKU_API_KEY: ${{ secrets.HEROKU_TOKEN }}
           HEROKU_ACCOUNT_EMAIL: ${{ secrets.HEROKU_ACCOUNT_EMAIL }}
