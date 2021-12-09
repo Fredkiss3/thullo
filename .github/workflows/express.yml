@@ -7,7 +7,7 @@ on:
   # Triggers the workflow on push or pull request events but only for the main branch
   push:
     paths:
-      - 'packages/express/**'
+      - "packages/express/**"
       - .github/workflows/express.yml
     branches:
       - develop
@@ -34,14 +34,20 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: 16.x
-          cache: 'pnpm'
+          cache: "pnpm"
 
       - name: Install dependencies
-        run: FORCE_COLOR=true pnpm i --prefix packages/express
+        run: FORCE_COLOR=true pnpm i --shamefully-hoist
 
       - name: Deploy the Application
-        run: FORCE_COLOR=true pnpm run preview --prefix packages/express
+        run: |
+          sudo apt install git-all
+          curl https://cli-assets.heroku.com/install-ubuntu.sh | sh
+          echo  "machine api.heroku.com\n  login $HEROKU_ACCOUNT_EMAIL\n  password $HEROKU_TOKEN" > ~/.netrc
+          echo  "machine git.heroku.com\n  login $HEROKU_ACCOUNT_EMAIL\n  password $HEROKU_TOKEN" >> ~/.netrc
+          heroku stack:set container -a thullo-api
+          git push heroku master
+
         env:
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          HEROKU_TOKEN: ${{ secrets.HEROKU_TOKEN }}
+          HEROKU_ACCOUNT_EMAIL: ${{ secrets.HEROKU_ACCOUNT_EMAIL }}
