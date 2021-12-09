@@ -9,8 +9,8 @@ import {
     Board
 } from '@thullo/domain';
 import { v4 as uuidv4 } from 'uuid';
-import { MemberRepositoryBuilder } from '../builder/MemberRepositoryBuilder';
-import { BoardRepositoryBuilder } from '../builder/BoardRepositoryBuilder';
+import { MemberRepositoryBuilder } from "../builder/MemberRepositoryBuilder";
+import { BoardRepositoryBuilder } from "../builder/BoardRepositoryBuilder";
 
 const presenter = new (class implements AddBoardPresenter {
     response?: AddBoardResponse | null;
@@ -95,7 +95,7 @@ describe('AddBoard Use case', () => {
 
         // Then
         expect(presenter.response?.errors).not.toBe(null);
-        expect(presenter.response?.errors?.ownerId).toContainEqual(
+        expect(presenter.response?.errors?.memberId).toContainEqual(
             "Cet utilisateur n'existe pas"
         );
         expect(boardResult).toBe(null);
