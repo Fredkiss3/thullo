@@ -1,12 +1,11 @@
-import { AuthenticateWithOauthRequest } from './AuthenticateWithOauthRequest';
-import { AuthenticateWithOauthPresenter } from './AuthenticateWithOauthPresenter';
-import { AuthenticateWithOauthResponse } from './AuthenticateWithOauthResponse';
-import { FieldErrors } from '../../lib/types';
-import Validator from 'validatorjs';
-import { OAuthGateway } from '../../lib/OAuthGateway';
-import { Member, MemberRepository } from '../../entities/Member';
-
 import { v4 as uuidv4 } from 'uuid';
+import Validator from 'validatorjs';
+import { Member, MemberRepository } from '../../entities/Member';
+import { OAuthGateway } from '../../lib/OAuthGateway';
+import { FieldErrors } from '../../lib/types';
+import { AuthenticateWithOauthPresenter } from './AuthenticateWithOauthPresenter';
+import { AuthenticateWithOauthRequest } from './AuthenticateWithOauthRequest';
+import { AuthenticateWithOauthResponse } from './AuthenticateWithOauthResponse';
 
 Validator.useLang('fr');
 
@@ -50,22 +49,23 @@ export class AuthenticateWithOauthUseCase {
                     errors = {
                         global: [
                             "Une erreur d'authentification est survenue, " +
-                            "(invalid accessToken or invalid idToken)" +
+                                '(invalid accessToken or invalid idToken)' +
                                 "veuillez vous recommencer l'opération."
                         ]
                     };
                 } else {
-                    member = await this.memberRepository.getMemberByIdToken(
-                        authResult.idToken
+                    member = await this.memberRepository.getMembersByEmail(
+                        userInfo.email
                     );
 
                     if (member === null) {
                         member = {
                             id: uuidv4(),
-                            login: userInfo.loginOrEmail,
+                            login: userInfo.login,
+                            email: userInfo.email,
                             avatarURL: userInfo.avatarURL,
                             name: userInfo.name,
-                            idToken: authResult.idToken,
+                            idToken: authResult.idToken
                         };
 
                         await this.memberRepository.register(member);

@@ -9,6 +9,10 @@ export class TypeORMMemberRepository
     extends MongoRepository<MemberEntity>
     implements MemberRepository
 {
+    async getMembersByEmail(email: string): Promise<Member | null> {
+        const entity = await this.findOne({ email });
+        return entity ? entity.toDomain() : null;
+    }
     async getMemberById(uuid: MemberId): Promise<Member | null> {
         const entity = await this.findOne({ uuid });
         return entity ? entity.toDomain() : null;

@@ -1,9 +1,9 @@
-import { Member, MemberId } from "./Member";
 import { BoardId } from '../Board';
+import { Member, MemberId } from './Member';
 
 export interface MemberRepository {
     getMembersByLogin(login: string): Promise<Member[]>;
-    getMemberByIdToken(idToken: string): Promise<Member | null>;
+    getMembersByEmail(email: string): Promise<Member | null>;
     searchMembersNotInBoard(
         loginOrName: string,
         boardId: BoardId

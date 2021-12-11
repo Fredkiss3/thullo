@@ -8,7 +8,8 @@ export type FieldErrors =
 
 export type UserInfo = {
     name: string;
-    loginOrEmail: string;
+    login: string;
+    email: string;
     avatarURL: string;
 };
 
