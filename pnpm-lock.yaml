@@ -98,6 +98,7 @@ importers:
     specifiers:
       '@thullo/adapters': workspace:^1.0.0
       '@thullo/domain': workspace:^1.0.0
+      '@types/cookie-parser': ^1.4.2
       '@types/cors': ^2.8.12
       '@types/express': ^4.17.13
       '@types/node': ^16.11.11
@@ -117,6 +118,7 @@ importers:
     dependencies:
       '@thullo/adapters': link:../adapters
       '@thullo/domain': link:../domain
+      '@types/cookie-parser': 1.4.2
       '@types/node': 16.11.11
       cors: 2.8.5
       cross-env: 7.0.3
@@ -174,11 +176,9 @@ importers:
 
   packages/next:
     specifiers:
-      '@types/cookie-parser': ^1.4.2
       '@types/react': ^17.0.37
       atob: ^2.1.2
       autoprefixer: ^10.4.0
-      cookie-parser: ^1.4.6
       eslint: 8.4.1
       eslint-config-next: 12.0.7
       jsonwebtoken: ^8.5.1
@@ -189,10 +189,8 @@ importers:
       sass: ^1.45.0
       vercel: ^23.1.2
     dependencies:
-      '@types/cookie-parser': 1.4.2
       atob: 2.1.2
       autoprefixer: 10.4.0
-      cookie-parser: 1.4.6
       jsonwebtoken: 8.5.1
       next: 12.0.7_56f80e3d7f33890c0a22e3eb64e13f43
       react: 17.0.2
@@ -203,7 +201,7 @@ importers:
     devDependencies:
       '@types/react': 17.0.37
       eslint: 8.4.1
-      eslint-config-next: 12.0.7_aaea69b9b48197bd7e0c6b2fe8048d7d
+      eslint-config-next: 12.0.7_eslint@8.4.1+next@12.0.7
 
 packages:
 
@@ -913,7 +911,7 @@ packages:
     peerDependencies:
       '@babel/core': ^7.0.0-0
     dependencies:
-      '@babel/core': 7.16.0_supports-color@8.1.1
+      '@babel/core': 7.16.0
       '@babel/helper-plugin-utils': 7.14.5
     dev: true
 
@@ -977,7 +975,7 @@ packages:
     peerDependencies:
       '@babel/core': ^7.0.0-0
     dependencies:
-      '@babel/core': 7.16.0_supports-color@8.1.1
+      '@babel/core': 7.16.0
       '@babel/helper-plugin-utils': 7.14.5
     dev: true
 
@@ -1005,7 +1003,7 @@ packages:
     peerDependencies:
       '@babel/core': ^7.0.0-0
     dependencies:
-      '@babel/core': 7.16.0_supports-color@8.1.1
+      '@babel/core': 7.16.0
       '@babel/helper-plugin-utils': 7.14.5
     dev: true
 
@@ -1014,7 +1012,7 @@ packages:
     peerDependencies:
       '@babel/core': ^7.0.0-0
     dependencies:
-      '@babel/core': 7.16.0_supports-color@8.1.1
+      '@babel/core': 7.16.0
       '@babel/helper-plugin-utils': 7.14.5
     dev: true
 
@@ -1023,7 +1021,7 @@ packages:
     peerDependencies:
       '@babel/core': ^7.0.0-0
     dependencies:
-      '@babel/core': 7.16.0_supports-color@8.1.1
+      '@babel/core': 7.16.0
       '@babel/helper-plugin-utils': 7.14.5
     dev: true
 
@@ -1032,7 +1030,7 @@ packages:
     peerDependencies:
       '@babel/core': ^7.0.0-0
     dependencies:
-      '@babel/core': 7.16.0_supports-color@8.1.1
+      '@babel/core': 7.16.0
       '@babel/helper-plugin-utils': 7.14.5
     dev: true
 
@@ -1041,7 +1039,7 @@ packages:
     peerDependencies:
       '@babel/core': ^7.0.0-0
     dependencies:
-      '@babel/core': 7.16.0_supports-color@8.1.1
+      '@babel/core': 7.16.0
       '@babel/helper-plugin-utils': 7.14.5
     dev: true
 
@@ -1050,7 +1048,7 @@ packages:
     peerDependencies:
       '@babel/core': ^7.0.0-0
     dependencies:
-      '@babel/core': 7.16.0_supports-color@8.1.1
+      '@babel/core': 7.16.0
       '@babel/helper-plugin-utils': 7.14.5
     dev: true
 
@@ -3807,7 +3805,7 @@ packages:
       - supports-color
     dev: true
 
-  /@typescript-eslint/parser/5.5.0_eslint@8.4.1+typescript@4.5.2:
+  /@typescript-eslint/parser/5.5.0_eslint@8.4.1:
     resolution: {integrity: sha512-JsXBU+kgQOAgzUn2jPrLA+Rd0Y1dswOlX3hp8MuRO1hQDs6xgHtbCXEiAu7bz5hyVURxbXcA2draasMbNqrhmg==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     peerDependencies:
@@ -3819,10 +3817,9 @@ packages:
     dependencies:
       '@typescript-eslint/scope-manager': 5.5.0
       '@typescript-eslint/types': 5.5.0
-      '@typescript-eslint/typescript-estree': 5.5.0_typescript@4.5.2
+      '@typescript-eslint/typescript-estree': 5.5.0
       debug: 4.3.2
       eslint: 8.4.1
-      typescript: 4.5.2
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -3883,6 +3880,26 @@ packages:
       semver: 7.3.5
       tsutils: 3.21.0_typescript@3.9.10
       typescript: 3.9.10
+    transitivePeerDependencies:
+      - supports-color
+    dev: true
+
+  /@typescript-eslint/typescript-estree/5.5.0:
+    resolution: {integrity: sha512-pVn8btYUiYrjonhMAO0yG8lm7RApzy2L4RC7Td/mC/qFkyf6vRbGyZozoA94+w6D2Y2GRqpMoCWcwx/EUOzyoQ==}
+    engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+    peerDependencies:
+      typescript: '*'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+    dependencies:
+      '@typescript-eslint/types': 5.5.0
+      '@typescript-eslint/visitor-keys': 5.5.0
+      debug: 4.3.2
+      globby: 11.0.4
+      is-glob: 4.0.3
+      semver: 7.3.5
+      tsutils: 3.21.0
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -5761,14 +5778,6 @@ packages:
     dependencies:
       safe-buffer: 5.1.2
 
-  /cookie-parser/1.4.6:
-    resolution: {integrity: sha512-z3IzaNjdwUC2olLIB5/ITd0/setiaFMLYiZJle7xg5Fe9KWAceil7xszYfHHBtDFYLSgJduS2Ty0P1uJdPDJeA==}
-    engines: {node: '>= 0.8.0'}
-    dependencies:
-      cookie: 0.4.1
-      cookie-signature: 1.0.6
-    dev: false
-
   /cookie-signature/1.0.6:
     resolution: {integrity: sha1-4wOogrNCzD7oylE6eZmXNNqzriw=}
 
@@ -6996,7 +7005,7 @@ packages:
       source-map: 0.6.1
     dev: true
 
-  /eslint-config-next/12.0.7_aaea69b9b48197bd7e0c6b2fe8048d7d:
+  /eslint-config-next/12.0.7_eslint@8.4.1+next@12.0.7:
     resolution: {integrity: sha512-kWOaym5qjyzR190zFKkZMaHetmiRORmzJiKML7Kr9CL213S6SwkrHHCEL58TRdpx0NA+HzrsFR9zgcV2pvV2Yg==}
     peerDependencies:
       eslint: ^7.23.0 || ^8.0.0
@@ -7008,7 +7017,7 @@ packages:
     dependencies:
       '@next/eslint-plugin-next': 12.0.7
       '@rushstack/eslint-patch': 1.1.0
-      '@typescript-eslint/parser': 5.5.0_eslint@8.4.1+typescript@4.5.2
+      '@typescript-eslint/parser': 5.5.0_eslint@8.4.1
       eslint: 8.4.1
       eslint-import-resolver-node: 0.3.6
       eslint-import-resolver-typescript: 2.5.0_581d2b6245defd0595f2dd29dbf58da2
@@ -7017,7 +7026,6 @@ packages:
       eslint-plugin-react: 7.27.1_eslint@8.4.1
       eslint-plugin-react-hooks: 4.3.0_eslint@8.4.1
       next: 12.0.7_56f80e3d7f33890c0a22e3eb64e13f43
-      typescript: 4.5.2
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -14422,6 +14430,15 @@ packages:
 
   /tslib/2.3.1:
     resolution: {integrity: sha512-77EbyPPpMz+FRFRuAFlWMtmgUWGe9UOG2Z25NqCwiIjRhOf5iKGuzSe5P2w1laq+FkRy4p+PCuVkJSGkzTEKVw==}
+
+  /tsutils/3.21.0:
+    resolution: {integrity: sha512-mHKK3iUXL+3UF6xL5k0PEhKRUBKPBCv/+RkEOpjRWxxx27KKRBmmA60A9pgOUvMi8GKhRMPEmjBRPzs2W7O1OA==}
+    engines: {node: '>= 6'}
+    peerDependencies:
+      typescript: '>=2.8.0 || >= 3.2.0-dev || >= 3.3.0-dev || >= 3.4.0-dev || >= 3.5.0-dev || >= 3.6.0-dev || >= 3.6.0-beta || >= 3.7.0-dev || >= 3.7.0-beta'
+    dependencies:
+      tslib: 1.14.1
+    dev: true
 
   /tsutils/3.21.0_typescript@3.9.10:
     resolution: {integrity: sha512-mHKK3iUXL+3UF6xL5k0PEhKRUBKPBCv/+RkEOpjRWxxx27KKRBmmA60A9pgOUvMi8GKhRMPEmjBRPzs2W7O1OA==}
