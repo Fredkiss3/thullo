@@ -1,5 +1,5 @@
-import { OAuthGateway } from '../../src/lib/OAuthGateway';
-import { OAuthResult, UserInfo } from '../../src/lib/types';
+import { OAuthGateway } from "@thullo/domain";
+import { OAuthResult, UserInfo } from "@thullo/domain";
 
 export class OAuthGatewayBuilder {
     private getUserInfo: (

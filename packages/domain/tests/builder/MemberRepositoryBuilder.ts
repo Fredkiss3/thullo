@@ -1,9 +1,7 @@
-import { Member, MemberRepository } from "@thullo/domain";
+import { Member, MemberRepository } from '@thullo/domain';
 
 export class MemberRepositoryBuilder {
-    private getMembersByLogin: (login: string) => Promise<Member[]> = () =>
-        Promise.resolve([]);
-    private getMemberByIdToken: (idToken: string) => Promise<Member | null> = () =>
+    private getMemberByEmail: (email: string) => Promise<Member | null> = () =>
         Promise.resolve(null);
 
     private getMemberById: (id: string) => Promise<Member | null> = () =>
@@ -16,17 +14,10 @@ export class MemberRepositoryBuilder {
         loginOrName: string
     ) => Promise<Member[]> = () => Promise.resolve([]);
 
-    withGetMembersByLogin(
-        getMembersByLogin: (login: string) => Promise<Member[]>
+    withGetMemberByEmail(
+        getMemberByEmail: (email: string) => Promise<Member | null>
     ): MemberRepositoryBuilder {
-        this.getMembersByLogin = getMembersByLogin;
-        return this;
-    }
-
-    withGetMemberByIdToken(
-        getMemberByIdToken: (idToken: string) => Promise<Member | null>
-    ): MemberRepositoryBuilder {
-        this.getMemberByIdToken = getMemberByIdToken;
+        this.getMemberByEmail = getMemberByEmail;
         return this;
     }
 
@@ -53,10 +44,9 @@ export class MemberRepositoryBuilder {
     build(): MemberRepository {
         return {
             getMemberById: this.getMemberById,
-            getMembersByLogin: this.getMembersByLogin,
             register: this.register,
             searchMembersNotInBoard: this.searchMembersNotInBoard,
-            getMemberByIdToken: this.getMemberByIdToken
+            getMembersByEmail: this.getMemberByEmail
         };
     }
 }

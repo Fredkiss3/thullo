@@ -1,0 +1,33 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+
+actor  user
+participant  nextjs
+participant express
+
+user --> nextjs : login (/callback)
+nextjs --> express : login (/auth)
+express --> nextjs : set cookie
+nextjs --> user : redirect to profile  with \n informations saved in cookies (/profile)
+
+user --> nextjs : profile (/profile)
+
+activate nextjs
+nextjs --> express : verify if cookie is \n still valid
+
+
+alt#Gold #LightGreen JWT Token is still valid
+    express --> nextjs : Valid JWT Token
+    nextjs --> nextjs : get userinfos from jwt
+    nextjs --> user : send user infos
+else #Pink JWT Token is invalid
+    express --> nextjs : Invalid JWT Token
+    nextjs --> user : redirect to login (/login)
+end
+
+deactivate nextjs
+
+
+@enduml

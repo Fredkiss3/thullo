@@ -8,12 +8,28 @@ import 'reflect-metadata';
 import { boardRouter } from './routes/board';
 import { memberRouter } from './routes/member';
 import { authRouter } from './routes/auth';
+import cp from 'cookie-parser';
 
 const app = express();
 
 // Cors to support cross-origin requests from browser
 // JSON to support JSON requests and send JSON responses
-app.use(cors());
+const corsWhitelist = ['http://localhost:3000', 'http://localhost:3001'];
+app.use(
+    cors({
+        origin: (origin, callback) => {
+            // Allow requests made from browser following the whitelist above
+            // And allow requests made from REST clients
+            if (corsWhitelist.indexOf(`${origin ?? ''}`) !== -1 || !origin) {
+                callback(null, true);
+            } else {
+                callback(new Error('Not allowed by CORS'));
+            }
+        },
+        credentials: true,
+    })
+);
+app.use(cp());
 app.use(express.json());
 /* =================================================== */
 /* ====================== ROUTES ===================== */

@@ -8,9 +8,9 @@
         "build": "tsc",
         "start": "NODE_ENV=production node dist/api/index.js",
         "deploy": "vercel deploy --prod --scope fredkiss3 --token $VERCEL_TOKEN",
+        "vercel:dev": "vercel dev --listen localhost:3031",
         "preview": "vercel deploy --scope fredkiss3 --token $VERCEL_TOKEN",
-        "dev": "cross-env NODE_ENV=dev nodemon api/index.ts",
-        "vercel:dev": "vercel dev --listen localhost:3031"
+        "dev": "cross-env NODE_ENV=dev nodemon api/index.ts"
     },
     "keywords": [],
     "author": "",

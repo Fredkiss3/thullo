@@ -30,38 +30,45 @@ export class OAuthAdapter implements OAuthGateway {
         accessToken: string,
         idToken: string
     ): Promise<UserInfo | null> {
-        const response: AxiosResponse<Auth0UserInfoResult> = await axios.get(
-            `${this.issuerBaseURL}/userinfo`,
-            {
-                headers: {
-                    Authorization: `Bearer ${accessToken}`
-                }
-            }
-        );
+        try {
+            const response: AxiosResponse<Auth0UserInfoResult> =
+                await axios.get(`${this.issuerBaseURL}/userinfo`, {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`
+                    }
+                });
 
-        return {
-            login: response.data.preferred_username ?? response.data.nickname,
-            email: response.data.email,
-            name: response.data.name,
-            avatarURL: response.data.picture
-        };
+            return {
+                login:
+                    response.data.preferred_username ?? response.data.nickname,
+                email: response.data.email,
+                name: response.data.name,
+                avatarURL: response.data.picture
+            };
+        } catch (error) {
+            return null;
+        }
     }
 
     async getAccessToken(authCode: string): Promise<OAuthResult | null> {
-        const response: AxiosResponse<Auth0TokenResult> = await axios.post(
-            `${this.issuerBaseURL}/oauth/token`,
-            `grant_type=authorization_code&client_id=${this.clientId}&client_secret=${this.clientSecret}&code=${authCode}&redirect_uri=http://localhost:3000/profile`,
-            {
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
+        try {
+            const response: AxiosResponse<Auth0TokenResult> = await axios.post(
+                `${this.issuerBaseURL}/oauth/token`,
+                `grant_type=authorization_code&client_id=${this.clientId}&client_secret=${this.clientSecret}&code=${authCode}&redirect_uri=http://localhost:3000/callback`,
+                {
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    }
                 }
-            }
-        );
+            );
 
-        return {
-            accessToken: response.data.access_token,
-            idToken: response.data.id_token
-        };
+            return {
+                accessToken: response.data.access_token,
+                idToken: response.data.id_token
+            };
+        } catch (e) {
+            return null;
+        }
     }
 }
 

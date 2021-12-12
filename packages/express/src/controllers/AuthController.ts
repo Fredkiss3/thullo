@@ -26,6 +26,7 @@ export class AuthController extends AbstractController {
             },
             this.presenter
         );
+
         return res.status(200).json(this.presenter.vm);
     }
 }

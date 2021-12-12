@@ -5,12 +5,10 @@ import {
     Member
 } from '@thullo/domain';
 import { container, injectable } from 'tsyringe';
+import jwt from 'jsonwebtoken';
 
 type OAuthData = {
-    login: string;
-    email: string;
-    name: string;
-    avatarURL: string | null;
+    token: string;
 };
 export interface OAuthViewModel {
     data: OAuthData | null;
@@ -20,6 +18,8 @@ export interface OAuthViewModel {
 @injectable()
 export class OAuthPresenterAdapter implements AuthenticateWithOauthPresenter {
     vm: OAuthViewModel | null = null;
+
+    constructor(private jwt_secret: string) {}
 
     present(response: AuthenticateWithOauthResponse) {
         this.vm = {
@@ -32,14 +32,25 @@ export class OAuthPresenterAdapter implements AuthenticateWithOauthPresenter {
         return member === null
             ? null
             : {
-                  login: member.login,
-                  name: member.name,
-                  email: member.email!,
-                  avatarURL: member.avatarURL
+                  token: jwt.sign(
+                      {
+                        login: member.login,
+                        name: member.name,
+                        email: member.email!,
+                        avatarURL: member.avatarURL
+                      },
+                      this.jwt_secret,
+                      {
+                          expiresIn: '7d',
+                          algorithm: 'HS256'
+                      }
+                  )
               };
     }
 }
 
 container.register('AuthenticateWithOauthPresenter', {
-    useClass: OAuthPresenterAdapter
+    useFactory: () => {
+        return new OAuthPresenterAdapter(process.env.JWT_SECRET!);
+    }
 });

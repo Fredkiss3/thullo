@@ -32,7 +32,8 @@ describe('Authenticate With Oauth Use case', () => {
                 idToken: 'idToken'
             }))
             .withGetUserInfo(async () => ({
-                loginOrEmail: 'zeus@olympus.com',
+                login: 'zeus',
+                email: 'zeus@olympus.com',
                 name: 'Zeus God Of Thunder',
                 avatarURL: 'http://picsum.photos/400/400'
             }))
@@ -57,7 +58,8 @@ describe('Authenticate With Oauth Use case', () => {
         expect(memberExpected).not.toBe(null);
 
         expect(memberExpected!.name).toBe('Zeus God Of Thunder');
-        expect(memberExpected!.login).toBe('zeus@olympus.com');
+        expect(memberExpected!.login).toBe('zeus');
+        expect(memberExpected!.email).toBe('zeus@olympus.com');
         expect(memberExpected!.avatarURL).toBe('http://picsum.photos/400/400');
         expect(presenter.response!.member).toBe(memberExpected);
     });
@@ -67,7 +69,8 @@ describe('Authenticate With Oauth Use case', () => {
         let memberExpected: Member | null = null;
         const memberToReturn: Member = {
             id: uuidv4(),
-            login: 'zeus@olympus.com',
+            email: 'zeus@olympus.com',
+            login: 'zeus',
             name: 'Zeus God Of Thunder',
             avatarURL: 'http://picsum.photos/400/400'
         };
@@ -78,14 +81,15 @@ describe('Authenticate With Oauth Use case', () => {
                 idToken: 'idToken'
             }))
             .withGetUserInfo(async () => ({
-                loginOrEmail: 'zeus@olympus.com',
+                email: 'zeus@olympus.com',
+                login: 'zeus',
                 name: 'Zeus God Of Thunder',
                 avatarURL: 'http://picsum.photos/400/400'
             }))
             .build();
 
         const memberRepository = new MemberRepositoryBuilder()
-            .withGetMemberByIdToken(async (token) => {
+            .withGetMemberByEmail(async (email) => {
                 return memberToReturn;
             })
             .withRegister(async (member) => {
@@ -175,7 +179,8 @@ describe('Authenticate With Oauth Use case', () => {
                         idToken: 'idToken'
                     }))
                     .withGetUserInfo(async () => ({
-                        loginOrEmail: 'zeus@olympus.com',
+                        email: 'zeus@olympus.com',
+                        login: 'zeus',
                         name: 'Zeus God Of Thunder',
                         avatarURL: 'http://picsum.photos/400/400'
                     }))
