@@ -23,7 +23,8 @@ export class OAuthAdapter implements OAuthGateway {
     constructor(
         private readonly clientId: string,
         private readonly clientSecret: string,
-        private readonly issuerBaseURL: string
+        private readonly issuerBaseURL: string,
+        private readonly redirectURI: string,
     ) {}
 
     async getUserInfo(
@@ -54,7 +55,7 @@ export class OAuthAdapter implements OAuthGateway {
         try {
             const response: AxiosResponse<Auth0TokenResult> = await axios.post(
                 `${this.issuerBaseURL}/oauth/token`,
-                `grant_type=authorization_code&client_id=${this.clientId}&client_secret=${this.clientSecret}&code=${authCode}&redirect_uri=http://localhost:3000/callback`,
+                `grant_type=authorization_code&client_id=${this.clientId}&client_secret=${this.clientSecret}&code=${authCode}&redirect_uri=${this.redirectURI}/callback`,
                 {
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded'
@@ -76,6 +77,7 @@ container.register('OAuthGateway', {
     useValue: new OAuthAdapter(
         process.env.OAUTH_CLIENT_ID!,
         process.env.OAUTH_CLIENT_SECRET!,
-        process.env.ISSUER_BASE_URL!
+        process.env.ISSUER_BASE_URL!,
+        process.env.OAUTH_REDIRECT_URI!,
     )
 });
