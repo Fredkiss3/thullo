@@ -5,6 +5,7 @@ import type { GetServerSideProps } from "next/types";
 import { Alert } from "../components/alert";
 import { ApiErrors } from "../lib/types";
 import { getHostWithScheme } from "../lib/functions";
+import { useEffect } from "react";
 
 export interface LoginPageProps {
   errors?: ApiErrors;
@@ -12,6 +13,9 @@ export interface LoginPageProps {
 }
 
 export default function LoginPage({ errors, host }: LoginPageProps) {
+  useEffect(() => {
+    console.log(host);
+  }, [])
   function getAuthURL(provider: string): URLSearchParams {
     const params = new URLSearchParams();
     params.append("response_type", "code");

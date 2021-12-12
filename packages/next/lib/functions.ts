@@ -43,7 +43,7 @@ export async function fetchAuthenticated(
 export function getHostWithScheme(host: string): string {
   // if the host is in localhost you return http:{host}
   if (host.includes("localhost")) {
-    return `http://${host}`;
+    return `http://localhost:3000`;
   } else {
     return `https://${host}`;
   }

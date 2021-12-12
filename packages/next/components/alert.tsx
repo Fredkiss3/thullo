@@ -11,7 +11,7 @@ export const Alert: React.FC<AlertProps> = ({ children, type }) => {
 
   return show ? (
     <div className={`${cls.alert} ${cls[`alert--${type}`] ?? ""}`}>
-      <p className={cls.alert__body}>{children}</p>
+      <div className={cls.alert__body}>{children}</div>
 
       <button className={cls.alert__close_btn} onClick={() => setShow(false)}>
         <Icon icon={"x-icon"} className={cls.alert__icon} />
