@@ -39,3 +39,12 @@ export async function fetchAuthenticated(
     ...options,
   });
 }
+
+export function getHostWithScheme(host: string): string {
+  // if the host is in localhost you return http:{host}
+  if (host.includes("localhost")) {
+    return `http://${host}`;
+  } else {
+    return `https://${host}`;
+  }
+}

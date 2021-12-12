@@ -3,17 +3,20 @@ import { Icon } from "../components/icon";
 import { Seo } from "../components/seo";
 import type { GetServerSideProps } from "next/types";
 import { Alert } from "../components/alert";
+import { ApiErrors } from "../lib/types";
+import { getHostWithScheme } from "../lib/functions";
 
 export interface LoginPageProps {
-  errors?: Record<string, string[]>;
+  errors?: ApiErrors;
+  host: string;
 }
 
-export default function LoginPage({ errors }: LoginPageProps) {
+export default function LoginPage({ errors, host }: LoginPageProps) {
   function getAuthURL(provider: string): URLSearchParams {
     const params = new URLSearchParams();
     params.append("response_type", "code");
     params.append("client_id", "6Oca5cWftabV050Or7ZfESJ4LIR5kICw");
-    params.append("redirect_uri", "http://localhost:3000/callback");
+    params.append("redirect_uri", `${host}/callback`);
     params.append("connection", provider);
     params.append("scope", "openid profile email");
 
@@ -35,7 +38,7 @@ export default function LoginPage({ errors }: LoginPageProps) {
       <h1>Connexion</h1>
 
       {errors && (
-        <Alert type={'danger'}>
+        <Alert type={"danger"}>
           <div>
             {Object.keys(errors).map((key) => (
               <span key={key}>{errors[key]}</span>
@@ -74,19 +77,20 @@ export default function LoginPage({ errors }: LoginPageProps) {
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { query } = ctx;
 
+  const props: LoginPageProps = {
+    host: getHostWithScheme(ctx.req.headers.host),
+    errors: null,
+  };
+
   try {
     if (query.errors) {
-      return {
-        props: {
-          errors: JSON.parse(query.errors as string),
-        },
-      };
+      props.errors = JSON.parse(query.errors as string);
     }
   } catch (e) {
     // Do nothing
   }
 
   return {
-    props: {},
+    props: props,
   };
 };
