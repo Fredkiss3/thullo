@@ -1,5 +1,5 @@
 import { OAuthGateway, OAuthResult, UserInfo } from '@thullo/domain';
-import type { AxiosResponse } from 'axios';
+import type { AxiosError, AxiosResponse } from 'axios';
 import axios from 'axios';
 import { container, singleton } from 'tsyringe';
 
@@ -24,7 +24,7 @@ export class OAuthAdapter implements OAuthGateway {
         private readonly clientId: string,
         private readonly clientSecret: string,
         private readonly issuerBaseURL: string,
-        private readonly redirectURI: string,
+        private readonly redirectURI: string
     ) {}
 
     async getUserInfo(
@@ -68,6 +68,12 @@ export class OAuthAdapter implements OAuthGateway {
                 idToken: response.data.id_token
             };
         } catch (e) {
+            const error: AxiosError = e as AxiosError;
+            console.error(`
+                Error getting access token:
+                ${error.message}
+            `);
+            console.dir(error.response?.data);
             return null;
         }
     }
@@ -78,6 +84,6 @@ container.register('OAuthGateway', {
         process.env.OAUTH_CLIENT_ID!,
         process.env.OAUTH_CLIENT_SECRET!,
         process.env.ISSUER_BASE_URL!,
-        process.env.OAUTH_REDIRECT_URI!,
+        process.env.OAUTH_REDIRECT_URI!
     )
 });
