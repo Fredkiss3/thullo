@@ -7,7 +7,7 @@ on:
   # Triggers the workflow on push or pull request events but only for the main branch
   push:
     paths:
-      - 'packages/front/**'
+      - 'packages/next/**'
       - .github/workflows/front.yml
     branches:
       - develop
@@ -36,10 +36,10 @@ jobs:
           cache: 'pnpm'
 
       - name: Install dependencies
-        run: FORCE_COLOR=true pnpm i --prefix packages/front
+        run: FORCE_COLOR=true pnpm i --prefix packages/next
 
-      - name: Test the frontend
-        run: FORCE_COLOR=true pnpm run test --prefix packages/front
+#      - name: Test the frontend
+#        run: FORCE_COLOR=true pnpm run test --prefix packages/front
 
   deploy:
     needs: test
@@ -63,13 +63,10 @@ jobs:
           cache: 'pnpm'
 
       - name: Install dependencies
-        run: FORCE_COLOR=true pnpm i --prefix packages/front
-
-      - name: Build the frontend
-        run: FORCE_COLOR=true pnpm run build --prefix packages/front
+        run: FORCE_COLOR=true pnpm i --prefix packages/next
 
       - name: Publish the frontend
-        run: FORCE_COLOR=true pnpm run deploy --prefix packages/front
+        run: FORCE_COLOR=true pnpm run deploy --prefix packages/next
         env:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}

@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "deploy": "vercel deploy --prod --scope fredkiss3 --token $VERCEL_TOKEN",
-    "vercel:dev": "vercel dev --listen localhost:3031",
+    "vercel:dev": "vercel dev --listen localhost:3000",
     "vercel": "vercel"
   },
   "dependencies": {
