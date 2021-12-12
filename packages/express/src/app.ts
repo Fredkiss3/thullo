@@ -14,7 +14,11 @@ const app = express();
 
 // Cors to support cross-origin requests from browser
 // JSON to support JSON requests and send JSON responses
-const corsWhitelist = ['http://localhost:3000', 'http://localhost:3001'];
+const corsWhitelist = [
+    'http://localhost:3000',
+    process.env.ALLOWED_URLS?.split(',')
+];
+
 app.use(
     cors({
         origin: (origin, callback) => {
