@@ -1,6 +1,5 @@
 packages:
   - "packages/adapters/**"
   - "packages/domain/**"
-  - "packages/front/**"
   - "packages/next/**"
   - "packages/express/**"
