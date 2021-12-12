@@ -18,8 +18,7 @@ export async function middleware(req: NextRequest, ev: NextFetchEvent) {
       },
       body: JSON.stringify({
         authCode: query.code,
-      }),
-      credentials: "include",
+      })
     });
 
     const { data, errors }: ApiResult<{ token: string }> = await res.json();
