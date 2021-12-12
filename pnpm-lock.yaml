@@ -102,6 +102,7 @@ importers:
       '@types/cors': ^2.8.12
       '@types/express': ^4.17.13
       '@types/node': ^16.11.11
+      cookie-parser: ^1.4.6
       cors: ^2.8.5
       cross-env: ^7.0.3
       dotenv: ^10.0.0
@@ -120,6 +121,7 @@ importers:
       '@thullo/domain': link:../domain
       '@types/cookie-parser': 1.4.2
       '@types/node': 16.11.11
+      cookie-parser: 1.4.6
       cors: 2.8.5
       cross-env: 7.0.3
       dotenv: 10.0.0
@@ -5777,6 +5779,14 @@ packages:
     resolution: {integrity: sha512-+OQdjP49zViI/6i7nIJpA8rAl4sV/JdPfU9nZs3VqOwGIgizICvuN2ru6fMd+4llL0tar18UYJXfZ/TWtmhUjA==}
     dependencies:
       safe-buffer: 5.1.2
+
+  /cookie-parser/1.4.6:
+    resolution: {integrity: sha512-z3IzaNjdwUC2olLIB5/ITd0/setiaFMLYiZJle7xg5Fe9KWAceil7xszYfHHBtDFYLSgJduS2Ty0P1uJdPDJeA==}
+    engines: {node: '>= 0.8.0'}
+    dependencies:
+      cookie: 0.4.1
+      cookie-signature: 1.0.6
+    dev: false
 
   /cookie-signature/1.0.6:
     resolution: {integrity: sha1-4wOogrNCzD7oylE6eZmXNNqzriw=}
