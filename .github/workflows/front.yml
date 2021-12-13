@@ -17,32 +17,32 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    environment: dev
+  # test:
+  #   runs-on: ubuntu-latest
+  #   environment: dev
 
-    steps:
-      - uses: actions/checkout@v2
+  #   steps:
+  #     - uses: actions/checkout@v2
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@646cdf48217256a3d0b80361c5a50727664284f2
-        with:
-          version: 6.22.2
+  #     - name: Setup pnpm
+  #       uses: pnpm/action-setup@646cdf48217256a3d0b80361c5a50727664284f2
+  #       with:
+  #         version: 6.22.2
 
-      - name: Setup Node version
-        uses: actions/setup-node@v2
-        with:
-          node-version: 16.x
-          cache: "pnpm"
+  #     - name: Setup Node version
+  #       uses: actions/setup-node@v2
+  #       with:
+  #         node-version: 16.x
+  #         cache: "pnpm"
 
-      - name: Install dependencies
-        run: FORCE_COLOR=true pnpm i --prefix packages/front
+  #     - name: Install dependencies
+  #       run: FORCE_COLOR=true pnpm i --prefix packages/front
 
-      - name: Test the frontend
-        run: FORCE_COLOR=true pnpm run test --prefix packages/front
+  #     - name: Test the frontend
+  #       run: FORCE_COLOR=true pnpm run test --prefix packages/front
 
   deploy:
-    needs: test
+    # needs: test
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
     environment: dev
@@ -64,9 +64,6 @@ jobs:
 
       - name: Install dependencies
         run: FORCE_COLOR=true pnpm i --prefix packages/front
-
-      - name: Build the frontend
-        run: FORCE_COLOR=true pnpm run build --prefix packages/front
 
       - name: Publish the frontend
         run: FORCE_COLOR=true pnpm run deploy --prefix packages/front
