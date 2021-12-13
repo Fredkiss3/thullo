@@ -63,7 +63,7 @@ jobs:
           cache: "pnpm"
 
       - name: Install dependencies
-        run: FORCE_COLOR=true pnpm i --prefix packages/front
+        run: FORCE_COLOR=true pnpm i --prefix packages/front netlify-cli -D
 
       - name: Publish the frontend
         run: FORCE_COLOR=true pnpm run deploy --prefix packages/front
