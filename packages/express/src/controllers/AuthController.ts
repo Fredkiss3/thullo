@@ -1,6 +1,7 @@
 import { OAuthPresenterAdapter } from '@thullo/adapters';
 import { AuthenticateWithOauthUseCase } from '@thullo/domain';
 import { Request, Response } from 'express';
+import jwt from 'jsonwebtoken';
 import { container, inject, injectable } from 'tsyringe';
 import { AbstractController } from './AbstractController';
 
@@ -27,6 +28,26 @@ export class AuthController extends AbstractController {
             this.presenter
         );
 
-        return res.status(200).json(this.presenter.vm);
+        if (this.presenter.vm?.data) {
+            const token = jwt.sign(
+                this.presenter.vm.data,
+                process.env.JWT_SECRET!,
+                {
+                    expiresIn: '7d', // 7 days
+                    algorithm: 'HS256',
+                }
+            );
+
+            res.cookie('token', token, {
+                maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
+                httpOnly: true,
+                secure: true,
+            });
+        }
+
+        return res.status(200).json({
+            data: { success: this.presenter.vm!.errors === null },
+            errors: this.presenter.vm?.errors,
+        });
     }
 }

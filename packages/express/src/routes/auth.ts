@@ -5,8 +5,15 @@ import { authMiddleware } from '../middleware/auth';
 const Router = router();
 
 Router.post('/', getController(AuthController));
-Router.get('/check-jwt', authMiddleware, async (req, res) => {
+Router.post('/logout', authMiddleware, async (req, res) => {
+    res.clearCookie('token');
     return res.status(200).json({ data: { success: true }, errors: null });
+});
+
+Router.get('/me', authMiddleware, async (req, res) => {
+    return res
+        .status(200)
+        .json({ data: { user: res.locals.user }, errors: null });
 });
 
 export { Router as authRouter };

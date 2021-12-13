@@ -1,12 +1,32 @@
 import * as React from 'react';
-import { Link } from 'react-router-dom';
+import { LinkButton } from '../components/linkbutton';
+import { Seo } from '../components/seo';
+import { useUserQuery } from '../lib/hooks';
 
-export interface IndexPageProps {}
+export interface HomePageProps {}
 
-export const IndexPage: React.FC<IndexPageProps> = () => {
+export const HomePage: React.FC<HomePageProps> = () => {
+    const { data: user, isLoading } = useUserQuery();
+
     return (
         <>
-            <Link to={'/login'}>Connexion</Link>
+            <Seo />
+            <h1>Thullo</h1>
+            {isLoading ? (
+                <p>Loading...</p>
+            ) : (
+                <>
+                    {user ? (
+                        <LinkButton variant={'primary'} href={'/profile'}>
+                            Profil
+                        </LinkButton>
+                    ) : (
+                        <LinkButton variant={'outline'} href={'/login'}>
+                            Connexion
+                        </LinkButton>
+                    )}
+                </>
+            )}
         </>
     );
 };

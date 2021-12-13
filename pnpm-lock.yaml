@@ -22,7 +22,6 @@ importers:
       axios: ^0.24.0
       dotenv: ^10.0.0
       form-data: ^4.0.0
-      jsonwebtoken: ^8.5.1
       mongodb: ^3.6.0
       mongoose: ^6.0.14
       nodemon: ^2.0.15
@@ -38,7 +37,6 @@ importers:
       axios: 0.24.0
       dotenv: 10.0.0
       form-data: 4.0.0
-      jsonwebtoken: 8.5.1
       mongodb: 3.7.3
       mongoose: 6.0.14
       reflect-metadata: 0.1.13
@@ -109,6 +107,7 @@ importers:
       express: ^4.17.1
       express-openid-connect: ^2.5.2
       express-promise-router: ^4.1.1
+      jsonwebtoken: ^8.5.1
       nodemon: ^2.0.15
       prettier: ^2.5.0
       reflect-metadata: ^0.1.13
@@ -128,6 +127,7 @@ importers:
       express: 4.17.1
       express-openid-connect: 2.5.2_express@4.17.1
       express-promise-router: 4.1.1_d6079702d79cf02674e02d599cb37477
+      jsonwebtoken: 8.5.1
       reflect-metadata: 0.1.13
       tsyringe: 4.6.0
       vercel: 23.1.2
@@ -143,8 +143,10 @@ importers:
     specifiers:
       '@auth0/auth0-react': ^1.8.0
       '@types/chai': ^4.2.22
+      '@types/node': ^16.11.11
       '@types/react': ^17.0.0
       '@types/react-dom': ^17.0.0
+      '@types/react-helmet': ^6.1.4
       '@vitejs/plugin-react': ^1.0.0
       '@vitejs/plugin-react-refresh': ^1.3.6
       cypress: ^9.1.0
@@ -152,9 +154,10 @@ importers:
       prettier: ^2.5.0
       react: ^17.0.0
       react-dom: ^17.0.0
+      react-helmet: ^6.1.0
       react-router-dom: ^6.1.0
       remove: ^0.1.5
-      sass: ^1.43.5
+      sass: ^1.44.0
       typescript: ^4.3.2
       vite: ^2.6.4
     dependencies:
@@ -162,16 +165,19 @@ importers:
       '@vitejs/plugin-react-refresh': 1.3.6
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
+      react-helmet: 6.1.0_react@17.0.2
       react-router-dom: 6.1.0_react-dom@17.0.2+react@17.0.2
       remove: 0.1.5
       sass: 1.44.0
     devDependencies:
       '@types/chai': 4.2.22
+      '@types/node': 16.11.11
       '@types/react': 17.0.37
       '@types/react-dom': 17.0.11
+      '@types/react-helmet': 6.1.4
       '@vitejs/plugin-react': 1.1.0
       cypress: 9.1.1
-      netlify-cli: 8.0.15_typescript@4.5.2
+      netlify-cli: 8.0.15_68212d3c5f342a0c59715bbaaf1875e7
       prettier: 2.5.1
       typescript: 4.5.2
       vite: 2.6.14_sass@1.44.0
@@ -2228,7 +2234,7 @@ packages:
     dependencies:
       '@types/istanbul-lib-coverage': 2.0.3
       '@types/istanbul-reports': 3.0.1
-      '@types/node': 16.11.6
+      '@types/node': 16.11.11
       '@types/yargs': 15.0.14
       chalk: 4.1.2
     dev: true
@@ -2290,7 +2296,7 @@ packages:
     resolution: {integrity: sha512-jDJTpta+P4p1NZTFVLHJ/TLFVYVcOqv6l8xwOeBKNPMgY/zDYH/YH7SJbvrr/h1RcS9GzbPcLKGzpuK9cV56UA==}
     dev: false
 
-  /@netlify/build/20.0.4_typescript@4.5.2:
+  /@netlify/build/20.0.4_68212d3c5f342a0c59715bbaaf1875e7:
     resolution: {integrity: sha512-hEv5YwrgK3xkzWulnG1iD7+g/qEB/6NadXfLCkwXquW7NM624C1UAy6XI9FhOmoqYQ10cLVDz1KnUUsa5TETKQ==}
     engines: {node: ^12.20.0 || ^14.14.0 || >=16.0.0}
     hasBin: true
@@ -2343,7 +2349,7 @@ packages:
       strip-ansi: 6.0.1
       supports-color: 8.1.1
       tmp-promise: 3.0.3
-      ts-node: 10.4.0_typescript@4.5.2
+      ts-node: 10.4.0_68212d3c5f342a0c59715bbaaf1875e7
       update-notifier: 5.1.0
       uuid: 8.3.2
       yargs: 15.4.1
@@ -2587,7 +2593,7 @@ packages:
       '@rollup/plugin-inject': 4.0.3_rollup@2.60.2
       '@rollup/plugin-json': 4.1.0_rollup@2.60.2
       '@rollup/plugin-node-resolve': 11.2.1_rollup@2.60.2
-      '@types/node': 16.11.6
+      '@types/node': 16.11.11
       buffer-es6: 4.9.3
       del: 6.0.0
       make-dir: 3.1.0
@@ -2616,7 +2622,7 @@ packages:
       '@rollup/plugin-inject': 4.0.3_rollup@2.60.2
       '@rollup/plugin-json': 4.1.0_rollup@2.60.2
       '@rollup/plugin-node-resolve': 11.2.1_rollup@2.60.2
-      '@types/node': 16.11.6
+      '@types/node': 16.11.11
       buffer-es6: 4.9.3
       del: 6.0.0
       make-dir: 3.1.0
@@ -3487,7 +3493,7 @@ packages:
   /@types/decompress/4.2.4:
     resolution: {integrity: sha512-/C8kTMRTNiNuWGl5nEyKbPiMv6HA+0RbEXzFhFBEzASM6+oa4tJro9b8nj7eRlOFfuLdzUU+DS/GPDlvvzMOhA==}
     dependencies:
-      '@types/node': 16.11.6
+      '@types/node': 16.11.11
     dev: true
 
   /@types/download/8.0.1:
@@ -3495,7 +3501,7 @@ packages:
     dependencies:
       '@types/decompress': 4.2.4
       '@types/got': 8.3.6
-      '@types/node': 16.11.6
+      '@types/node': 16.11.11
     dev: true
 
   /@types/estree/0.0.39:
@@ -3529,13 +3535,13 @@ packages:
     resolution: {integrity: sha512-ZUxbzKl0IfJILTS6t7ip5fQQM/J3TJYubDm3nMbgubNNYS62eXeUpoLUC8/7fJNiFYHTrGPQn7hspDUzIHX3UA==}
     dependencies:
       '@types/minimatch': 3.0.5
-      '@types/node': 16.11.6
+      '@types/node': 16.11.11
     dev: true
 
   /@types/got/8.3.6:
     resolution: {integrity: sha512-nvLlj+831dhdm4LR2Ly+HTpdLyBaMynoOr6wpIxS19d/bPeHQxFU5XQ6Gp6ohBpxvCWZM1uHQIC2+ySRH1rGrQ==}
     dependencies:
-      '@types/node': 16.11.6
+      '@types/node': 16.11.11
     dev: true
 
   /@types/graceful-fs/4.1.5:
@@ -3550,7 +3556,7 @@ packages:
   /@types/http-proxy/1.17.7:
     resolution: {integrity: sha512-9hdj6iXH64tHSLTY+Vt2eYOGzSogC+JQ2H7bdPWkuh7KXP5qLllWx++t+K9Wk556c3dkDdPws/SpMRi0sdCT1w==}
     dependencies:
-      '@types/node': 16.11.6
+      '@types/node': 16.11.11
     dev: true
 
   /@types/istanbul-lib-coverage/2.0.3:
@@ -3612,7 +3618,7 @@ packages:
   /@types/node-fetch/2.5.12:
     resolution: {integrity: sha512-MKgC4dlq4kKNa/mYrwpKfzQMB5X3ee5U6fSprkKpToBqBmX4nFZL9cW5jl6sWn+xpRJ7ypWh2yyqqr8UUCstSw==}
     dependencies:
-      '@types/node': 16.11.6
+      '@types/node': 16.11.11
       form-data: 3.0.1
     dev: true
 
@@ -3651,6 +3657,12 @@ packages:
       '@types/react': 17.0.37
     dev: true
 
+  /@types/react-helmet/6.1.4:
+    resolution: {integrity: sha512-jyx50RNZXVaTGHY3MsoRPNpeiVk8b0XTPgD/O6KHF6COTDnG/+lRjPYvTK5nfWtR3xDOux0w6bHLAsaHo2ZLTA==}
+    dependencies:
+      '@types/react': 17.0.37
+    dev: true
+
   /@types/react/17.0.37:
     resolution: {integrity: sha512-2FS1oTqBGcH/s0E+CjrCCR9+JMpsu9b69RTFO+40ua43ZqP5MmQ4iUde/dMjWR909KxZwmOQIFq6AV6NjEG5xg==}
     dependencies:
@@ -3662,7 +3674,7 @@ packages:
   /@types/resolve/1.17.1:
     resolution: {integrity: sha512-yy7HuzQhj0dhGpD8RLXSZWEkLsV9ibvxvi6EiJ3bkqLAO1RGo0WbkWQiwpRlSFymTJRz0d3k5LM3kkx8ArDbLw==}
     dependencies:
-      '@types/node': 16.11.6
+      '@types/node': 16.11.11
     dev: true
 
   /@types/responselike/1.0.0:
@@ -3735,7 +3747,7 @@ packages:
     resolution: {integrity: sha512-8uALY5LTvSuHgloDVUvWP3pIauILm+8/0pDMokuDYIoNsOkSwd5AiHBTSEJjKTDcZr5z8UpgOWZkxBF4iJftoA==}
     requiresBuild: true
     dependencies:
-      '@types/node': 16.11.6
+      '@types/node': 16.11.11
     dev: true
     optional: true
 
@@ -9954,7 +9966,7 @@ packages:
     resolution: {integrity: sha512-KWYVV1c4i+jbMpaBC+U++4Va0cp8OisU185o73T1vo99hqi7w8tSJfUXYswwqqrjzwxa6KpRK54WhPvwf5w6PQ==}
     engines: {node: '>= 10.13.0'}
     dependencies:
-      '@types/node': 16.11.6
+      '@types/node': 16.11.11
       merge-stream: 2.0.0
       supports-color: 7.2.0
     dev: true
@@ -11127,13 +11139,13 @@ packages:
     resolution: {integrity: sha512-AO81vsIO1k1sM4Zrd6Hu7regmJN1NSiAja10gc4bX3F0wd+9rQmcuHQaHVQCYIEC8iFXnE+mavh23GOt7wBgug==}
     dev: true
 
-  /netlify-cli/8.0.15_typescript@4.5.2:
+  /netlify-cli/8.0.15_68212d3c5f342a0c59715bbaaf1875e7:
     resolution: {integrity: sha512-7bv+bTWBdRJMkqStbY9qD365p47BV+Djl1nMXGh9j55GNc4ntGwIhgGeMTpS6B/k7PsURkHF2gSTrGr0ymB0ng==}
     engines: {node: ^12.20.0 || ^14.14.0 || >=16.0.0}
     hasBin: true
     requiresBuild: true
     dependencies:
-      '@netlify/build': 20.0.4_typescript@4.5.2
+      '@netlify/build': 20.0.4_68212d3c5f342a0c59715bbaaf1875e7
       '@netlify/config': 16.0.7
       '@netlify/framework-info': 6.0.0
       '@netlify/local-functions-proxy': 1.1.1
@@ -12504,7 +12516,6 @@ packages:
       loose-envify: 1.4.0
       object-assign: 4.1.1
       react-is: 16.13.1
-    dev: true
 
   /proxy-addr/2.0.7:
     resolution: {integrity: sha512-llQsMLSUDUPT44jdrU/O37qlnifitDP+ZwrmmZcoSKyLKvtZxpyV0n2/bD/N4tBAAZ/gJEdZU7KMraoK1+XYAg==}
@@ -12693,9 +12704,24 @@ packages:
       scheduler: 0.20.2
     dev: false
 
+  /react-fast-compare/3.2.0:
+    resolution: {integrity: sha512-rtGImPZ0YyLrscKI9xTpV8psd6I8VAtjKCzQDlzyDvqJA8XOW78TXYQwNRNd8g8JZnDu8q9Fu/1v4HPAVwVdHA==}
+    dev: false
+
+  /react-helmet/6.1.0_react@17.0.2:
+    resolution: {integrity: sha512-4uMzEY9nlDlgxr61NL3XbKRy1hEkXmKNXhjbAIOVw5vcFrsdYbH2FEwcNyWvWinl103nXgzYNlns9ca+8kFiWw==}
+    peerDependencies:
+      react: '>=16.3.0'
+    dependencies:
+      object-assign: 4.1.1
+      prop-types: 15.7.2
+      react: 17.0.2
+      react-fast-compare: 3.2.0
+      react-side-effect: 2.1.1_react@17.0.2
+    dev: false
+
   /react-is/16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
-    dev: true
 
   /react-is/17.0.2:
     resolution: {integrity: sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==}
@@ -12752,6 +12778,14 @@ packages:
       react: '>=16.8'
     dependencies:
       history: 5.1.0
+      react: 17.0.2
+    dev: false
+
+  /react-side-effect/2.1.1_react@17.0.2:
+    resolution: {integrity: sha512-2FoTQzRNTncBVtnzxFOk2mCpcfxQpenBMbk5kSVBg5UcPqV9fRbgY2zhb7GTWWOlpFmAxhClBDlIq8Rsubz1yQ==}
+    peerDependencies:
+      react: ^16.3.0 || ^17.0.0
+    dependencies:
       react: 17.0.2
     dev: false
 
@@ -14344,35 +14378,6 @@ packages:
       '@tsconfig/node14': 1.0.1
       '@tsconfig/node16': 1.0.2
       '@types/node': 16.11.11
-      acorn: 8.5.0
-      acorn-walk: 8.2.0
-      arg: 4.1.3
-      create-require: 1.1.1
-      diff: 4.0.2
-      make-error: 1.3.6
-      typescript: 4.5.2
-      yn: 3.1.1
-    dev: true
-
-  /ts-node/10.4.0_typescript@4.5.2:
-    resolution: {integrity: sha512-g0FlPvvCXSIO1JDF6S232P5jPYqBkRL9qly81ZgAOSU7rwI0stphCgd2kLiCrU9DjQCrJMWEqcNSjQL02s6d8A==}
-    hasBin: true
-    peerDependencies:
-      '@swc/core': '>=1.2.50'
-      '@swc/wasm': '>=1.2.50'
-      '@types/node': '*'
-      typescript: '>=2.7'
-    peerDependenciesMeta:
-      '@swc/core':
-        optional: true
-      '@swc/wasm':
-        optional: true
-    dependencies:
-      '@cspotcode/source-map-support': 0.7.0
-      '@tsconfig/node10': 1.0.8
-      '@tsconfig/node12': 1.0.9
-      '@tsconfig/node14': 1.0.1
-      '@tsconfig/node16': 1.0.2
       acorn: 8.5.0
       acorn-walk: 8.2.0
       arg: 4.1.3
