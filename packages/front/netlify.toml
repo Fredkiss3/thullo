@@ -21,7 +21,7 @@
 
 [[redirects]]
   from = "/*"
-  to = "/index.html"
+  to = "dist/index.html"
   status = 200
   force = true
   headers = {X-From = "Netlify"}
