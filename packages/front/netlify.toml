@@ -17,11 +17,3 @@
 
 [build.environment]
   NODE_ENV = "production"
-
-
-[[redirects]]
-  from = "/*"
-  to = "dist/index.html"
-  status = 200
-  force = true
-  headers = {X-From = "Netlify"}
