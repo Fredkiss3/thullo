@@ -6,7 +6,11 @@ const Router = router();
 
 Router.post('/', getController(AuthController));
 Router.post('/logout', authMiddleware, async (req, res) => {
-    res.clearCookie('token');
+    res.clearCookie('token', {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'none',
+    });
     return res.status(200).json({ data: { success: true }, errors: null });
 });
 
