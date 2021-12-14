@@ -1,36 +1,22 @@
-import config from './config';
-config();
-
+import cp from 'cookie-parser';
 import cors from 'cors';
 import express from 'express';
 import 'reflect-metadata';
-
+import config from './config';
+import { authRouter } from './routes/auth';
 import { boardRouter } from './routes/board';
 import { memberRouter } from './routes/member';
-import { authRouter } from './routes/auth';
-import cp from 'cookie-parser';
+config();
 
 const app = express();
 
 // Cors to support cross-origin requests from browser
 // JSON to support JSON requests and send JSON responses
-const corsWhitelist = [
-    'http://localhost:3000',
-    process.env.ALLOWED_URLS?.split(',')
-];
-
 app.use(
     cors({
-        origin: (origin, callback) => {
-            // Allow requests made from browser following the whitelist above
-            // And allow requests made from REST clients
-            if (corsWhitelist.indexOf(`${origin ?? ''}`) !== -1 || !origin) {
-                callback(null, true);
-            } else {
-                callback(new Error('Not allowed by CORS'));
-            }
-        },
-        credentials: true,
+        origin: '*',
+        credentials: true, //access-control-allow-credentials:true
+        optionsSuccessStatus: 200,
     })
 );
 app.use(cp());
