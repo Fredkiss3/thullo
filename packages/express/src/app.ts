@@ -1,12 +1,12 @@
+import config from './config';
+config();
 import cp from 'cookie-parser';
 import cors from 'cors';
 import express from 'express';
 import 'reflect-metadata';
-import config from './config';
 import { authRouter } from './routes/auth';
 import { boardRouter } from './routes/board';
 import { memberRouter } from './routes/member';
-config();
 
 const app = express();
 
@@ -14,7 +14,7 @@ const app = express();
 // JSON to support JSON requests and send JSON responses
 app.use(
     cors({
-        origin: '*',
+        origin: process.env.OAUTH_REDIRECT_URI,
         credentials: true, //access-control-allow-credentials:true
         optionsSuccessStatus: 200,
     })
