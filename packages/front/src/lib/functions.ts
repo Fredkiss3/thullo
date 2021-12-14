@@ -43,6 +43,5 @@ export async function jsonFetch<T>(
         ...options,
         headers,
         credentials: 'include',
-        mode: 'cors',
     }).then((response) => response.json());
 }
