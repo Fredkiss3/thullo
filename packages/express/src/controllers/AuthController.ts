@@ -28,26 +28,24 @@ export class AuthController extends AbstractController {
             this.presenter
         );
 
-        if (this.presenter.vm?.data) {
-            const token = jwt.sign(
-                this.presenter.vm.data,
-                process.env.JWT_SECRET!,
-                {
-                    expiresIn: '7d', // 7 days
-                    algorithm: 'HS256',
-                }
-            );
+        let token: string | null = null;
 
-            res.cookie('token', token, {
-                maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
-                httpOnly: true,
-                secure: true,
-                sameSite: 'none',
+        if (this.presenter.vm?.data) {
+            token = jwt.sign(this.presenter.vm.data, process.env.JWT_SECRET!, {
+                expiresIn: '7d', // 7 days
+                algorithm: 'HS256',
             });
+
+            // res.cookie('token', token, {
+            //     maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
+            //     httpOnly: true,
+            //     secure: true,
+            //     sameSite: 'none',
+            // });
         }
 
         return res.status(200).json({
-            data: { success: this.presenter.vm!.errors === null },
+            data: token == null ? null : { token },
             errors: this.presenter.vm?.errors,
         });
     }

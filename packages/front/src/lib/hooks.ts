@@ -18,7 +18,7 @@ export const useUserQuery = () =>
             return data!.user;
         },
         {
-            retry: 2,
+            retry: 1,
         }
     );
 

@@ -36,12 +36,16 @@ export async function jsonFetch<T>(
 
     // only wait in development mode
     if (import.meta.env.MODE === 'development') {
-        await wait(2000);
+        await wait(Math.random() * 500);
     }
 
     return fetch(url, {
         ...options,
         headers,
         credentials: 'include',
-    }).then((response) => response.json());
+    })
+        .then((response) => response.json())
+        .catch((error) => {
+            console.error('There was an error ?', error);
+        });
 }

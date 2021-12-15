@@ -15,5 +15,8 @@
   # Default build command.
   command = "vite build"
 
+  # serverless functions
+  functions = "src/functions"
+
 [build.environment]
-  NODE_ENV = "production"
+  NODE_ENV = "development"

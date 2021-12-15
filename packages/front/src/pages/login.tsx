@@ -12,7 +12,11 @@ export const LoginPage: React.FC<LoginPageProps> = (props) => {
     const query = parseQueryStringFromURL(window.location.href);
     let errors: ApiErrors = null;
     if (query.errors) {
-        errors = JSON.parse(decodeURIComponent(query.errors));
+        try {
+            errors = JSON.parse(decodeURIComponent(query.errors));
+        } catch (e) {
+            // Do nothing
+        }
     }
 
     function getAuthURL(provider: string): URLSearchParams {
@@ -32,6 +36,7 @@ export const LoginPage: React.FC<LoginPageProps> = (props) => {
     return (
         <>
             <Seo title="Login" />
+
             <h1>Connexion</h1>
 
             {errors && (

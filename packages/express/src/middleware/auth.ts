@@ -6,7 +6,7 @@ export const authMiddleware = async (
     res: Response,
     next: NextFunction
 ) => {
-    // Split token into 2 parts : Bearer and token
+    // Use Token stored in cookie
     const token = req.cookies.token;
 
     try {

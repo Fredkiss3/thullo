@@ -21,7 +21,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = () => {
                 <p>Loading...</p>
             ) : (
                 <>
-                    {!mutation.isLoading && !mutation.isSuccess && (
+                    {!mutation.isLoading && !mutation.isSuccess && user && (
                         <>
                             <div>
                                 <img src={user.avatarURL} alt={user.name} />

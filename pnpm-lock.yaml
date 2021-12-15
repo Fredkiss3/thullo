@@ -99,6 +99,8 @@ importers:
       '@types/cookie-parser': ^1.4.2
       '@types/cors': ^2.8.12
       '@types/express': ^4.17.13
+      '@types/express-request-id': ^1.4.3
+      '@types/morgan': ^1.9.3
       '@types/node': ^16.11.11
       cookie-parser: ^1.4.6
       cors: ^2.8.5
@@ -107,7 +109,9 @@ importers:
       express: ^4.17.1
       express-openid-connect: ^2.5.2
       express-promise-router: ^4.1.1
+      express-request-id: ^1.4.1
       jsonwebtoken: ^8.5.1
+      morgan: ^1.10.0
       nodemon: ^2.0.15
       prettier: ^2.5.0
       reflect-metadata: ^0.1.13
@@ -127,13 +131,17 @@ importers:
       express: 4.17.1
       express-openid-connect: 2.5.2_express@4.17.1
       express-promise-router: 4.1.1_d6079702d79cf02674e02d599cb37477
+      express-request-id: 1.4.1
       jsonwebtoken: 8.5.1
+      morgan: 1.10.0
       reflect-metadata: 0.1.13
       tsyringe: 4.6.0
       vercel: 23.1.2
     devDependencies:
       '@types/cors': 2.8.12
       '@types/express': 4.17.13
+      '@types/express-request-id': 1.4.3
+      '@types/morgan': 1.9.3
       nodemon: 2.0.15
       prettier: 2.5.1
       ts-node: 10.4.0_68212d3c5f342a0c59715bbaaf1875e7
@@ -142,13 +150,16 @@ importers:
   packages/front:
     specifiers:
       '@auth0/auth0-react': ^1.8.0
+      '@netlify/functions': ^0.10.0
       '@types/chai': ^4.2.22
+      '@types/cookie': ^0.4.1
       '@types/node': ^16.11.11
       '@types/react': ^17.0.0
       '@types/react-dom': ^17.0.0
       '@types/react-helmet': ^6.1.4
       '@vitejs/plugin-react': ^1.0.0
       '@vitejs/plugin-react-refresh': ^1.3.6
+      cookie: ^0.4.1
       cypress: ^9.1.0
       netlify-cli: ^8.0.15
       prettier: ^2.5.0
@@ -163,7 +174,9 @@ importers:
       vite: ^2.6.4
     dependencies:
       '@auth0/auth0-react': 1.8.0_react-dom@17.0.2+react@17.0.2
+      '@netlify/functions': 0.10.0
       '@vitejs/plugin-react-refresh': 1.3.6
+      cookie: 0.4.1
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
       react-helmet: 6.1.0_react@17.0.2
@@ -173,6 +186,7 @@ importers:
       sass: 1.44.0
     devDependencies:
       '@types/chai': 4.2.22
+      '@types/cookie': 0.4.1
       '@types/node': 16.11.11
       '@types/react': 17.0.37
       '@types/react-dom': 17.0.11
@@ -183,6 +197,19 @@ importers:
       prettier: 2.5.1
       typescript: 4.5.2
       vite: 2.6.14_sass@1.44.0
+
+  packages/front/src/functions:
+    specifiers:
+      '@types/cookie': ^0.4.1
+      cookie: ^0.4.1
+      node-fetch: ^3.1.0
+      typescript: ^4.5.4
+    dependencies:
+      cookie: 0.4.1
+      node-fetch: 3.1.0
+    devDependencies:
+      '@types/cookie': 0.4.1
+      typescript: 4.5.4
 
   packages/next:
     specifiers:
@@ -921,7 +948,7 @@ packages:
     peerDependencies:
       '@babel/core': ^7.0.0-0
     dependencies:
-      '@babel/core': 7.16.0_supports-color@8.1.1
+      '@babel/core': 7.16.0
       '@babel/helper-plugin-utils': 7.14.5
     dev: true
 
@@ -985,7 +1012,7 @@ packages:
     peerDependencies:
       '@babel/core': ^7.0.0-0
     dependencies:
-      '@babel/core': 7.16.0_supports-color@8.1.1
+      '@babel/core': 7.16.0
       '@babel/helper-plugin-utils': 7.14.5
     dev: true
 
@@ -1013,7 +1040,7 @@ packages:
     peerDependencies:
       '@babel/core': ^7.0.0-0
     dependencies:
-      '@babel/core': 7.16.0_supports-color@8.1.1
+      '@babel/core': 7.16.0
       '@babel/helper-plugin-utils': 7.14.5
     dev: true
 
@@ -1022,7 +1049,7 @@ packages:
     peerDependencies:
       '@babel/core': ^7.0.0-0
     dependencies:
-      '@babel/core': 7.16.0_supports-color@8.1.1
+      '@babel/core': 7.16.0
       '@babel/helper-plugin-utils': 7.14.5
     dev: true
 
@@ -1031,7 +1058,7 @@ packages:
     peerDependencies:
       '@babel/core': ^7.0.0-0
     dependencies:
-      '@babel/core': 7.16.0_supports-color@8.1.1
+      '@babel/core': 7.16.0
       '@babel/helper-plugin-utils': 7.14.5
     dev: true
 
@@ -1040,7 +1067,7 @@ packages:
     peerDependencies:
       '@babel/core': ^7.0.0-0
     dependencies:
-      '@babel/core': 7.16.0_supports-color@8.1.1
+      '@babel/core': 7.16.0
       '@babel/helper-plugin-utils': 7.14.5
     dev: true
 
@@ -1049,7 +1076,7 @@ packages:
     peerDependencies:
       '@babel/core': ^7.0.0-0
     dependencies:
-      '@babel/core': 7.16.0_supports-color@8.1.1
+      '@babel/core': 7.16.0
       '@babel/helper-plugin-utils': 7.14.5
     dev: true
 
@@ -1058,7 +1085,7 @@ packages:
     peerDependencies:
       '@babel/core': ^7.0.0-0
     dependencies:
-      '@babel/core': 7.16.0_supports-color@8.1.1
+      '@babel/core': 7.16.0
       '@babel/helper-plugin-utils': 7.14.5
     dev: true
 
@@ -2443,6 +2470,13 @@ packages:
       - supports-color
     dev: true
 
+  /@netlify/functions/0.10.0:
+    resolution: {integrity: sha512-NNFADTPnokuoMY1OUhaXlE/Jrzk5lHOl1uB4L/8pw1UJ/CaectZJACMExijbJnqaKIhOQG0WmbBQUh1lgnK/Qg==}
+    engines: {node: '>=8.3.0'}
+    dependencies:
+      is-promise: 4.0.0
+    dev: false
+
   /@netlify/git-utils/3.0.0:
     resolution: {integrity: sha512-dfK8B3Lt/wHwdo8GL+gqGKesCYoiqZYQu3hIdQA0zPhIgRvm7W3fgfskSwlke8Zt3g11EesiGxrzUNIjsd7HpQ==}
     engines: {node: ^12.20.0 || ^14.14.0 || >=16.0.0}
@@ -3488,6 +3522,10 @@ packages:
       '@types/express': 4.17.13
     dev: false
 
+  /@types/cookie/0.4.1:
+    resolution: {integrity: sha512-XW/Aa8APYr6jSVVA1y/DEIZX0/GMKLEVekNG727R8cs56ahETkRAy/3DR7+fJyh7oUgGwNQaRfXCun0+KbWY7Q==}
+    dev: true
+
   /@types/cors/2.8.12:
     resolution: {integrity: sha512-vt+kDhq/M2ayberEtJcIN/hxXy1Pk+59g2FV/ZQceeaTyCtCucjL2Q7FXlFjtWn4n15KCr1NE2lNNFhp0lEThw==}
     dev: true
@@ -3512,6 +3550,12 @@ packages:
 
   /@types/estree/0.0.50:
     resolution: {integrity: sha512-C6N5s2ZFtuZRj54k2/zyRhNDjJwwcViAM3Nbm8zjBpbqAdZ00mr0CFxvSKeO8Y/e03WVFLpQMdHYVfUd6SB+Hw==}
+    dev: true
+
+  /@types/express-request-id/1.4.3:
+    resolution: {integrity: sha512-vOQzyPe5Y5LNefpEiBwD8RpXu2ZD2Vy5pTMEzVrOLRKYk5iSE1kMC+4FIQD5xtMEwmrYuVhEpC/xLD479XK8Xg==}
+    dependencies:
+      '@types/express-serve-static-core': 4.17.26
     dev: true
 
   /@types/express-serve-static-core/4.17.26:
@@ -3615,6 +3659,12 @@ packages:
 
   /@types/minimatch/3.0.5:
     resolution: {integrity: sha512-Klz949h02Gz2uZCMGwDUSDS1YBlTdDDgbWHi+81l29tQALUtvz4rAYi5uoVhE5Lagoq6DeqAUlbrHvW/mXDgdQ==}
+    dev: true
+
+  /@types/morgan/1.9.3:
+    resolution: {integrity: sha512-BiLcfVqGBZCyNCnCH3F4o2GmDLrpy0HeBVnNlyZG4fo88ZiE9SoiBe3C+2ezuwbjlEyT+PDZ17//TAlRxAn75Q==}
+    dependencies:
+      '@types/node': 16.11.11
     dev: true
 
   /@types/node-fetch/2.5.12:
@@ -4792,6 +4842,13 @@ packages:
     engines: {node: '>=6.0.0'}
     dev: false
 
+  /basic-auth/2.0.1:
+    resolution: {integrity: sha512-NF+epuEdnUYVlGuhaxbbq+dvJttwLnGY+YixlXlME5KpQ5W3CnXA5cVTneY3SPbPDRkcjMbifrwmFYcClgOZeg==}
+    engines: {node: '>= 0.8'}
+    dependencies:
+      safe-buffer: 5.1.2
+    dev: false
+
   /bcrypt-pbkdf/1.0.2:
     resolution: {integrity: sha1-pDAdOJtqQ/m2f/PKEaP2Y342Dp4=}
     dependencies:
@@ -5812,7 +5869,6 @@ packages:
   /cookie/0.4.1:
     resolution: {integrity: sha512-ZwrFkGJxUR3EIoXtO+yVE69Eb7KlixbaeAWfBQB9vVsNn/o+Yw69gBWSSDK825hQNdN+wF8zELf3dFNl/kxkUA==}
     engines: {node: '>= 0.6'}
-    dev: false
 
   /copy-descriptor/0.1.1:
     resolution: {integrity: sha1-Z29us8OZl8LuGsOpJP1hJHSPV40=}
@@ -6116,6 +6172,11 @@ packages:
     engines: {node: '>= 6'}
     dev: false
 
+  /data-uri-to-buffer/4.0.0:
+    resolution: {integrity: sha512-Vr3mLBA8qWmcuschSLAOogKgQ/Jwxulv3RNE4FXnYWRGujzrRWQI4m12fQqRkwX06C0KanhLr4hK+GydchZsaA==}
+    engines: {node: '>= 12'}
+    dev: false
+
   /data-urls/2.0.0:
     resolution: {integrity: sha512-X5eWTSXO/BJmpdIKCRuKUgSCgAN0OwliVK3yPKbwIWU1Tdw5BRajxlzMidvh+gwko9AfQ9zIj52pzF91Q3YAvQ==}
     engines: {node: '>=10'}
@@ -6388,6 +6449,11 @@ packages:
   /depd/1.1.2:
     resolution: {integrity: sha1-m81S4UwJd2PnSbJ0xDRu0uVgtak=}
     engines: {node: '>= 0.6'}
+
+  /depd/2.0.0:
+    resolution: {integrity: sha512-g7nH6P6dyDioJogAAGprGpCtVImJhpPk/roCzdb3fIh61/s/nPsfR6onyMwkCAR/OlC3yBC0lESvUoQEAssIrw==}
+    engines: {node: '>= 0.8'}
+    dev: false
 
   /deprecation/2.3.1:
     resolution: {integrity: sha512-xmHIy4F3scKVwMsQ4WnVaS8bHOx0DmVwRywosKhaILI0ywMDWPtBSku2HNxRvF7jtwDRsoEwYQSfbxj8b7RlJQ==}
@@ -7550,6 +7616,12 @@ packages:
       methods: 1.1.2
     dev: false
 
+  /express-request-id/1.4.1:
+    resolution: {integrity: sha512-qpxK6XhDYtdx9FvxwCHkUeZVWtkGbWR87hBAzGECfwYF/QQCPXEwwB2/9NGkOR1tT7/aLs9mma3CT0vjSzuZVw==}
+    dependencies:
+      uuid: 3.4.0
+    dev: false
+
   /express/4.17.1:
     resolution: {integrity: sha512-mHJ9O79RqluphRrcw2X/GTh3k9tVv8YcoyY4Kkh4WDMUYKRZUq0h1o0w2rrrxBqM7VoeUVqgb27xlEMXTnYt4g==}
     engines: {node: '>= 0.10.0'}
@@ -7747,6 +7819,13 @@ packages:
   /fecha/4.2.1:
     resolution: {integrity: sha512-MMMQ0ludy/nBs1/o0zVOiKTpG7qMbonKUzjJgQFEuvq6INZ1OraKPRAWkBq5vlKLOUMpmNYG1JoN3oDPUQ9m3Q==}
     dev: true
+
+  /fetch-blob/3.1.3:
+    resolution: {integrity: sha512-ax1Y5I9w+9+JiM+wdHkhBoxew+zG4AJ2SvAD1v1szpddUIiPERVGBxrMcB2ZqW0Y3PP8bOWYv2zqQq1Jp2kqUQ==}
+    engines: {node: ^12.20 || >= 14.13}
+    dependencies:
+      web-streams-polyfill: 3.2.0
+    dev: false
 
   /fetch-node-website/5.0.3:
     resolution: {integrity: sha512-O86T46FUWSOq4AWON39oaT8H90QFKAbmjfOVBhgaS87AFfeW00txz73KTv7QopPWtHBbGdI1S8cIT1VK1OQYLg==}
@@ -7994,6 +8073,13 @@ packages:
       asynckit: 0.4.0
       combined-stream: 1.0.8
       mime-types: 2.1.33
+    dev: false
+
+  /formdata-polyfill/4.0.10:
+    resolution: {integrity: sha512-buewHzMvYL29jdeQTVILecSaZKnt/RJWjoZCF5OW60Z67/GmSLBkOFM7qh1PI3zFNtJbaZL5eQu1vLfazOwj4g==}
+    engines: {node: '>=12.20.0'}
+    dependencies:
+      fetch-blob: 3.1.3
     dev: false
 
   /forwarded/0.2.0:
@@ -11031,6 +11117,17 @@ packages:
       - supports-color
     dev: false
 
+  /morgan/1.10.0:
+    resolution: {integrity: sha512-AbegBVI4sh6El+1gNwvD5YIck7nSA36weD7xvIxG4in80j/UoK8AEGaWnnz8v1GxonMCltmlNs5ZKbGvl9b1XQ==}
+    engines: {node: '>= 0.8.0'}
+    dependencies:
+      basic-auth: 2.0.1
+      debug: 2.6.9
+      depd: 2.0.0
+      on-finished: 2.3.0
+      on-headers: 1.0.2
+    dev: false
+
   /move-file/2.1.0:
     resolution: {integrity: sha512-i9qLW6gqboJ5Ht8bauZi7KlTnQ3QFpBCvMvFfEcHADKgHGeJ9BZMO7SFCTwHPV9Qa0du9DYY1Yx3oqlGt30nXA==}
     engines: {node: '>=10.17'}
@@ -11177,7 +11274,7 @@ packages:
       concordance: 5.0.4
       configstore: 5.0.1
       content-type: 1.0.4
-      cookie: 0.4.0
+      cookie: 0.4.1
       copy-template-dir: 1.4.0
       debug: 4.3.2
       decache: 4.6.1
@@ -11410,6 +11507,15 @@ packages:
     dependencies:
       whatwg-url: 5.0.0
     dev: true
+
+  /node-fetch/3.1.0:
+    resolution: {integrity: sha512-QU0WbIfMUjd5+MUzQOYhenAazakV7Irh1SGkWCsRzBwvm4fAhzEUaHMJ6QLP7gWT6WO9/oH2zhKMMGMuIrDyKw==}
+    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
+    dependencies:
+      data-uri-to-buffer: 4.0.0
+      fetch-blob: 3.1.3
+      formdata-polyfill: 4.0.10
+    dev: false
 
   /node-gyp-build/4.3.0:
     resolution: {integrity: sha512-iWjXZvmboq0ja1pUGULQBexmxq8CV4xBhX7VDOTbL7ZR4FOowwY/VOtRxBN/yKxmdGoIp4j5ysNT4u3S2pDQ3Q==}
@@ -14658,6 +14764,12 @@ packages:
     hasBin: true
     dev: true
 
+  /typescript/4.5.4:
+    resolution: {integrity: sha512-VgYs2A2QIRuGphtzFV7aQJduJ2gyfTljngLzjpfW9FoYZF6xuw1W0vW9ghCKLfcWrCFxK81CSGRAvS1pn4fIUg==}
+    engines: {node: '>=4.2.0'}
+    hasBin: true
+    dev: true
+
   /uid-safe/2.1.5:
     resolution: {integrity: sha512-KPHm4VL5dDXKz01UuEd88Df+KzynaohSL9fBh096KWAxSKZQDI2uBrVqtvRM4rwrIrRRKsdLNML/lnaaVSRioA==}
     engines: {node: '>= 0.8'}
@@ -14880,6 +14992,12 @@ packages:
     resolution: {integrity: sha1-n5VxD1CiZ5R7LMwSR0HBAoQn5xM=}
     engines: {node: '>= 0.4.0'}
 
+  /uuid/3.4.0:
+    resolution: {integrity: sha512-HjSDRw6gZE5JMggctHBcjVak08+KEVhSIiDzFnT9S9aegmp85S/bReBVTb4QTFaRNptJ9kuYaNhnbNEOkbKb/A==}
+    deprecated: Please upgrade  to version 7 or higher.  Older versions may use Math.random() in certain circumstances, which is known to be problematic.  See https://v8.dev/blog/math-random for details.
+    hasBin: true
+    dev: false
+
   /uuid/8.3.2:
     resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
     hasBin: true
@@ -15021,6 +15139,11 @@ packages:
     dependencies:
       defaults: 1.0.3
     dev: true
+
+  /web-streams-polyfill/3.2.0:
+    resolution: {integrity: sha512-EqPmREeOzttaLRm5HS7io98goBgZ7IVz79aDvqjD0kYXLtFZTc0T/U6wHTPKyIjb+MdN7DFIIX6hgdBEpWmfPA==}
+    engines: {node: '>= 8'}
+    dev: false
 
   /webidl-conversions/3.0.1:
     resolution: {integrity: sha1-JFNCdeKnvGvnvIZhHMFq4KVlSHE=}

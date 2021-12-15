@@ -20,5 +20,6 @@ RUN pnpm install --prefix packages/adapters  --shamefully-hoist \
 RUN pnpm install --prefix packages/express  --shamefully-hoist \
     && pnpm --prefix packages/express run build 
 
+ENV NODE_ENV production
 
 CMD [ "pnpm", "run", "start", "--prefix", "packages/express" ]

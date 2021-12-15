@@ -24,7 +24,9 @@
         "express": "^4.17.1",
         "express-openid-connect": "^2.5.2",
         "express-promise-router": "^4.1.1",
+        "express-request-id": "^1.4.1",
         "jsonwebtoken": "^8.5.1",
+        "morgan": "^1.10.0",
         "reflect-metadata": "^0.1.13",
         "tsyringe": "^4.6.0",
         "vercel": "^23.1.2"
@@ -32,6 +34,8 @@
     "devDependencies": {
         "@types/cors": "^2.8.12",
         "@types/express": "^4.17.13",
+        "@types/express-request-id": "^1.4.3",
+        "@types/morgan": "^1.9.3",
         "nodemon": "^2.0.15",
         "prettier": "^2.5.0",
         "ts-node": "^10.4.0",

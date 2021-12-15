@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Pulse } from '../components/pulse';
 import { jsonFetch } from '../lib/functions';
 
 export interface CallBackPageProps {}
@@ -13,7 +14,7 @@ export const CallBackPage: React.FC<CallBackPageProps> = () => {
             const code = query.get('code');
 
             const { data, errors } = await jsonFetch<{ success: boolean }>(
-                `${import.meta.env.VITE_API_URL}/api/auth`,
+                `/.netlify/functions/callback`,
                 {
                     method: 'POST',
                     headers: {
@@ -25,20 +26,20 @@ export const CallBackPage: React.FC<CallBackPageProps> = () => {
                 }
             );
 
+            console.log('Success ?', data?.success);
+            console.log('Errors ?', errors);
             if (errors) {
                 navigate(`/login?errors=${JSON.stringify(errors)}`);
             } else {
                 navigate(`/profile`);
-                console.log('Success ?', data.success);
-                console.log('Errors ?', errors);
             }
         }
 
         fetchData();
     }, []);
     return (
-        <>
-            <h1>Chargement...</h1>
-        </>
+        <Pulse>
+            <h1>Nous récupérons vos informations...</h1>
+        </Pulse>
     );
 };
