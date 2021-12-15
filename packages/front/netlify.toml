@@ -20,3 +20,6 @@
 
 [build.environment]
   NODE_ENV = "development"
+
+[deploy.environment]
+  NODE_ENV = "production"
