@@ -29,12 +29,14 @@ export const handler: Handler = async (event, context) => {
     // Use environment
     console.log('NODE_ENV =>', process.env.NODE_ENV);
 
-    const url =
-        process.env.NODE_ENV != 'production'
-            ? 'http://localhost:3031'
-            : `${process.env.API_URL}`;
+    // const url =
+    //     process.env.NODE_ENV != 'production'
+    //         ? 'http://localhost:3031'
+    //         : `${process.env.API_URL}`;
 
-    const res = (await fetch(`${url}/api/auth`, {
+    console.log('url =>', process.env.API_URL);
+
+    const res = (await fetch(`${process.env.API_URL}/api/auth`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

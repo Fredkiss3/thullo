@@ -3,11 +3,11 @@
     "version": "1.0.0",
     "scripts": {
         "test": "echo \"Testing the app\" && exit 0",
-        "dev": "vite --port 3000",
+        "dev": "vite",
         "build": "tsc && vite build",
         "serve": "vite preview",
         "deploy": "netlify deploy --prod",
-        "ntl:dev": "VITE_API_URL=http://localhost:3031 netlify dev -p 3001",
+        "ntl:dev": "VITE_API_URL=http://localhost:3031 API_URL=http://localhost:3031  netlify dev -p 3001",
         "cypress": "cypress open"
     },
     "dependencies": {

@@ -3,7 +3,7 @@ import { ReactQueryDevtools } from 'react-query/devtools';
 import { Route, Routes } from 'react-router-dom';
 import cls from './App.module.scss';
 import { CallBackPage } from './pages/callback';
-import { HomePage } from './pages/index';
+import { HomePage } from './pages/home';
 import { LoginPage } from './pages/login';
 import { ProfilePage } from './pages/profile';
 

@@ -18,8 +18,3 @@
   # serverless functions
   functions = "src/functions"
 
-[build.environment]
-  NODE_ENV = "development"
-
-[deploy.environment]
-  NODE_ENV = "production"
