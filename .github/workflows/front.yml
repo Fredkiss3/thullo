@@ -67,7 +67,9 @@ jobs:
 
       - name: Build the frontend
         run: |
-          VITE_API_URL=$VITE_API_URL NODE_ENV=production FORCE_COLOR=true pnpm run build --prefix packages/front
+          echo "API URL => $API_URL"
+          echo "VITE API URL => $VITE_API_URL"
+          NODE_ENV=production VITE_API_URL=$API_URL FORCE_COLOR=true pnpm run build --prefix packages/front
           cat << EOF > ./packages/front/dist/_redirects
           # The following redirect is intended for use with most SPAs that handle routing internally.
           /*    /index.html   200
