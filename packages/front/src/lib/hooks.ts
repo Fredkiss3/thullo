@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import { USER_QUERY, USER_TOKEN } from './constants';
-import { deleteCookie, jsonFetch, setCookie } from './functions';
+import { deleteCookie, getCookie, jsonFetch, setCookie } from './functions';
 import { User } from './types';
 
 export const useUserQuery = () =>
@@ -79,7 +79,10 @@ export function useLoginMutation() {
             onSuccess: ({ data, errors }) => {
                 if (data.token) {
                     queryClient.invalidateQueries(USER_QUERY);
+                    console.log('token', data.token);
+
                     setCookie(USER_TOKEN, data.token);
+                    console.log('Set cookie', getCookie(USER_TOKEN));
                     navigate('/profile');
                 } else {
                     navigate(
