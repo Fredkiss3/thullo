@@ -28,6 +28,7 @@
         "jsonwebtoken": "^8.5.1",
         "morgan": "^1.10.0",
         "reflect-metadata": "^0.1.13",
+        "short-uuid": "^4.2.0",
         "tsyringe": "^4.6.0",
         "vercel": "^23.1.2"
     },

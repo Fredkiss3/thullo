@@ -21,6 +21,7 @@
         "mongodb": "^3.6.0",
         "mongoose": "^6.0.14",
         "reflect-metadata": "^0.1.13",
+        "short-uuid": "^4.2.0",
         "tsyringe": "^4.6.0",
         "typeorm": "^0.2.41"
     },

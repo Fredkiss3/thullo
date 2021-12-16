@@ -4,9 +4,11 @@ import {
     FieldErrors,
     Member
 } from '@thullo/domain';
+import short from 'short-uuid';
 import { container, injectable } from 'tsyringe';
 
 type OAuthData = {
+    id: string;
     login: string;
     name: string;
     email: string;
@@ -32,6 +34,7 @@ export class OAuthPresenterAdapter implements AuthenticateWithOauthPresenter {
         return member === null
             ? null
             : {
+                  id: short().fromUUID(member.id),
                   login: member.login,
                   name: member.name,
                   email: member.email!,

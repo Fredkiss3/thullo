@@ -35,13 +35,6 @@ export class AuthController extends AbstractController {
                 expiresIn: '7d', // 7 days
                 algorithm: 'HS256',
             });
-
-            // res.cookie('token', token, {
-            //     maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
-            //     httpOnly: true,
-            //     secure: true,
-            //     sameSite: 'none',
-            // });
         }
 
         return res.status(200).json({
