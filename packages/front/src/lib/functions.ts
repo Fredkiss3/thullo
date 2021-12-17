@@ -1,3 +1,4 @@
+import { USER_TOKEN } from './constants';
 import { ApiResult } from './types';
 
 export function parseQueryStringFromURL(url: string): {
@@ -29,10 +30,16 @@ export async function jsonFetch<T>(
     url: string,
     options: RequestInit = {}
 ): Promise<ApiResult<T>> {
-    const headers = {
-        ...options.headers,
-        'Content-Type': 'application/json',
-    };
+    // Set the default headers correctly
+    const headers: HeadersInit = new Headers(options.headers);
+    headers.set('Accept', 'application/json');
+    headers.set('Content-Type', 'application/json');
+
+    const user_token = getCookie(USER_TOKEN);
+
+    if (user_token) {
+        headers.set('Authorization', `Bearer ${user_token}`);
+    }
 
     // only wait in development mode
     if (import.meta.env.MODE === 'development') {
