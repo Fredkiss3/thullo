@@ -5,6 +5,7 @@ export interface Member {
     name: string;
     login: string;
     email?: string;
-    idToken?: string;
     avatarURL: string | null;
+    // Not needed for now
+    idToken?: string;
 }
