@@ -18,14 +18,6 @@ export class TypeORMMemberRepository
         return entity ? entity.toDomain() : null;
     }
 
-    getMemberByIdToken(idToken: string): Promise<Member | null> {
-        return Promise.resolve(null);
-    }
-
-    getMembersByLogin(login: string): Promise<Member[]> {
-        return Promise.resolve([]);
-    }
-
     async register(member: Member): Promise<void> {
         const entity = MemberEntity.fromDomain(member);
         await this.save(entity);
@@ -48,12 +40,14 @@ export class TypeORMMemberRepository
             where: {
                 $and: [
                     {
+                        // search by login or name case insensitive
                         $or: [
-                            { login: { $regex: `^${loginOrName}` } },
-                            { name: { $regex: `^${loginOrName}` } }
-                        ]
+                            { login: { $regex: loginOrName, $options: 'i' } },
+                            { name: { $regex: loginOrName, $options: 'i' } },
+                        ],
                     },
                     {
+                        // Exclude board members
                         uuid: {
                             $nin: board.participants.map(
                                 ({ member }) => member.id
@@ -62,8 +56,9 @@ export class TypeORMMemberRepository
                     }
                 ]
             },
+            // Order by login alphabetically
             order: {
-                login: 1
+                login: 'ASC'
             }
         });
 

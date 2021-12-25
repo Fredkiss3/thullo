@@ -19,8 +19,8 @@ rectangle Thullo {
     (Rechercher membres) as (searchMembers)
     (Ajouter membre au tableau) as (inviteMemberToBoard)
     (Retirer membre du tableau) as (removeMemberFromBoard)
-    (Promouvoir en tant qu'admin) as (GrantAdminRole)
-    (Retirer le role d'admin) as (RemoveAdminRole)
+'    (Promouvoir en tant qu'admin) as (GrantAdminRole)
+'    (Retirer le role d'admin) as (RemoveAdminRole)
     
     (Ajouter liste) as (addList)
     (Renommer liste) as (renameList)
@@ -68,8 +68,8 @@ rectangle Thullo {
     member -- (deleteAttachement)
 
     admin -- (removeMemberFromBoard)
-    admin -- (RemoveAdminRole)
-    (RemoveAdminRole) ..> (GrantAdminRole): << include >>
+'    admin -- (RemoveAdminRole)
+'    (RemoveAdminRole) ..> (GrantAdminRole): << include >>
     admin -- (renameBoard)
     admin -- (updateBoardDescription)
     admin -- (inviteMemberToBoard)
