@@ -14,7 +14,7 @@ export class AuthController extends AbstractController {
         super();
     }
 
-    // HTTP POST /api/boards
+    // HTTP POST /api/auth
     async handle(req: Request, res: Response): Promise<Response> {
         const useCase = new AuthenticateWithOauthUseCase(
             container.resolve('OAuthGateway'),
