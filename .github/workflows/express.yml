@@ -8,8 +8,6 @@ on:
   push:
     paths:
       - "packages/express/**"
-      - "packages/domain/src/**"
-      - "packages/adapters/src/**"
       - .github/workflows/express.yml
     branches:
       - develop
