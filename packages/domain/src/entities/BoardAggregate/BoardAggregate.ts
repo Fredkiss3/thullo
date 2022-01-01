@@ -5,8 +5,9 @@ import { List, ListId } from '../List';
 import { Member, MemberId } from '../Member';
 import { Participation } from '../Participation';
 import {
+    CardNotFoundError,
+    InvalidPositionError,
     ListNotFoundError,
-    ListPositionOutOfBoundsError,
     MemberAlreadyInBoardError,
     MemberNotInBoardError,
     OperationUnauthorizedError
@@ -37,6 +38,7 @@ export class BoardAggregate {
     }
 
     private orderCardsByLists(): void {
+        // Order the cards by list ids and position
         for (const list of this._data.lists) {
             this._cardsByListIds[list.id] = this._data.cards
                 .filter(({ parentListId }) => parentListId === list.id)
@@ -61,27 +63,13 @@ export class BoardAggregate {
         }
     }
 
-    addList(name: string, position?: number): ListId {
+    addList(name: string): ListId {
         const id = uuidv4();
-
-        if (position !== undefined) {
-            if (position < 0 || position > this._data.lists.length) {
-                throw new ListPositionOutOfBoundsError(
-                    'Position non autorisée'
-                );
-            }
-
-            for (const list of this._data.lists) {
-                if (list.position >= position) {
-                    list.position++;
-                }
-            }
-        }
 
         this._data.lists.push({
             id,
             boardId: this._board.id,
-            position: position ?? this._data.lists.length,
+            position: this._data.lists.length,
             name
         });
 
@@ -184,71 +172,72 @@ export class BoardAggregate {
         }
     }
 
-    grantPrivileges(
-        member: Member,
-        initiatorId: MemberId,
-        isAdmin: boolean = true
-    ) {
-        this.checkAdminOrThrowError(
-            initiatorId,
-            "Vous n'avez pas le droit de modifier les privilèges " +
-                "de cet utilisateur car vous n'êtes pas un admin sur ce tableau"
-        );
-
-        const participant = this._data.participants.find(
-            ({ member: { id } }) => id === member.id
-        );
-
-        if (participant === undefined) {
-            throw new MemberNotInBoardError(
-                "Ce membre n'est pas dans ce tableau"
-            );
-        } else {
-            participant.isAdmin = isAdmin;
-        }
-    }
-
     /**
      * move a card to another list and
      * change change the positions of cards which where
      * present in the old list
      */
     moveCard(
-        card: Card,
+        cardId: CardId,
         destinationListId: ListId,
         destinationPosition: number
     ) {
-        // check if list is present
-        const list = this.listsByIds[destinationListId];
+        // the list should exist
+        const list = this._cardsByListIds[destinationListId];
+
         if (list === undefined) {
             throw new ListNotFoundError(
                 "cette liste n'existe pas dans le tableau"
             );
         }
 
-        // change the positions of cards which where
-        // present in the old list
-        for (const cardInOldList of this.cardsByLists[card.parentListId]) {
-            if (cardInOldList.position > card.position) {
-                cardInOldList.position--;
+        // the card should exist
+        const cardToMove = this._data.cards.find(({ id }) => id === cardId);
+
+        if (cardToMove === undefined) {
+            throw new CardNotFoundError(
+                "cette carte n'existe pas dans le tableau"
+            );
+        }
+
+        // No negative position
+        if (destinationPosition < 0) {
+            throw new InvalidPositionError(
+                'La position de la carte doit être supérieure à 0'
+            );
+        }
+
+        // No position higher than the number of cards in the list
+        if (
+            destinationPosition > list.length ||
+            (cardToMove.parentListId === destinationListId &&
+                destinationPosition > list.length - 1)
+        ) {
+            throw new InvalidPositionError(
+                'La position de la carte doit être inférieure à la taille de la liste'
+            );
+        }
+
+        // update positions in the old list by moving all cards that were
+        // below the card to move up
+        for (const card of this._cardsByListIds[cardToMove.parentListId]) {
+            if (card.position > cardToMove.position) {
+                card.position--;
             }
         }
 
-        card.position = destinationPosition;
-
-        // Ignore update if the card is already in the destination list
-        if (card.parentListId !== destinationListId) {
-            // update the positions of cards which where
-            // present in the new list, so that they are in the right order
-            for (const cardInNewList of this.cardsByLists[destinationListId]) {
-                if (cardInNewList.position >= destinationPosition) {
-                    cardInNewList.position++;
-                }
+        // update positions in the new list by moving all cards that should be
+        // below the card to move down
+        for (const card of this._cardsByListIds[destinationListId]) {
+            if (card.position >= destinationPosition) {
+                card.position++;
             }
-
-            // move the card
-            card.parentListId = destinationListId;
         }
+
+        // move the card to the other list
+        // and update the position accordingly
+        cardToMove.parentListId = destinationListId;
+        cardToMove.position = destinationPosition;
 
         this.orderCardsByLists();
     }

@@ -28,6 +28,21 @@ export class OperationUnauthorizedError extends Error {
   }
 }
 
+export class InvalidPositionError extends Error {
+  constructor(message: string) {
+    super(message);
+
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, InvalidPositionError);
+    }
+
+    // For custom errors, we should explicitly set prototypes
+    // Or else it will considers this as an "Error"
+    Object.setPrototypeOf(this, InvalidPositionError.prototype);
+    this.name = 'InvalidPositionError';
+  }
+}
+
 export class ListNotFoundError extends Error {
   constructor(message: string) {
     super(message);
@@ -58,18 +73,17 @@ export class MemberNotInBoardError extends Error {
   }
 }
 
-
-export class ListPositionOutOfBoundsError extends Error {
+export class CardNotFoundError extends Error {
   constructor(message: string) {
     super(message);
 
     if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, ListPositionOutOfBoundsError);
+      Error.captureStackTrace(this, CardNotFoundError);
     }
 
     // For custom errors, we should explicitly set prototypes
     // Or else it will considers this as an "Error"
-    Object.setPrototypeOf(this, ListPositionOutOfBoundsError.prototype);
-    this.name = 'ListPositionOutOfBoundsError';
+    Object.setPrototypeOf(this, CardNotFoundError.prototype);
+    this.name = 'CardNotFoundError';
   }
 }
