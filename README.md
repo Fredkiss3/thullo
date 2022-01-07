@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://thullo-by-fredkiss.netlify.app">
+  <a href="https://thullo-front.netlify.app">
     <img alt="Logo Thullo" src="logo.png" width="200" />
   </a>
 </p>
@@ -90,7 +90,7 @@ A quick look at the top-level files and directories you will see in this project
    
     1. **`domain.yml`** : this workflow is used to test the domain.
    
-    2. **`express.yml`** : this workflow is used to deploy the express app to [vercel](https://vercel.com/).
+    2. **`express.yml`** : this workflow is used to deploy the express app to [heroku](https://heroku.com/).
    
     3. **`front.yml`** : this workflow is used to test and deploy the frontend app to [netlify](https://netlify.com/).
    
