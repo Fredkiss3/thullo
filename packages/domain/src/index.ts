@@ -22,6 +22,7 @@ export * from './usecases/SeeBoards';
 export * from './usecases/SetBoardVisibility';
 export * from './usecases/UpdateBoardDescription';
 export * from './usecases/RemoveMemberFromBoard';
+export * from './usecases/MoveCard';
 
 // Lib and builders
 export * from './builder/BoardAggregateBuilder';
