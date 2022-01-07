@@ -5,7 +5,6 @@ import { FieldErrors } from '../../lib/types';
 import Validator from 'validatorjs';
 import {
     BoardAggregateRepository,
-    ListPositionOutOfBoundsError
 } from '../../entities/BoardAggregate';
 import { List } from '../../entities/List';
 Validator.useLang('fr');
@@ -14,7 +13,6 @@ export class AddListToBoardUseCase {
     RULES = {
         name: 'required|string',
         boardId: 'required|string',
-        position: 'integer',
         requesterId: 'required|string'
     };
 
@@ -37,20 +35,9 @@ export class AddListToBoardUseCase {
                     requesterId: ["Vous n'êtes pas membre de ce tableau"]
                 };
             } else {
-                try {
-                    const id = boardAggregate.addList(
-                        request.name,
-                        request.position
-                    );
-                    list = boardAggregate.listsByIds[id];
-                    await this.repository.save(boardAggregate);
-                } catch (e) {
-                    if (e instanceof ListPositionOutOfBoundsError) {
-                        errors = {
-                            position: [(e as Error).message]
-                        };
-                    }
-                }
+                const id = boardAggregate.addList(request.name);
+                list = boardAggregate.listsByIds[id];
+                await this.repository.save(boardAggregate);
             }
         } else {
             errors = {

@@ -4,5 +4,4 @@ export interface AddListToBoardRequest {
   requesterId: MemberId;
   boardId: string;
   name: string;
-  position?: number;
 }
