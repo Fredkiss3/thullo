@@ -950,7 +950,7 @@ packages:
     peerDependencies:
       '@babel/core': ^7.0.0-0
     dependencies:
-      '@babel/core': 7.16.0
+      '@babel/core': 7.16.0_supports-color@8.1.1
       '@babel/helper-plugin-utils': 7.14.5
     dev: true
 
@@ -1014,7 +1014,7 @@ packages:
     peerDependencies:
       '@babel/core': ^7.0.0-0
     dependencies:
-      '@babel/core': 7.16.0
+      '@babel/core': 7.16.0_supports-color@8.1.1
       '@babel/helper-plugin-utils': 7.14.5
     dev: true
 
@@ -1042,7 +1042,7 @@ packages:
     peerDependencies:
       '@babel/core': ^7.0.0-0
     dependencies:
-      '@babel/core': 7.16.0
+      '@babel/core': 7.16.0_supports-color@8.1.1
       '@babel/helper-plugin-utils': 7.14.5
     dev: true
 
@@ -1051,7 +1051,7 @@ packages:
     peerDependencies:
       '@babel/core': ^7.0.0-0
     dependencies:
-      '@babel/core': 7.16.0
+      '@babel/core': 7.16.0_supports-color@8.1.1
       '@babel/helper-plugin-utils': 7.14.5
     dev: true
 
@@ -1060,7 +1060,7 @@ packages:
     peerDependencies:
       '@babel/core': ^7.0.0-0
     dependencies:
-      '@babel/core': 7.16.0
+      '@babel/core': 7.16.0_supports-color@8.1.1
       '@babel/helper-plugin-utils': 7.14.5
     dev: true
 
@@ -1069,7 +1069,7 @@ packages:
     peerDependencies:
       '@babel/core': ^7.0.0-0
     dependencies:
-      '@babel/core': 7.16.0
+      '@babel/core': 7.16.0_supports-color@8.1.1
       '@babel/helper-plugin-utils': 7.14.5
     dev: true
 
@@ -1078,7 +1078,7 @@ packages:
     peerDependencies:
       '@babel/core': ^7.0.0-0
     dependencies:
-      '@babel/core': 7.16.0
+      '@babel/core': 7.16.0_supports-color@8.1.1
       '@babel/helper-plugin-utils': 7.14.5
     dev: true
 
@@ -1087,7 +1087,7 @@ packages:
     peerDependencies:
       '@babel/core': ^7.0.0-0
     dependencies:
-      '@babel/core': 7.16.0
+      '@babel/core': 7.16.0_supports-color@8.1.1
       '@babel/helper-plugin-utils': 7.14.5
     dev: true
 
