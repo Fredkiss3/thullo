@@ -1,0 +1,52 @@
+@import '../base/variables';
+
+.login_pane {
+    border: 1px solid $borderColor;
+    padding: 60px;
+    max-width: 474px;
+    border-radius: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+
+    &__header {
+        display: flex;
+        flex-direction: column;
+        justify-content: start;
+        text-align: start;
+        gap: 1rem;
+
+        &__logo {
+            align-self: center;
+        }
+
+        h1 {
+            font-size: $titleFontSize;
+            font-weight: $fWSemiBold;
+        }
+
+        p {
+            font-size: $subtitleFontSize;
+        }
+    }
+
+    &__body {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    &__footer {
+        color: $secondaryColor;
+        &__username {
+            text-decoration: underline;
+        }
+    }
+}
+
+.main_login {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

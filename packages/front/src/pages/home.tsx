@@ -1,32 +1,29 @@
 import * as React from 'react';
-import { LinkButton } from '../components/linkbutton';
+import { useAuthenticatedUser } from "../lib/hooks";
+import { Loader } from '../components/loader';
+import { Layout } from '../components/Layout';
 import { Seo } from '../components/seo';
-import { useUserQuery } from '../lib/hooks';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export interface HomePageProps {}
 
 export const HomePage: React.FC<HomePageProps> = () => {
-    const { data: user, isLoading } = useUserQuery();
+    const { user, isLoading } = useAuthenticatedUser();
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (!isLoading) {
+          if (user) {
+            navigate('/dashboard');
+          }
+        }
+    }, [user, isLoading]);
 
     return (
-        <>
+        <Layout>
             <Seo />
-            <h1>Thullo</h1>
-            {isLoading ? (
-                <p>Loading...</p>
-            ) : (
-                <>
-                    {user ? (
-                        <LinkButton variant={'primary'} href={'/profile'}>
-                            Profil
-                        </LinkButton>
-                    ) : (
-                        <LinkButton variant={'outline'} href={'/login'}>
-                            Connexion
-                        </LinkButton>
-                    )}
-                </>
-            )}
-        </>
+            {isLoading && <Loader />}
+        </Layout>
     );
 };

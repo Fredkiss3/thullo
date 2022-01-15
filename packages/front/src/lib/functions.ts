@@ -43,7 +43,7 @@ export async function jsonFetch<T>(
 
     // only wait in development mode
     if (import.meta.env.MODE === 'development') {
-        await wait(Math.random() * 500);
+        await wait(1500);
     }
 
     return fetch(url, {

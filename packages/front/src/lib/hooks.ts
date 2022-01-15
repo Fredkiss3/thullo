@@ -3,16 +3,27 @@ import { useNavigate } from 'react-router-dom';
 import { USER_QUERY, USER_TOKEN } from './constants';
 import { deleteCookie, getCookie, jsonFetch, setCookie } from './functions';
 import { User } from './types';
+import { useErrorsContext } from '../context/ErrorContext';
 
-export const useUserQuery = () =>
-    useQuery<User>(
+export const useUserQuery = () => {
+    const { dispatch } = useErrorsContext();
+    return useQuery<User>(
         USER_QUERY,
         async () => {
             const { data, errors } = await jsonFetch<{ user: User } | null>(
-                `${import.meta.env.VITE_API_URL}/api/auth/me`
+                `${import.meta.env.VITE_API_URL}/api/auth/me`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${getCookie(USER_TOKEN)}`,
+                    },
+                }
             );
 
             if (errors) {
+                dispatch({
+                    type: 'ADD_ERRORS',
+                    errors,
+                });
                 throw new Error(JSON.stringify(errors));
             }
 
@@ -22,18 +33,17 @@ export const useUserQuery = () =>
             retry: 1,
         }
     );
+};
 
 export function useAuthenticatedUser(): {
     user: User;
     isLoading: boolean;
 } {
-    const { data, error, isLoading, status } = useUserQuery();
     const navigate = useNavigate();
+    const { data, isLoading, status } = useUserQuery();
 
     if (status === 'error') {
-        navigate(
-            `/login?errors=${encodeURIComponent((error as Error).message)}`
-        );
+        navigate(`/login`);
     }
     return {
         user: data!,
@@ -57,7 +67,7 @@ export function useLogoutMutation() {
                 queryClient.setQueryData(USER_QUERY, null);
             },
             onSettled: () => {
-                navigate('/');
+                navigate('/login');
             },
         }
     );
@@ -66,6 +76,7 @@ export function useLogoutMutation() {
 export function useLoginMutation() {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
+    const { dispatch } = useErrorsContext();
     return useMutation(
         (authCode: string | null) =>
             jsonFetch<{ token: string }>(
@@ -85,19 +96,19 @@ export function useLoginMutation() {
                     console.log('Set cookie', getCookie(USER_TOKEN));
                     navigate('/profile');
                 } else {
-                    navigate(
-                        `/login?errors=${encodeURIComponent(
-                            JSON.stringify(errors)
-                        )}`
-                    );
+                    dispatch({
+                        type: 'ADD_ERRORS',
+                        errors,
+                    });
+                    navigate(`/login`);
                 }
             },
             onError: (err, _, context) => {
-                navigate(
-                    `/login?errors=${encodeURIComponent(
-                        (err as Error).message
-                    )}`
-                );
+                dispatch({
+                    type: 'ADD_ERRORS',
+                    errors: JSON.parse((err as Error).message),
+                });
+                navigate(`/login`);
             },
         }
     );

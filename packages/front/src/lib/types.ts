@@ -1,6 +1,8 @@
-export type ApiErrors = {
-    [key: string]: [string];
-} | null;
+export type ApiErrors =
+    | ({
+          [key: string]: [string];
+      } & { global?: [string] })
+    | null;
 
 export interface ApiResult<T> {
     data: T;

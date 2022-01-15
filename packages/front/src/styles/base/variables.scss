@@ -1,0 +1,27 @@
+// Variant Colors
+$secondaryColor: #828282;
+$primaryColor: #2f80ed;
+$dangerColor: #eb5757;
+$successColor: #43ac6a;
+$warningColor: #ffc107;
+$infoColor: #00bcd4;
+$blackColor: #333333;
+
+// Other Colors
+$disabledColor: lighten($secondaryColor, 20%);
+$borderColor: #BDBDBD;
+$hollowColor: #f2f2f2;
+
+// Font Sizes
+$baseFontSize: 16px;
+$titleFontSize: 1.125rem; // 18px
+$subtitleFontSize: 1rem; // 16px
+$textFontSize: 0.875rem; // 14px
+$smallFontSize: 0.75rem; // 12px
+$smallerFontSize: 0.625rem; // 10px
+
+// Font Weights
+$fWLight: 300;
+$fWRegular: 400;
+$fWSemiBold: 600;
+$fWBold: 700;

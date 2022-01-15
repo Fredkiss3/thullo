@@ -1,0 +1,19 @@
+@import '../base/variables';
+
+.logo {
+    height: 2rem;
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+
+    &__text {
+        font-family: 'Poppins', sans-serif;
+        font-weight: $fWBold;
+        font-size: $titleFontSize;
+    }
+
+    &__image {
+        height: 100%;
+        object-fit: contain;
+    }
+}

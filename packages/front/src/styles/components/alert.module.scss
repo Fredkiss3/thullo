@@ -1,26 +1,33 @@
+@import "../base/variables";
+
 .alert {
   padding: 1rem 1rem;
   padding-right: 2.6rem;
   border: 1px solid transparent;
-  display: flex;
   border-radius: 8px;
   gap: 0.25rem;
-  align-items: flex-start;
+  display: flex;
+  align-items: center;
   position: relative;
 
-  .alert__icon {
-    height: 1.5rem;
+  &__icon_right {
+    height: 1.3rem;
     justify-self: flex-end;
   }
 
-  .alert__body {
+  &__icon_left {
+    min-width: 40px;
+    max-width: 40px;
+  }
+
+  &__body {
     margin: 0;
   }
 
-  .alert__close_btn {
+  &__close_btn {
     position: absolute;
     right: 0;
-    top: .5rem;
+    top: 0;
     display: flex;
     max-width: min-content;
     align-items: center;
@@ -35,10 +42,10 @@
 
 /* Alert Types */
 .alert--danger {
-  background-color: #eb5757;
+  background-color: $dangerColor;
   color: #fff;
 
-  .alert__icon {
+  .alert__icon_right {
     color: #fff;
   }
 }
