@@ -1,0 +1,19 @@
+@import '../base/variables';
+
+.footer {
+    width: 100%;
+    color: $secondaryColor;
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    justify-content: space-between;
+
+    &__username {
+        text-decoration: underline;
+        font-weight: $fWBold;
+    }
+
+    p {
+      font-size: $textFontSize;
+    }
+}

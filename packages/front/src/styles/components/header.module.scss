@@ -1,0 +1,79 @@
+@import '../base/variables';
+
+.header {
+    display: flex;
+    padding: 1rem;
+    margin: 0;
+    width: 100%;
+    align-items: center;
+    background: #fff;
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.05);
+    justify-content: space-between;
+
+    &__left {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+
+        &__logo {
+            display: flex;
+            align-items: center;
+        }
+
+        &__title {
+            margin-left: 5rem;
+            font-size: 1rem;
+            font-weight: $fWSemiBold;
+        }
+
+        &__divider {
+            width: 1px;
+            height: 2.5rem;
+            background: $borderColor;
+        }
+    }
+
+    &__right {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+    }
+
+    &__search_input {
+    }
+
+    &__avatar {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        gap: 1rem;
+        cursor: pointer;
+
+        &__image {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: $bRdMedium;
+            background-color: $borderColor;
+        }
+
+        &__name {
+            font-size: $smallFontSize;
+            font-weight: $fWBold;
+        }
+
+        &__icon {
+            height: 1.5rem;
+            width: 1.5rem;
+        }
+
+        &__dropdown {
+            display: none;
+        }
+
+        &:hover {
+            .header__avatar__dropdown {
+                display: block;
+            }
+        }
+    }
+}

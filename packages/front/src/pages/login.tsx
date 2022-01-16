@@ -29,7 +29,7 @@ export const LoginPage: React.FC<LoginPageProps> = (props) => {
     }
 
     return (
-        <Layout className={cls.main_login}>
+        <Layout className={cls.main_login} hideHeader hideFooter>
             <Seo title="Login" />
 
             <div className={cls.login_pane}>

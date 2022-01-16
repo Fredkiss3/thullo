@@ -15,6 +15,8 @@ export interface ButtonProps {
     disabled?: boolean;
     renderIcon?: (classNames: string) => JSX.Element;
     onClick?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+    className?: string;
+    size?: typeof ButtonSizes[number];
 }
 
 export const Button: React.FC<ButtonProps> = ({
@@ -23,13 +25,19 @@ export const Button: React.FC<ButtonProps> = ({
     disabled,
     renderIcon,
     onClick,
+    className,
+    size,
 }) => {
     return (
         <button
             onClick={onClick}
-            className={`${cls.btn} ${cls[`btn--${variant}`]} ${
-                disabled && cls['btn--disabled']
-            }`}
+            className={`
+                    ${cls.btn} 
+                    ${cls[`btn--${variant}`]} 
+                    ${cls[`btn--${size}`]}
+                    ${disabled && cls['btn--disabled']}
+                    ${className ?? ''}
+            `}
         >
             {renderIcon && renderIcon(cls.btn__icon)}
             {children}

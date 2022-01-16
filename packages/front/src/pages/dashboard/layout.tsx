@@ -6,7 +6,6 @@ export interface DashboardLayoutProps {}
 export const DashboardLayout: React.FC<DashboardLayoutProps> = ({}) => {
     return (
         <>
-            <nav>Thullo</nav>
             <Outlet />
         </>
     );

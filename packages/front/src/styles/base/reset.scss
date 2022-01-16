@@ -8,6 +8,23 @@ a {
     list-style: none;
 }
 
+ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+li {
+    list-style: none;
+}
+
+html,
+body {
+    width: 100%;
+    margin: 0;
+    background-color: #f8f9fd;
+}
+
 h1,
 h2,
 h3,
@@ -17,4 +34,23 @@ h6,
 p {
     font-weight: normal;
     margin: 0;
+}
+
+input {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border: none;
+    outline: none;
+    background: none;
+    font-size: 1rem;
+    font-family: inherit;
+    font-weight: inherit;
+    color: inherit;
+    padding: 0;
+    margin: 0;
+
+    &::placeholder {
+        color: #bdbdbd;
+    }
 }

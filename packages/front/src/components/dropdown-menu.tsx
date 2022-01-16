@@ -1,0 +1,102 @@
+import * as React from 'react';
+import { Dropdown, DropdownProps } from './dropdown';
+import { Icon, Icons } from './icon';
+
+import cls from '../styles/components/dropdown-menu.module.scss';
+import { Link } from 'react-router-dom';
+import { Button } from './button';
+
+export type DropdownMenuItem = {
+    label: string;
+    link: string;
+    icon: typeof Icons[number];
+};
+
+export type DropdownMenuButton = {
+    label: string;
+    icon: typeof Icons[number];
+    onClick?: () => void;
+    danger?: boolean;
+};
+
+export type DropdownDivider = {
+    divider: true;
+};
+
+function isDropdownDivider(
+    item: DropdownMenuItem | DropdownDivider | DropdownMenuButton
+): item is DropdownDivider {
+    return (item as DropdownDivider).divider;
+}
+
+function isDropdownMenuButton(
+    item: DropdownMenuItem | DropdownMenuButton | DropdownDivider
+): item is DropdownMenuButton {
+    return (item as DropdownMenuButton).onClick !== undefined;
+}
+
+function getComponentFromType(
+    item: DropdownMenuItem | DropdownDivider | DropdownMenuButton
+): React.ReactElement {
+    if (isDropdownDivider(item)) {
+        return <li className={cls.dropdown_menu__divider} />;
+    }
+
+    if (isDropdownMenuButton(item)) {
+        return (
+            <li className={cls.dropdown_menu__item}>
+                <Button
+                    onClick={item.onClick}
+                    className={`
+                        ${cls.dropdown_menu__item__button}
+                        ${
+                            item.danger
+                                ? cls[`dropdown_menu__item__button--danger`]
+                                : ''
+                        }
+                    `}
+                >
+                    <Icon
+                        icon={item.icon}
+                        className={cls.dropdown_menu__item__link__icon}
+                    />
+                    <span className={cls.dropdown_menu__item__link__label}>
+                        {item.label}
+                    </span>
+                </Button>
+            </li>
+        );
+    }
+
+    return (
+        <li className={cls.dropdown_menu__item}>
+            <Link to={item.link} className={cls.dropdown_menu__item__link}>
+                <Icon
+                    icon={item.icon}
+                    className={cls.dropdown_menu__item__link__icon}
+                />
+                <span className={cls.dropdown_menu__item__link__label}>
+                    {item.label}
+                </span>
+            </Link>
+        </li>
+    );
+}
+
+export type DropdownMenuProps = Omit<DropdownProps, 'children'> & {
+    items: (DropdownMenuItem | DropdownDivider | DropdownMenuButton)[];
+};
+
+export const DropdownMenu: React.FC<DropdownMenuProps> = ({
+    items,
+    align = 'left',
+    className,
+}) => {
+    return (
+        <Dropdown className={className} align={align}>
+            <ul className={cls.dropdown_menu}>
+                {items.map((item, i) => getComponentFromType(item))}
+            </ul>
+        </Dropdown>
+    );
+};

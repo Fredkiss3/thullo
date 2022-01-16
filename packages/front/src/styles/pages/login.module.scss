@@ -4,7 +4,7 @@
     border: 1px solid $borderColor;
     padding: 60px;
     max-width: 474px;
-    border-radius: 24px;
+    border-radius: $bRdXLarge;
     display: flex;
     flex-direction: column;
     gap: 2rem;

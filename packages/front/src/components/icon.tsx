@@ -1,6 +1,16 @@
 import { SVGProps } from 'react';
 
-export const Icons = ['google', 'github', 'x-icon', 'x-circle'] as const;
+export const Icons = [
+    'google',
+    'github',
+    'x-icon',
+    'x-circle',
+    'grid',
+    'chevron-down',
+    'chevron-up',
+    'logout',
+    'user',
+] as const;
 
 export interface IconProps {
     icon: typeof Icons[number];
@@ -17,10 +27,91 @@ export const Icon: React.FC<IconProps> = ({ icon, className }) => {
             return <XIconSVG className={className} />;
         case 'x-circle':
             return <XCircleSVG className={className} />;
+        case 'grid':
+            return <GridSVG className={className} />;
+        case 'chevron-down':
+            return <ChevronDownSVG className={className} />;
+        case 'chevron-up':
+            return <ChevronUpSVG className={className} />;
+        case 'logout':
+            return <LogoutSVG className={className} />;
+        case 'user':
+            return <UserSVG className={className} />;
         default:
             return null;
     }
 };
+
+const UserSVG = (props: SVGProps<SVGSVGElement>) => (
+    <svg
+        {...props}
+        fill="currentColor"
+        viewBox="0 0 20 20"
+        xmlns="http://www.w3.org/2000/svg"
+    >
+        <path
+            fillRule="evenodd"
+            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z"
+            clipRule="evenodd"
+        />
+    </svg>
+);
+const LogoutSVG = (props: SVGProps<SVGSVGElement>) => (
+    <svg
+        {...props}
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+    >
+        <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+        />
+    </svg>
+);
+
+const ChevronDownSVG = (props: SVGProps<SVGSVGElement>) => (
+    <svg
+        {...props}
+        fill="currentColor"
+        viewBox="0 0 20 20"
+        xmlns="http://www.w3.org/2000/svg"
+    >
+        <path
+            fillRule="evenodd"
+            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+            clipRule="evenodd"
+        />
+    </svg>
+);
+const ChevronUpSVG = (props: SVGProps<SVGSVGElement>) => (
+    <svg
+        {...props}
+        fill="currentColor"
+        viewBox="0 0 20 20"
+        xmlns="http://www.w3.org/2000/svg"
+    >
+        <path
+            fillRule="evenodd"
+            d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z"
+            clipRule="evenodd"
+        />
+    </svg>
+);
+
+const GridSVG = (props: SVGProps<SVGSVGElement>) => (
+    <svg
+        {...props}
+        fill="currentColor"
+        viewBox="0 0 20 20"
+        xmlns="http://www.w3.org/2000/svg"
+    >
+        <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+    </svg>
+);
 
 const XCircleSVG = (props: SVGProps<SVGSVGElement>) => (
     <svg

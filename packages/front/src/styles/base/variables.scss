@@ -11,6 +11,7 @@ $blackColor: #333333;
 $disabledColor: lighten($secondaryColor, 20%);
 $borderColor: #BDBDBD;
 $hollowColor: #f2f2f2;
+$dividerColor: #e0e0e0;
 
 // Font Sizes
 $baseFontSize: 16px;
@@ -25,3 +26,10 @@ $fWLight: 300;
 $fWRegular: 400;
 $fWSemiBold: 600;
 $fWBold: 700;
+
+// Border Radiuses
+$bRdXLarge: 24px;
+$bRdLarge: 12px;
+$bRdMedium: 8px;
+$bRdSmall: 4px;
+$bRdCircle: 50%;
