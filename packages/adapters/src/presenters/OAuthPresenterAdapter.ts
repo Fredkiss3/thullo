@@ -9,10 +9,6 @@ import { container, injectable } from 'tsyringe';
 
 type OAuthData = {
     id: string;
-    login: string;
-    name: string;
-    email: string;
-    avatarURL: string;
 };
 export interface OAuthViewModel {
     data: OAuthData | null;
@@ -34,11 +30,7 @@ export class OAuthPresenterAdapter implements AuthenticateWithOauthPresenter {
         return member === null
             ? null
             : {
-                  id: short().fromUUID(member.id),
-                  login: member.login,
-                  name: member.name,
-                  email: member.email!,
-                  avatarURL: member.avatarURL!
+                  id: short().fromUUID(member.id)
               };
     }
 }
