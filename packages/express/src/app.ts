@@ -23,14 +23,14 @@ app.use(addRequestId);
 morgan.token('id', (req: Request & { id: string }) => req.id.split('-')[0]);
 
 app.use(
-    morgan('[:date[iso] #:id] Started :method :url for :remote-addr', {
+    morgan('[:date[iso] #:id] Started \x1b[33m :method\x1b[0m \x1b[34m:url\x1b[0m for :remote-addr', {
         immediate: true,
     })
 );
 
 app.use(
     morgan(
-        '[:date[iso] #:id] Completed :status :res[content-length] in :response-time ms'
+        '[:date[iso] #:id] Completed in \x1b[36m:response-time ms\x1b[0m with status \x1b[32m:status\x1b[0m'
     )
 );
 
