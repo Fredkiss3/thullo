@@ -19,6 +19,12 @@ export class TypeORMBoardRepository
     }
 
     async getAllBoardsWhereMemberIsPresent(memberId: string): Promise<Board[]> {
-        return Promise.resolve([]);
+        const boards = await this.find({
+            where: {
+                'participants.member.uuid': memberId
+            }
+        });
+
+        return Promise.resolve(boards.map(board => board.toDomain()));
     }
 }
