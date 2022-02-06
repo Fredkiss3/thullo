@@ -11,7 +11,7 @@ export const authMiddleware = async (
     next: NextFunction
 ) => {
     // Get the token from the header which is formatted as: Bearer <token>
-    // Verify that the the header is correctly formatted before attempting to get the token
+    // Verify that the header is correctly formatted before attempting to get the token
     const header = req.headers.authorization;
 
     if (!header) {

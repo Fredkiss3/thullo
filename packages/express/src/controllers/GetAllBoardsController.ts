@@ -1,32 +1,31 @@
-import { AddBoardPresenterAdapter } from '@thullo/adapters';
-import { AddBoardUseCase } from '@thullo/domain';
+import { SeeBoardsPresenterAdapter } from '@thullo/adapters';
+import { SeeBoardsUseCase } from '@thullo/domain';
 import { Request, Response } from 'express';
 import { container, inject, injectable } from 'tsyringe';
 import { AbstractController } from './AbstractController';
 
 @injectable()
-export class AddBoardController extends AbstractController {
+export class GetAllBoardsController extends AbstractController {
     constructor(
-        @inject('AddBoardPresenter') private presenter: AddBoardPresenterAdapter
+        @inject('SeeBoardsPresenter')
+        private presenter: SeeBoardsPresenterAdapter
     ) {
         super();
     }
 
-    // HTTP POST /api/boards
+    // HTTP GET /api/boards
     async handle(req: Request, res: Response): Promise<Response> {
-        const useCase = new AddBoardUseCase(
+        const useCase = new SeeBoardsUseCase(
             await container.resolve('MemberRepository'),
             await container.resolve('BoardRepository')
         );
 
         await useCase.execute(
             {
-                ...req.body,
                 memberId: res.locals.user.id,
             },
             this.presenter
         );
-
-        return this.getResult(this.presenter.vm!, res, 201);
+        return this.getResult(this.presenter.vm!, res);
     }
 }
