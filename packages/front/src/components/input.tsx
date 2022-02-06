@@ -16,8 +16,8 @@ export const Input: React.FC<InputProps> = ({
 }) => {
     return (
         <div className={`${cls.input} ${className ?? ''}`}>
-            <input type={type} placeholder={placeholder} />
-            {trailingElement && <div>{trailingElement}</div>}
+            <input type={type} placeholder={placeholder} className={cls.input__field} />
+            {trailingElement && <div  className={cls.input__trailing}>{trailingElement}</div>}
         </div>
     );
 };

@@ -1,11 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useNavigate } from 'react-router-dom';
-import { USER_QUERY, USER_TOKEN } from './constants';
+import { USER_QUERY, USER_TOKEN, BOARD_QUERY } from './constants';
 import { deleteCookie, getCookie, jsonFetch, setCookie } from './functions';
-import { User } from './types';
+import { Board, User } from './types';
 import { useErrorsContext } from '../context/ErrorContext';
 
-export const useUserQuery = () => {
+export function useUserQuery() {
     const { dispatch } = useErrorsContext();
     return useQuery<User>(
         USER_QUERY,
@@ -33,7 +33,37 @@ export const useUserQuery = () => {
             retry: 1,
         }
     );
-};
+}
+
+export function useBoardsQuery() {
+    const { dispatch } = useErrorsContext();
+    return useQuery<Board[]>(
+        BOARD_QUERY,
+        async () => {
+            const { data, errors } = await jsonFetch<Board[]>(
+                `${import.meta.env.VITE_API_URL}/api/boards/`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${getCookie(USER_TOKEN)}`,
+                    },
+                }
+            );
+
+            if (errors) {
+                dispatch({
+                    type: 'ADD_ERRORS',
+                    errors,
+                });
+                throw new Error(JSON.stringify(errors));
+            }
+
+            return data;
+        },
+        {
+            retry: 1,
+        }
+    );
+}
 
 export function useAuthenticatedUser(): {
     user: User;

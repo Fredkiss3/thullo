@@ -38,7 +38,8 @@
             color: $dangerColor;
 
             &:hover {
-                background-color: transparentize($dangerColor, 0.9);
+                color: var(--danger-color) !important;
+                background-color: transparentize($dangerColor, 0.9) !important;
             }
         }
     }

@@ -15,3 +15,10 @@ export type User = {
     email: string;
     avatarURL: string;
 };
+
+export type Board = {
+    id: string;
+    name: string;
+    coverURL: string;
+    participants: Pick<User, 'name' | 'avatarURL'>[];
+};

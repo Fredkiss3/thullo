@@ -1,7 +1,27 @@
 @import '../base/variables';
 
 .input {
-  border-radius: $bRdMedium;
-  font-size: $textFontSize;
-  padding: .5rem;
+    border-radius: var(--border-radius-md);
+    font-size: var(--font-size-sm);
+    display: flex;
+    justify-content: space-between;
+    padding: 0.2rem;
+    min-width: 250px;
+    border: 1px solid var(--border-color);
+    background-color: var(--hollow-color);
+
+    &:focus-within {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        background-color: #ffffff;
+        border-color: var(--divider-color);
+    }
+
+    &__field {
+        padding: 0.5rem;
+        font-size: var(--font-size-sm);
+    }
+
+    &__trailing {
+        margin-left: 0.5rem;
+    }
 }

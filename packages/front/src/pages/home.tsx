@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useAuthenticatedUser } from "../lib/hooks";
+import { useAuthenticatedUser } from '../lib/hooks';
 import { Loader } from '../components/loader';
 import { Layout } from '../components/Layout';
 import { Seo } from '../components/seo';
@@ -14,16 +14,17 @@ export const HomePage: React.FC<HomePageProps> = () => {
 
     useEffect(() => {
         if (!isLoading) {
-          if (user) {
-            navigate('/dashboard');
-          }
+            if (user) {
+                navigate('/dashboard');
+            }
         }
     }, [user, isLoading]);
 
-    return (
+    return isLoading ? (
+        <Loader />
+    ) : (
         <Layout>
             <Seo />
-            {isLoading && <Loader />}
         </Layout>
     );
 };

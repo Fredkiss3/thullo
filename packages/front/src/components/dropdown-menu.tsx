@@ -95,7 +95,11 @@ export const DropdownMenu: React.FC<DropdownMenuProps> = ({
     return (
         <Dropdown className={className} align={align}>
             <ul className={cls.dropdown_menu}>
-                {items.map((item, i) => getComponentFromType(item))}
+                {items.map((item, i) => (
+                    <React.Fragment key={i}>
+                        {getComponentFromType(item)}
+                    </React.Fragment>
+                ))}
             </ul>
         </Dropdown>
     );

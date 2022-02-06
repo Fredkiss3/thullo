@@ -17,6 +17,7 @@ export interface ButtonProps {
     onClick?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
     className?: string;
     size?: typeof ButtonSizes[number];
+    isStatic?: boolean;
 }
 
 export const Button: React.FC<ButtonProps> = ({
@@ -27,6 +28,7 @@ export const Button: React.FC<ButtonProps> = ({
     onClick,
     className,
     size,
+    isStatic = false,
 }) => {
     return (
         <button
@@ -37,6 +39,7 @@ export const Button: React.FC<ButtonProps> = ({
                     ${cls[`btn--${size}`]}
                     ${disabled && cls['btn--disabled']}
                     ${className ?? ''}
+                    ${isStatic && cls['btn--static']}
             `}
         >
             {renderIcon && renderIcon(cls.btn__icon)}

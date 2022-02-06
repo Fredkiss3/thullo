@@ -11,13 +11,14 @@ import { DashboardIndex } from './pages/dashboard';
 import { DashboardLayout } from './pages/dashboard/layout';
 import { ErrorProvider, errorReducer } from './context/ErrorContext';
 import { useReducer } from 'react';
+import { DashboardDetails } from './pages/dashboard/board';
 
 const queryClient = new QueryClient({
     // do not refetch on window focus
     defaultOptions: {
         queries: {
             refetchOnWindowFocus: false,
-            staleTime: 3600,
+            staleTime: 3600_000,
         },
     },
 });
@@ -40,7 +41,11 @@ function App() {
                         <Route path="/callback" element={<CallBackPage />} />
                         <Route path="/profile" element={<ProfilePage />} />
                         <Route path="/dashboard" element={<DashboardLayout />}>
-                            <Route path="" element={<DashboardIndex />} />
+                            <Route index element={<DashboardIndex />} />
+                            <Route
+                                path=":boardId"
+                                element={<DashboardDetails />}
+                            />
                         </Route>
                         <Route path="*" element={<Error404Page />} />
                     </Routes>

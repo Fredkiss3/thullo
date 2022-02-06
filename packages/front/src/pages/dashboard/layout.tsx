@@ -1,12 +1,30 @@
 import * as React from 'react';
-import { Outlet, Link } from "react-router-dom";
+import { Outlet } from 'react-router-dom';
+import { Layout } from '../../components/Layout';
+import cls from '../../styles/pages/dashboard/layout.module.scss';
+import { useAuthenticatedUser } from '../../lib/hooks';
+import { Loader } from '../../components/loader';
 
 export interface DashboardLayoutProps {}
 
 export const DashboardLayout: React.FC<DashboardLayoutProps> = ({}) => {
+    const { isLoading } = useAuthenticatedUser();
+
+    // const { boardId } = useParams<{ boardId?: string }>();
+    // if (!boardId) {
+    //     // TODO : load board to get the name and pass it to the layour
+    // }
     return (
         <>
-            <Outlet />
+            {isLoading ? (
+                <Loader />
+            ) : (
+                <>
+                    <Layout className={cls.main}>
+                        <Outlet />
+                    </Layout>
+                </>
+            )}
         </>
     );
 };

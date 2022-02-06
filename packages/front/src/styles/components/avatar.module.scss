@@ -1,0 +1,18 @@
+.avatar {
+    background-color: var(--secondary-color);
+    border-radius: var(--border-radius-md);
+    height: 40px;
+    width: 40px;
+
+    &__image {
+        object-fit: cover;
+        object-position: center;
+        height: 40px;
+        width: 40px;
+        border-radius: var(--border-radius-md);
+    }
+
+    &__placeholder {
+        color: white;
+    }
+}

@@ -1,7 +1,19 @@
-@import '../base/variables';
+@import '../../base/variables';
 
 .header_section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+
+    h2 {
+        font-size: var(--font-size-xl);
+        font-family: 'Poppins', sans-serif;
+    }
 }
 
 .card_section {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
 }

@@ -6,7 +6,8 @@ import { LinkButton } from './linkbutton';
 import { Input } from './input';
 import { useAuthenticatedUser, useLogoutMutation } from '../lib/hooks';
 import { DropdownMenu } from './dropdown-menu';
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom';
+import { Button } from './button';
 
 export interface HeaderProps {
     currentPageTitle?: string;
@@ -45,6 +46,9 @@ export const Header: React.FC<HeaderProps> = ({ currentPageTitle }) => {
                 <Input
                     className={cls.header__search_input}
                     placeholder={'Keyword...'}
+                    trailingElement={
+                        <Button variant={`primary`} isStatic>Search</Button>
+                    }
                 />
                 <HeaderAvatar />
             </div>

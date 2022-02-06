@@ -78,3 +78,9 @@ export function deleteCookie(name: string): void {
     // Delete the cookie by setting the expiration date in the past
     document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
 }
+
+export function getInitials(name: string): string {
+    const words = name.split(' ');
+    const initials = words.map((word) => word[0]).join('');
+    return initials.slice(0, 2).toUpperCase();
+}

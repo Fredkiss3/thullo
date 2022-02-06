@@ -1,0 +1,47 @@
+.boardcard {
+    background-color: #fff;
+    border-radius: var(--border-radius-md);
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.05);
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+
+    &__cover {
+        background-color: var(--secondary-color);
+        border-radius: var(--border-radius-md);
+        height: 150px;
+        width: 250px;
+        object-fit: cover;
+        object-position: center;
+
+        &_skeleton {
+            height: 150px;
+            width: 250px;
+        }
+    }
+
+    &__title {
+        font-size: var(--font-size-lg);
+
+        &_skeleton {
+            height: 1rem;
+            border-radius: var(--border-radius-sm) !important;
+        }
+    }
+
+    &__avatar_list {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+
+        & &__avatar_skeleton {
+            height: 40px;
+            width: 40px;
+        }
+
+        &__more {
+            color: var(--secondary-color);
+        }
+    }
+}

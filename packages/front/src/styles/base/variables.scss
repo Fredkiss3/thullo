@@ -1,16 +1,27 @@
 // Variant Colors
 $secondaryColor: #828282;
+$secondaryColorOutline: rgba($secondaryColor, 0.5);
 $primaryColor: #2f80ed;
+$primaryColorOutline: rgba($primaryColor, 0.5);
 $dangerColor: #eb5757;
+$dangerColorOutline: rgba($dangerColor, 0.5);
 $successColor: #43ac6a;
+$successColorOutline: rgba($successColor, 0.5);
 $warningColor: #ffc107;
+$warningColorOutline: rgba($warningColor, 0.5);
 $infoColor: #00bcd4;
+$infoColorOutline: rgba($infoColor, 0.5);
+
 $blackColor: #333333;
+$blackColorOutline: rgba($blackColor, 0.5);
+
+$hollowColor: #f2f2f2;
+$hollowColorOutline: darken($hollowColor, 10%);
+$skeletonShimmerColor: rgba($secondaryColor, 0.1);
 
 // Other Colors
 $disabledColor: lighten($secondaryColor, 20%);
-$borderColor: #BDBDBD;
-$hollowColor: #f2f2f2;
+$borderColor: #bdbdbd;
 $dividerColor: #e0e0e0;
 
 // Font Sizes

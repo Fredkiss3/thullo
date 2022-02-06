@@ -1,3 +1,5 @@
+@import './variables';
+
 a {
     color: inherit;
     text-decoration: none;
@@ -23,6 +25,10 @@ body {
     width: 100%;
     margin: 0;
     background-color: #f8f9fd;
+}
+
+main {
+    width: 100%;
 }
 
 h1,
@@ -53,4 +59,53 @@ input {
     &::placeholder {
         color: #bdbdbd;
     }
+}
+
+:root {
+    // Variant Colors
+    --primary-color: #{$primaryColor};
+    --primary-color-outline: #{$primaryColorOutline};
+    --secondary-color: #{$secondaryColor};
+    --secondary-color-outline: #{$secondaryColorOutline};
+    --danger-color: #{$dangerColor};
+    --danger-color-outline: #{$dangerColorOutline};
+    --success-color: #{$successColor};
+    --success-color-outline: #{$successColorOutline};
+    --warning-color: #{$warningColor};
+    --warning-color-outline: #{$warningColorOutline};
+    --info-color: #{$infoColor};
+    --info-color-outline: #{$infoColorOutline};
+    --black-color: #{$blackColor};
+    --black-color-outline: #{$blackColorOutline};
+    --hollow-color: #{$hollowColor};
+    --hollow-color-outline: #{$hollowColorOutline};
+
+    --text-color: #{$blackColor};
+
+    // Other Colors
+    --divider-color: #{$dividerColor};
+    --border-color: #{$borderColor};
+    --disabled-color: #{$disabledColor};
+    --skeleton-shimmer-color: #{$skeletonShimmerColor};
+
+    // Font Sizes
+    --font-size-base: #{$baseFontSize};
+    --font-size-xs: #{$smallerFontSize};
+    --font-size-sm: #{$smallFontSize};
+    --font-size-md: #{$textFontSize};
+    --font-size-lg: #{$subtitleFontSize};
+    --font-size-xl: #{$titleFontSize};
+
+    // Font Weights
+    --font-weight-bold: #{$fWBold};
+    --font-weight-semi: #{$fWSemiBold};
+    --font-weight-regular: #{$fWRegular};
+    --font-weight-light: #{$fWLight};
+
+    // Border Radiuses
+    --border-radius-full: #{$bRdCircle};
+    --border-radius-sm: #{$bRdSmall};
+    --border-radius-md: #{$bRdMedium};
+    --border-radius-lg: #{$bRdLarge};
+    --border-radius-xl: #{$bRdXLarge};
 }

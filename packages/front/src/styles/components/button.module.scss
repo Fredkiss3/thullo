@@ -8,11 +8,31 @@
     padding: 0.5rem 1rem;
     text-decoration: none;
     gap: 0.5rem;
-    border: 1px solid transparent;
-    background-color: transparent;
     cursor: pointer;
     justify-content: center;
-    font-size: $textFontSize;
+    flex-shrink: 0;
+    font-size: var(--font-size-md);
+
+    --bg-color: transparent;
+    --outline-color: transparent;
+    --hover-bg-color: #fff;
+    --fg-color: var(--text-color);
+
+    color: var(--fg-color);
+    background-color: var(--bg-color);
+    border: 1px solid var(--bg-color);
+
+    &:focus,
+    &:active {
+        outline: none;
+        box-shadow: 0 0 0 0.25rem var(--outline-color);
+    }
+
+    &:hover:not(.btn--static) {
+        background-color: var(--hover-bg-color);
+        color: var(--bg-color);
+        border: 1px solid var(--bg-color);
+    }
 
     /* Button Elements */
     &__icon {
@@ -22,60 +42,48 @@
 
 /* Button Variants */
 .btn--primary {
-    border: 1px solid $primaryColor;
-    background-color: $primaryColor;
-    color: #fff;
-
-    &:hover {
-        background-color: #fff;
-        color: $primaryColor;
-        border: 1px solid $primaryColor;
-    }
+    --bg-color: var(--primary-color);
+    --fg-color: #fff;
+    --outline-color: var(--primary-color-outline);
 }
 
 .btn--outline {
-    border: 1px solid $secondaryColor;
-    color: $secondaryColor;
+    border: 1px solid var(--secondary-color);
+    color: var(--secondary-color);
     background-color: transparent;
 
-    &:hover {
-        background-color: $secondaryColor;
+    &:focus,
+    &:active {
+        box-shadow: 0 0 0 0.25rem rgba($secondaryColor, 50%);
+    }
+
+    &:hover:not(.btn--static) {
+        background-color: var(--secondary-color);
         color: #fff;
     }
 }
 
 .btn--hollow {
-    border: 1px solid $hollowColor;
-    background-color: $hollowColor;
-    color: #828282;
+    --bg-color: var(--hollow-color);
+    --fg-color: #828282;
+    --outline-color: var(--hollow-color-outline);
 
-    &:hover {
-        background-color: darken($hollowColor, 10%);
-        border: 1px solid darken($hollowColor, 10%);
+    &:hover:not(.btn--static) {
+        color: var(--fg-color);
+        border: 1px solid var(--secondary-color);
     }
 }
 
 .btn--danger {
-    border: 1px solid $dangerColor;
-    background-color: $dangerColor;
-    color: #fff;
-
-    &:hover {
-        background-color: transparent;
-        border: 1px solid $dangerColor;
-        color: $dangerColor;
-    }
+    --bg-color: var(--danger-color);
+    --fg-color: #fff;
+    --outline-color: var(--danger-color-outline);
 }
 
-.btn--black {
-    background-color: $blackColor;
-    color: #fff;
-    border: 1px solid $blackColor;
-
-    &:hover {
-        color: $blackColor;
-        background-color: transparent;
-    }
+.btn--black:not(.btn--static) {
+    --bg-color: var(--black-color);
+    --fg-color: #fff;
+    --outline-color: var(--black-color-outline);
 }
 
 .btn--block {
@@ -97,14 +105,16 @@
 
 /* Button States */
 .btn--disabled {
-    background-color: $disabledColor;
-    border: 1px solid $disabledColor;
+    background-color: var(--disabled-color);
+    border: 1px solid var(--disabled-color);
     color: #fff;
     cursor: not-allowed;
 
-    &:hover {
-        background-color:  $disabledColor;
-        border: 1px solid  $disabledColor;
+    &:hover,
+    &:focus,
+    &:active {
+        background-color: var(--disabled-color);
+        border: 1px solid var(--disabled-color);
         color: #fff;
     }
 }
