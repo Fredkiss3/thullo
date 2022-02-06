@@ -2,6 +2,8 @@ import { SeeBoardsPresenter, SeeBoardsResponse, Board } from '@thullo/domain';
 import { container, injectable } from 'tsyringe';
 import { FieldErrors } from '@thullo/domain';
 
+import short from 'short-uuid';
+
 type BoardData = Array<{
     id: string;
     name: string;
@@ -32,7 +34,7 @@ export class SeeBoardsPresenterAdapter implements SeeBoardsPresenter {
         return boards === null
             ? null
             : boards.map(board => ({
-                  id: board.id,
+                  id: short().fromUUID(board.id),
                   name: board.name,
                   coverURL: board.coverURL,
                   participants: board.participants.map(({ member }) => ({
