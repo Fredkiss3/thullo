@@ -6,7 +6,10 @@ import { GetAllBoardsController } from '../controllers/GetAllBoardsController';
 
 const Router = router();
 
-Router.post('/create', authMiddleware, getController(AddBoardController));
-Router.get('/', authMiddleware, getController(GetAllBoardsController));
+Router.post('/', authMiddleware, getController(AddBoardController)).get(
+    '/',
+    authMiddleware,
+    getController(GetAllBoardsController)
+);
 
 export { Router as boardRouter };
