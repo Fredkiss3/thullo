@@ -1,10 +1,8 @@
-@import '../base/variables';
-
 .login_pane {
-    border: 1px solid $borderColor;
+    border: 1px solid var(--border-color);
     padding: 60px;
     max-width: 474px;
-    border-radius: $bRdXLarge;
+    border-radius: var(--border-radius-xl);
     display: flex;
     flex-direction: column;
     gap: 2rem;
@@ -21,12 +19,12 @@
         }
 
         h1 {
-            font-size: $titleFontSize;
-            font-weight: $fWSemiBold;
+            font-size: var(--font-size-xl);
+            font-weight: var(--font-weight-semi);
         }
 
         p {
-            font-size: $subtitleFontSize;
+            font-size: var(--font-size-lg);
         }
     }
 
@@ -37,7 +35,7 @@
     }
 
     &__footer {
-        color: $secondaryColor;
+        color: var(--secondary-color);
         &__username {
             text-decoration: underline;
         }

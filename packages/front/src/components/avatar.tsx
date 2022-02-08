@@ -13,7 +13,7 @@ export const Avatar: React.FC<AvatarProps> = ({
     className,
     name,
 }) => (
-    <div className={cls.avatar}>
+    <div className={`${cls.avatar} ${className ?? ''}`}>
         {photoURL ? (
             <img
                 src={photoURL}

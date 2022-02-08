@@ -7,8 +7,8 @@
     &__image {
         object-fit: cover;
         object-position: center;
-        height: 40px;
-        width: 40px;
+        height: 100%;
+        width: 100%;
         border-radius: var(--border-radius-md);
     }
 
