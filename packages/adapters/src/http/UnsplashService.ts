@@ -1,6 +1,4 @@
-import type { AxiosError, AxiosResponse } from 'axios';
-import axios from 'axios';
-import { container } from "tsyringe";
+import axios from "axios";
 
 export type Photo = {
   id: string;
@@ -20,8 +18,7 @@ export class UnsplashService {
     const url = `${this.baseUrl}/photos/random?client_id=${this.apiKey}`;
     const params = query ? `&query=${query}` : '';
     const response = await axios.get(`${url}${params}`);
-    const photo = await this.getPhoto(response.data.id);
-    return photo;
+    return await this.getPhoto(response.data.id);
   }
 
   public async getPhoto(id: string): Promise<Photo> {
