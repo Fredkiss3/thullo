@@ -1,3 +1,4 @@
+import { UnsplashPhotoBuilder } from './../builder/UnsplashPhotoBuilder';
 import {
     SearchMembersRequest,
     SearchMembersUseCase,
@@ -50,7 +51,7 @@ describe('SearchMembers Use case', () => {
                     name: 'Board name',
                     description: 'Board description',
                     participants: [],
-                    coverURL: 'https://www.photos.com/board-cover.png',
+                    cover: new UnsplashPhotoBuilder().build(),
                     private: false
                 };
             })
@@ -112,7 +113,7 @@ describe('SearchMembers Use case', () => {
                     name: 'Board name',
                     description: 'Board description',
                     participants: [],
-                    coverURL: 'https://www.photos.com/board-cover.png',
+                    cover: new UnsplashPhotoBuilder().build(),
                     private: false
                 };
             })
@@ -221,8 +222,7 @@ describe('SearchMembers Use case', () => {
                                 name: 'Board name',
                                 description: 'Board description',
                                 participants: [],
-                                coverURL:
-                                    'https://www.photos.com/board-cover.png',
+                                cover: new UnsplashPhotoBuilder().build(),
                                 private: false
                             };
                         })

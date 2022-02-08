@@ -10,6 +10,7 @@ import { memberRouter } from './routes/member';
 import requesterId from 'express-request-id';
 import morgan from 'morgan';
 import type { Request } from 'express';
+import { unsplashRouter } from './routes/unsplash';
 
 const app = express();
 
@@ -23,9 +24,12 @@ app.use(addRequestId);
 morgan.token('id', (req: Request & { id: string }) => req.id.split('-')[0]);
 
 app.use(
-    morgan('[:date[iso] #:id] Started \x1b[33m :method\x1b[0m \x1b[34m:url\x1b[0m for :remote-addr', {
-        immediate: true,
-    })
+    morgan(
+        '[:date[iso] #:id] Started \x1b[33m :method\x1b[0m \x1b[34m:url\x1b[0m for :remote-addr',
+        {
+            immediate: true,
+        }
+    )
 );
 
 app.use(
@@ -48,6 +52,7 @@ app.use(express.json());
 /* =================================================== */
 /* ====================== ROUTES ===================== */
 /* =================================================== */
+app.use('/api/proxy/unsplash', unsplashRouter);
 app.use('/api/boards', boardRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/members', memberRouter);

@@ -28,6 +28,6 @@ export class SearchMemberController extends AbstractController {
             },
             this.presenter
         );
-        return res.status(201).json(this.presenter.vm);
+        return this.getResult(this.presenter.vm!, res, 200);
     }
 }

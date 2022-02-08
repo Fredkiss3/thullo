@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { FieldErrors } from '@thullo/domain';
+import { ApiResult } from "../../lib/types";
 
 export abstract class AbstractController {
     abstract handle(
@@ -8,7 +8,7 @@ export abstract class AbstractController {
         next?: NextFunction
     ): Promise<Response>;
 
-    getResult<T extends { errors: FieldErrors }>(
+    getResult<T extends ApiResult<unknown>>(
         vm: T,
         res: Response,
         successCode: number = 200

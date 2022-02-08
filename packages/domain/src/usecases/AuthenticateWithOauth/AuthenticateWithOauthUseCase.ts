@@ -36,7 +36,7 @@ export class AuthenticateWithOauthUseCase {
                     authCode: [
                         "Une erreur d'authentification est survenue " +
                             "(Code d'accès invalide), " +
-                            "veuillez vous recommencer l'opération."
+                            "veuillez recommencer l'opération."
                     ]
                 };
             } else {
@@ -50,7 +50,7 @@ export class AuthenticateWithOauthUseCase {
                         global: [
                             "Une erreur d'authentification est survenue, " +
                                 '(invalid accessToken or invalid idToken)' +
-                                "veuillez vous recommencer l'opération."
+                                "veuillez recommencer l'opération."
                         ]
                     };
                 } else {

@@ -1,5 +1,5 @@
 export interface AddBoardRequest {
-  coverURL: string;
+  coverPhotoId: string;
   name: string;
   private: boolean;
   memberId: string;

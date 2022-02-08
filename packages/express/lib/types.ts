@@ -1,10 +1,7 @@
-export type ApiErrors =
-    | ({
-          [key: string]: [string];
-      } & { global?: [string] })
-    | null;
+import { FieldErrors } from "@thullo/domain";
 
-export interface ApiResult<T> {
+
+export type ApiResult<T> = {
     data: T;
-    errors: ApiErrors;
+    errors: FieldErrors;
 }

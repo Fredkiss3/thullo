@@ -11,6 +11,7 @@ import {
 import { v4 as uuidv4 } from 'uuid';
 import { MemberRepositoryBuilder } from '../builder/MemberRepositoryBuilder';
 import { BoardRepositoryBuilder } from '../builder/BoardRepositoryBuilder';
+import { UnsplashPhotoBuilder } from '../builder/UnsplashPhotoBuilder';
 
 /**
  * =========================
@@ -52,7 +53,7 @@ const boardsExpected: Board[] = [
     {
         id: uuidv4(),
         name: 'Gods Tournament',
-        coverURL: 'tournament.png',
+        cover: new UnsplashPhotoBuilder().build(),
         private: false,
         description: 'The only tournament to kill all the gods 👿',
         participants: Object.values(participants).map((m) => ({
@@ -63,7 +64,7 @@ const boardsExpected: Board[] = [
     {
         id: uuidv4(),
         name: 'All my Beautiful human wives',
-        coverURL: 'sexy-lady.png',
+        cover: new UnsplashPhotoBuilder().build(),
         private: true,
         description: 'I love them so much !',
         participants: []

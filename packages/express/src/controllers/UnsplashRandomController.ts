@@ -4,35 +4,25 @@ import { container, injectable } from 'tsyringe';
 import { UnsplashGateway } from '@thullo/domain';
 
 @injectable()
-export class UnsplashSearchController extends AbstractController {
+export class UnsplashRandomController extends AbstractController {
     constructor() {
         super();
     }
 
-    // GET /api/proxy/unsplash/search?query=:query
+    // GET /api/proxy/unsplash/random
     async handle(
         req: Request,
         res: Response,
         next?: NextFunction
     ): Promise<Response> {
         const service: UnsplashGateway = container.resolve('UnsplashGateway');
-        const { query } = req.query;
 
-        let data = null;
-        let errors = null;
-
-        if (!query) {
-            errors = {
-                query: ['la requête est requise'],
-            };
-        } else {
-            data = await service.searchPhotos(query.toString());
-        }
+        const data = await service.getRandomPhoto();
 
         return this.getResult(
             {
                 data,
-                errors,
+                errors: null,
             },
             res
         );

@@ -10,6 +10,7 @@ export interface Card {
     parentListId: ListId;
     position: number;
     coverURL: string | null;
+    coverId?: string;
     description: string;
     title: string;
     attachments: Attachment[];

@@ -37,9 +37,12 @@ export class AuthController extends AbstractController {
             });
         }
 
-        return res.status(200).json({
-            data: token == null ? null : { token },
-            errors: this.presenter.vm?.errors,
-        });
+        return this.getResult(
+            {
+                data: token == null ? null : { token },
+                errors: this.presenter.vm?.errors ?? null,
+            },
+            res
+        );
     }
 }

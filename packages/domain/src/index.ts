@@ -27,4 +27,5 @@ export * from './usecases/MoveCard';
 // Lib and builders
 export * from './builder/BoardAggregateBuilder';
 export * from './lib/OAuthGateway';
+export * from './lib/UnsplashGateway';
 export * from './lib/types';

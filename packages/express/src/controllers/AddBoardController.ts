@@ -16,7 +16,8 @@ export class AddBoardController extends AbstractController {
     async handle(req: Request, res: Response): Promise<Response> {
         const useCase = new AddBoardUseCase(
             await container.resolve('MemberRepository'),
-            await container.resolve('BoardRepository')
+            await container.resolve('BoardRepository'),
+            await container.resolve('UnsplashGateway')
         );
 
         await useCase.execute(

@@ -9,8 +9,10 @@ import {
     Board
 } from '@thullo/domain';
 import { v4 as uuidv4 } from 'uuid';
-import { MemberRepositoryBuilder } from "../builder/MemberRepositoryBuilder";
-import { BoardRepositoryBuilder } from "../builder/BoardRepositoryBuilder";
+import { MemberRepositoryBuilder } from '../builder/MemberRepositoryBuilder';
+import { BoardRepositoryBuilder } from '../builder/BoardRepositoryBuilder';
+import { UnsplashGatewayBuilder } from '../builder/UnsplashGatewayBuilder';
+import { UnsplashPhotoBuilder } from '../builder/UnsplashPhotoBuilder';
 
 const presenter = new (class implements AddBoardPresenter {
     response?: AddBoardResponse | null;
@@ -29,14 +31,14 @@ const zeus: Member = {
 
 const request: AddBoardRequest = {
     name: 'Olympus Reunion',
-    coverURL: 'https://placekitten.com/200/300',
+    coverPhotoId: uuidv4(),
     private: true,
     memberId: zeus.id
 };
 
 const boardExpected: Omit<Board, 'id'> = {
     name: request.name,
-    coverURL: request.coverURL,
+    cover: new UnsplashPhotoBuilder().build(),
     private: request.private,
     description: null,
     participants: [
@@ -62,7 +64,15 @@ describe('AddBoard Use case', () => {
             })
             .build();
 
-        const useCase = new AddBoardUseCase(memberRepo, boardRepo);
+        const unsplashGateway = new UnsplashGatewayBuilder()
+            .withGetPhoto(async () => new UnsplashPhotoBuilder().build())
+            .build();
+
+        const useCase = new AddBoardUseCase(
+            memberRepo,
+            boardRepo,
+            unsplashGateway
+        );
 
         // When
         await useCase.execute(request, presenter);
@@ -88,7 +98,15 @@ describe('AddBoard Use case', () => {
             })
             .build();
 
-        const useCase = new AddBoardUseCase(memberRepo, boardRepo);
+        const unsplashGateway = new UnsplashGatewayBuilder()
+            .withGetPhoto(async () => new UnsplashPhotoBuilder().build())
+            .build();
+
+        const useCase = new AddBoardUseCase(
+            memberRepo,
+            boardRepo,
+            unsplashGateway
+        );
 
         // When
         await useCase.execute(request, presenter);
@@ -98,6 +116,40 @@ describe('AddBoard Use case', () => {
         expect(presenter.response?.errors?.memberId).toContainEqual(
             "Cet utilisateur n'existe pas"
         );
+        expect(boardResult).toBe(null);
+        expect(presenter.response!.board).toBe(null);
+    });
+
+    it('Shows error & does not add to repo if coverPhotoId is invalid', async () => {
+        // Given
+        let boardResult: Board | null = null;
+        const memberRepo: MemberRepository = new MemberRepositoryBuilder()
+            .withGetMemberById(async () => zeus)
+            .build();
+
+        const boardRepo: BoardRepository = new BoardRepositoryBuilder()
+            .withAddBoard(async (board) => {
+                boardResult = board;
+                return board;
+            })
+            .build();
+
+        const unsplashGateway = new UnsplashGatewayBuilder()
+            .withGetPhoto(async () => null)
+            .build();
+
+        const useCase = new AddBoardUseCase(
+            memberRepo,
+            boardRepo,
+            unsplashGateway
+        );
+
+        // When
+        await useCase.execute(request, presenter);
+
+        // Then
+        expect(presenter.response?.errors).not.toBe(null);
+        expect(presenter.response?.errors?.coverPhotoId).toHaveLength(1);
         expect(boardResult).toBe(null);
         expect(presenter.response!.board).toBe(null);
     });
@@ -115,18 +167,11 @@ describe('AddBoard Use case', () => {
                 label: 'cover empty',
                 request: {
                     ...request,
-                    coverURL: ''
+                    coverPhotoId: ''
                 }
             },
             {
-                label: 'cover not an URL',
-                request: {
-                    ...request,
-                    coverURL: 'hello'
-                }
-            },
-            {
-                label: 'ownerId empty',
+                label: 'memberId empty',
                 request: {
                     ...request,
                     memberId: ''
@@ -153,7 +198,17 @@ describe('AddBoard Use case', () => {
                     })
                     .build();
 
-                const useCase = new AddBoardUseCase(memberRepo, boardRepo);
+                const unsplashGateway = new UnsplashGatewayBuilder()
+                    .withGetPhoto(async () =>
+                        new UnsplashPhotoBuilder().build()
+                    )
+                    .build();
+
+                const useCase = new AddBoardUseCase(
+                    memberRepo,
+                    boardRepo,
+                    unsplashGateway
+                );
 
                 // When
                 await useCase.execute(request, presenter);

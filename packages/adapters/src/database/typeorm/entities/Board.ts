@@ -37,12 +37,8 @@ export class BoardEntity extends BaseEntity<Board> {
     @Column()
     name?: string;
 
-    @Column()
-    coverURL?: string;
-
-    // TODO
-    // @Column(type => UnsplashMetadataEntity)
-    // unsplashMetadata?: UnsplashMetadataEntity;
+    @Column(_ => UnsplashMetadataEntity)
+    cover?: UnsplashMetadataEntity;
 
     @Column({
         nullable: true
@@ -52,16 +48,14 @@ export class BoardEntity extends BaseEntity<Board> {
     @Column()
     private?: boolean;
 
-    @Column(type => ParticipationEntity)
+    @Column(_ => ParticipationEntity)
     participants?: ParticipationEntity[] = [];
 
     toDomain(): Board {
         return {
             id: this.uuid!,
             name: this.name!,
-            coverURL:
-                this.coverURL ??
-                `https://picsum.photos/seed/${this.uuid!}/800/800`,
+            cover: this.cover!.toDomain(),
             description: this.description!,
             private: this.private!,
             participants: this.participants!.map(participant =>
@@ -75,8 +69,7 @@ export class BoardEntity extends BaseEntity<Board> {
         boardEntity.uuid = board.id;
         boardEntity.name = board.name;
 
-        // TODO: Load metadata from unsplash
-        // boardEntity.coverURL = board.coverURL;
+        boardEntity.cover = UnsplashMetadataEntity.fromDomain(board.cover);
         boardEntity.description = board.description;
         boardEntity.private = board.private;
         boardEntity.participants = board.participants.map(participant =>
