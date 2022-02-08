@@ -33,6 +33,7 @@ export const BoardCard: React.FC<BoardCardProps> = ({ board }) =>
             </ul>
         </Link>
     ) : (
+        // Skeleton state
         <div className={cls.boardcard}>
             <Skeleton className={cls.boardcard__cover_skeleton} as="div" />
             <Skeleton className={cls.boardcard__title_skeleton} as="h3" />

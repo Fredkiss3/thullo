@@ -34,10 +34,12 @@ export const DashboardIndex: React.FC<DashboardIndexProps> = ({}) => {
                         <BoardCard />
                         <BoardCard />
                     </>
-                ) : (
+                ) : data!.length > 0 ? (
                     data!.map((board) => (
-                        <BoardCard board={board} key={board.id} />
+                        <BoardCard key={board.id} board={board} />
                     ))
+                ) : (
+                    <p className={cls.card_section__empty}>No boards yet</p>
                 )}
             </section>
         </>
