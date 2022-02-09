@@ -28,7 +28,6 @@ export type ApiPhoto = {
 export class UnsplashService implements UnsplashGateway {
     constructor(
         private apiKey: string,
-        private cloudinaryAssetURL: string,
         private perPage: number = 12,
         private baseURL: string = 'https://api.unsplash.com'
     ) {}
@@ -163,8 +162,5 @@ export class UnsplashService implements UnsplashGateway {
 }
 
 container.register('UnsplashGateway', {
-    useValue: new UnsplashService(
-        process.env.UNSPLASH_API_KEY!,
-        process.env.CLOUDINARY_ASSET_URL!
-    )
+    useValue: new UnsplashService(process.env.UNSPLASH_API_KEY!)
 });
