@@ -176,6 +176,30 @@ export function useAddBoardMutation() {
             return { board: data!, onSuccess };
         },
         {
+            onMutate: async ({ board, onSuccess }) => {
+                // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
+                await queryClient.cancelQueries(BOARD_QUERY);
+
+                // Add the board to the cache
+                const data = queryClient.getQueryData<Board[]>(BOARD_QUERY);
+                const user = queryClient.getQueryData<User>(USER_QUERY);
+
+                queryClient.setQueryData<Board[]>(BOARD_QUERY, [
+                    ...data!,
+                    {
+                        name: board.name,
+                        cover: {
+                            url: board.coverPhotoUrl,
+                        },
+                        participants: [
+                            {
+                                name: user!.name,
+                                avatarURL: user!.avatarURL,
+                            },
+                        ],
+                    },
+                ]);
+            },
             onSuccess: (ctx) => {
                 queryClient.invalidateQueries(BOARD_QUERY);
                 ctx.onSuccess();

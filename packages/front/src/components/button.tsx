@@ -51,6 +51,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             <button
                 ref={ref}
                 type={type}
+                disabled={disabled}
                 onClick={onClick}
                 aria-label={ariaLabel}
                 className={`

@@ -7,11 +7,12 @@ import { Skeleton } from './skeleton';
 
 export interface BoardCardProps {
     board?: Board;
+    loading?: boolean;
 }
 
-export const BoardCard: React.FC<BoardCardProps> = ({ board }) =>
-    board ? (
-        <Link className={cls.boardcard} to={board.id}>
+export const BoardCard: React.FC<BoardCardProps> = ({ board, loading }) =>
+    !loading && board ? (
+        <Link className={cls.boardcard} to={board.id!}>
             <img
                 className={cls.boardcard__cover}
                 src={board.cover.url}

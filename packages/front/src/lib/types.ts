@@ -17,12 +17,10 @@ export type User = {
 };
 
 export type Board = {
-    id: string;
+    id?: string;
     name: string;
     cover: {
         url: string;
-        authorName: string;
-        authorUserName: string;
     };
     participants: Array<{
         name: string;
@@ -33,5 +31,6 @@ export type Board = {
 export type AddBoardRequest = {
     name: string;
     coverPhotoId: string;
+    coverPhotoUrl: string;
     private: boolean;
 }

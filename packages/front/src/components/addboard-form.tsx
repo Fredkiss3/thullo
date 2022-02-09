@@ -57,6 +57,7 @@ export const AddBoardForm = React.forwardRef<
                 name: boardName,
                 private: isPrivate,
                 coverPhotoId: cover!.id,
+                coverPhotoUrl: cover!.url,
             },
             onSuccess: onClose,
         });

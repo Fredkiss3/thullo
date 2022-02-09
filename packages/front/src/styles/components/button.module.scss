@@ -118,16 +118,18 @@
 
 /* Button States */
 .btn--disabled {
-    background-color: var(--disabled-color);
+    --fg-color: #fff;
+    --bg-color: var(--disabled-color);
+    --outline-color: var(--disabled-color);
+    --hover-fg-color: #fff;
+    --hover-bg-color: var(--disabled-color);
     border: 1px solid var(--disabled-color);
-    color: #fff;
     cursor: not-allowed;
 
     &:hover,
     &:focus,
     &:active {
-        background-color: var(--disabled-color);
-        border: 1px solid var(--disabled-color);
-        color: #fff;
+        outline: none;
+        box-shadow: 0 0 0 0.25rem transparent;
     }
 }

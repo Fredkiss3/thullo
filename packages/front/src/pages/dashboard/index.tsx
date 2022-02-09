@@ -24,13 +24,19 @@ export const DashboardIndex: React.FC<DashboardIndexProps> = ({}) => {
             <section className={cls.card_section}>
                 {isLoading ? (
                     <>
-                        <BoardCard />
-                        <BoardCard />
-                        <BoardCard />
+                        <BoardCard loading />
+                        <BoardCard loading />
+                        <BoardCard loading />
                     </>
                 ) : data!.length > 0 ? (
                     data!.map((board) => (
-                        <BoardCard key={board.id} board={board} />
+                        <React.Fragment key={board?.id}>
+                            {board.id ? (
+                                <BoardCard board={board} />
+                            ) : (
+                                <BoardCard loading />
+                            )}
+                        </React.Fragment>
                     ))
                 ) : (
                     <p className={cls.card_section__empty}>No boards yet</p>
@@ -40,7 +46,7 @@ export const DashboardIndex: React.FC<DashboardIndexProps> = ({}) => {
     );
 };
 
-const AddBoardModal: React.FC<{}> = ({}) => {
+const AddBoardModal = () => {
     const [isOpen, setIsOpen] = React.useState(false);
     const cancelButtonRef = React.useRef<HTMLButtonElement>(null);
 
