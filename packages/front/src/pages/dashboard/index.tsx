@@ -5,6 +5,8 @@ import { Button } from '../../components/button';
 import { Icon } from '../../components/icon';
 import { useBoardsQuery } from '../../lib/hooks';
 import { BoardCard } from '../../components/boardcard';
+import { Modal } from '../../components/modal';
+import { AddBoardForm } from '../../components/addboard-form';
 
 export interface DashboardIndexProps {}
 
@@ -16,15 +18,7 @@ export const DashboardIndex: React.FC<DashboardIndexProps> = ({}) => {
 
             <section className={cls.header_section}>
                 <h2>All Boards</h2>
-                <Button
-                    variant={`primary`}
-                    onClick={() => {
-                        console.log('Create new board');
-                    }}
-                    renderIcon={(cls) => <Icon icon={`plus`} className={cls} />}
-                >
-                    Add Board
-                </Button>
+                <AddBoardModal />
             </section>
 
             <section className={cls.card_section}>
@@ -42,6 +36,35 @@ export const DashboardIndex: React.FC<DashboardIndexProps> = ({}) => {
                     <p className={cls.card_section__empty}>No boards yet</p>
                 )}
             </section>
+        </>
+    );
+};
+
+const AddBoardModal: React.FC<{}> = ({}) => {
+    const [isOpen, setIsOpen] = React.useState(false);
+    const cancelButtonRef = React.useRef<HTMLButtonElement>(null);
+
+    return (
+        <>
+            <Button
+                variant={`primary`}
+                onClick={() => setIsOpen(true)}
+                renderLeadingIcon={(cls) => (
+                    <Icon icon={`plus`} className={cls} />
+                )}
+            >
+                Add Board
+            </Button>
+            <Modal
+                isOpen={isOpen}
+                onClose={() => setIsOpen(false)}
+                cancelButtonRef={cancelButtonRef}
+            >
+                <AddBoardForm
+                    ref={cancelButtonRef}
+                    onClose={() => setIsOpen(false)}
+                />
+            </Modal>
         </>
     );
 };

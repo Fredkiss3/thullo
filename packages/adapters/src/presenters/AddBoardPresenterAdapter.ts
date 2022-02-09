@@ -5,7 +5,11 @@ import { FieldErrors } from '@thullo/domain';
 interface BoardData {
     id: string;
     name: string;
-    coverURL: string;
+    cover: {
+        url: string;
+        authorName: string;
+        authorUserName: string;
+    };
     participants: Array<{
         name: string;
         avatarURL: string | null;
@@ -34,7 +38,11 @@ export class AddBoardPresenterAdapter implements AddBoardPresenter {
             : {
                   id: board.id,
                   name: board.name,
-                  coverURL: board.coverURL,
+                  cover: {
+                      url: board.cover.regularURL,
+                      authorName: board.cover.authorName,
+                      authorUserName: board.cover.authorUserName
+                  },
                   participants: board.participants.map(({ member }) => ({
                       name: member.name,
                       avatarURL: member.avatarURL

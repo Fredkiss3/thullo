@@ -1,6 +1,7 @@
 import { UnsplashGateway, UnsplashPhoto } from '@thullo/domain';
 import axios from 'axios';
 import { container, singleton } from 'tsyringe';
+import cloudinary from 'cloudinary';
 
 export type ApiPhoto = {
     id: string;
@@ -27,6 +28,7 @@ export type ApiPhoto = {
 export class UnsplashService implements UnsplashGateway {
     constructor(
         private apiKey: string,
+        private cloudinaryAssetURL: string,
         private perPage: number = 12,
         private baseURL: string = 'https://api.unsplash.com'
     ) {}
@@ -40,6 +42,44 @@ export class UnsplashService implements UnsplashGateway {
             smallURL: photo.urls.small,
             thumbnailURL: photo.urls.thumb
         };
+    }
+
+    public async uploadToCloudinary(photo: ApiPhoto): Promise<UnsplashPhoto> {
+        // Upload to cloudinary
+        const res = await cloudinary.v2.uploader.upload(
+            photo.urls.regular,
+            {
+                public_id: photo.id,
+                resource_type: 'image',
+                eager: [
+                    // Eagerly generate thumbnails and small versions
+                    {
+                        width: 500,
+                        crop: 'fill',
+                        quality: 'auto',
+                        fetch_format: 'auto',
+                        secure: true
+                    },
+                    {
+                        width: 100,
+                        crop: 'fill',
+                        quality: 'auto',
+                        fetch_format: 'auto',
+                        secure: true
+                    }
+                ]
+            },
+            function (error, result) {
+                console.log(result, error);
+            }
+        );
+
+        // Update photo with cloudinary urls
+        photo.urls.regular = res.secure_url;
+        photo.urls.small = res.eager[0].secure_url;
+        photo.urls.thumb = res.eager[1].secure_url;
+
+        return this.toPhoto(photo);
     }
 
     /**
@@ -79,7 +119,8 @@ export class UnsplashService implements UnsplashGateway {
                 }
             });
 
-            return this.toPhoto(photo);
+            // Upload to cloudinary
+            return this.uploadToCloudinary(photo);
         } catch (error) {
             return null;
         }
@@ -104,7 +145,7 @@ export class UnsplashService implements UnsplashGateway {
             }
         });
 
-        return this.toPhoto(photo);
+        return this.uploadToCloudinary(photo);
     }
 
     public async listPhotos(): Promise<UnsplashPhoto[]> {
@@ -122,5 +163,8 @@ export class UnsplashService implements UnsplashGateway {
 }
 
 container.register('UnsplashGateway', {
-    useValue: new UnsplashService(process.env.UNSPLASH_API_KEY!)
+    useValue: new UnsplashService(
+        process.env.UNSPLASH_API_KEY!,
+        process.env.CLOUDINARY_ASSET_URL!
+    )
 });

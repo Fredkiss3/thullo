@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { useEffect } from 'react';
-import { Pulse } from '../components/pulse';
 import { useLoginMutation } from '../lib/hooks';
 import { Loader } from '../components/loader';
 

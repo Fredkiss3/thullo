@@ -2,9 +2,10 @@ import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import { USER_QUERY, USER_TOKEN, BOARD_QUERY } from './constants';
 import { deleteCookie, getCookie, jsonFetch, setCookie } from './functions';
-import { Board, User } from './types';
+import { AddBoardRequest, Board, User } from './types';
 import { useErrorsContext } from '../context/ErrorContext';
 
+// Queries
 export function useUserQuery() {
     const { dispatch } = useErrorsContext();
     return useQuery<User>(
@@ -81,6 +82,7 @@ export function useAuthenticatedUser(): {
     };
 }
 
+// Mutations
 export function useLogoutMutation() {
     const queryClient = useQueryClient();
     const navigate = useNavigate();
@@ -109,7 +111,7 @@ export function useLoginMutation() {
     const { dispatch } = useErrorsContext();
     return useMutation(
         (authCode: string | null) =>
-            jsonFetch<{ token: string }>(
+            jsonFetch<{ token?: string }>(
                 `${import.meta.env.VITE_API_URL}/api/auth`,
                 {
                     method: 'POST',
@@ -118,12 +120,9 @@ export function useLoginMutation() {
             ),
         {
             onSuccess: ({ data, errors }) => {
-                if (data.token) {
+                if (errors === null && data.token) {
                     queryClient.invalidateQueries(USER_QUERY);
-                    console.log('token', data.token);
-
                     setCookie(USER_TOKEN, data.token);
-                    console.log('Set cookie', getCookie(USER_TOKEN));
                     navigate('/profile');
                 } else {
                     dispatch({
@@ -139,6 +138,53 @@ export function useLoginMutation() {
                     errors: JSON.parse((err as Error).message),
                 });
                 navigate(`/login`);
+            },
+        }
+    );
+}
+
+export function useAddBoardMutation() {
+    const queryClient = useQueryClient();
+    const { dispatch } = useErrorsContext();
+    return useMutation(
+        async ({
+            board,
+            onSuccess,
+        }: {
+            board: AddBoardRequest;
+            onSuccess: () => void;
+        }) => {
+            const { data, errors } = await jsonFetch<Board>(
+                `${import.meta.env.VITE_API_URL}/api/boards`,
+                {
+                    method: 'POST',
+                    body: JSON.stringify(board),
+                    headers: {
+                        Authorization: `Bearer ${getCookie(USER_TOKEN)}`,
+                    },
+                }
+            );
+
+            if (errors) {
+                dispatch({
+                    type: 'ADD_ERRORS',
+                    errors,
+                });
+                throw new Error(JSON.stringify(errors));
+            }
+
+            return { board: data!, onSuccess };
+        },
+        {
+            onSuccess: (ctx) => {
+                queryClient.invalidateQueries(BOARD_QUERY);
+                ctx.onSuccess();
+            },
+            onError: (err, _, context) => {
+                dispatch({
+                    type: 'ADD_ERRORS',
+                    errors: JSON.parse((err as Error).message),
+                });
             },
         }
     );

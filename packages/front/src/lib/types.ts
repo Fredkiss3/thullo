@@ -19,6 +19,19 @@ export type User = {
 export type Board = {
     id: string;
     name: string;
-    coverURL: string;
-    participants: Pick<User, 'name' | 'avatarURL'>[];
+    cover: {
+        url: string;
+        authorName: string;
+        authorUserName: string;
+    };
+    participants: Array<{
+        name: string;
+        avatarURL: string | null;
+    }>;
 };
+
+export type AddBoardRequest = {
+    name: string;
+    coverPhotoId: string;
+    private: boolean;
+}

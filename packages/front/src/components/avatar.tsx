@@ -3,7 +3,7 @@ import { getInitials } from '../lib/functions';
 import cls from '../styles/components/avatar.module.scss';
 
 export interface AvatarProps {
-    photoURL?: string;
+    photoURL?: string | null;
     className?: string;
     name: string;
 }

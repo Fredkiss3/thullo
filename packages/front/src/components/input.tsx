@@ -6,6 +6,8 @@ export interface InputProps {
     type?: 'text' | 'password' | 'email' | 'number' | 'tel' | 'url' | 'search';
     placeholder?: string;
     className?: string;
+    onChange?: (newValue: string) => void;
+    value?: string;
 }
 
 export const Input: React.FC<InputProps> = ({
@@ -13,11 +15,21 @@ export const Input: React.FC<InputProps> = ({
     type = 'text',
     placeholder,
     className,
+    onChange,
+    value,
 }) => {
     return (
         <div className={`${cls.input} ${className ?? ''}`}>
-            <input type={type} placeholder={placeholder} className={cls.input__field} />
-            {trailingElement && <div  className={cls.input__trailing}>{trailingElement}</div>}
+            <input
+                value={value}
+                onChange={(event) => onChange?.(event.target.value)}
+                type={type}
+                placeholder={placeholder}
+                className={cls.input__field}
+            />
+            {trailingElement && (
+                <div className={cls.input__trailing}>{trailingElement}</div>
+            )}
         </div>
     );
 };

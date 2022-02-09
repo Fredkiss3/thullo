@@ -1,0 +1,96 @@
+.modal {
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+
+    overflow-y: auto;
+
+    &__zeroWidthSpace {
+        display: inline-block;
+        height: 100vh;
+        vertical-align: middle;
+    }
+
+    &__backdrop {
+        min-height: 100vh;
+        padding: 0;
+        padding-top: 10vh;
+        text-align: center;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+    }
+
+    &__overlay {
+        position: fixed;
+        inset: 0;
+        background-color: var(--secondary-color);
+        opacity: 0.5;
+        transition-property: opacity;
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        transition-duration: 150ms;
+
+        &__enter {
+            transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
+            transition-duration: 300ms;
+        }
+
+        &__enterFrom {
+            opacity: 0;
+        }
+
+        &__enterTo {
+            opacity: 0.5;
+        }
+
+        &__leave {
+            transition-timing-function: cubic-bezier(0.4, 0, 1, 1);
+            transition-duration: 200ms;
+        }
+
+        &__leaveFrom {
+            opacity: 0.5;
+        }
+
+        &__leaveTo {
+            opacity: 0;
+        }
+    }
+
+    &__content {
+        background-color: white;
+        border-radius: var(--border-radius-md);
+        padding: 0.625rem;
+        z-index: 20;
+
+        &__enter {
+            transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
+            transition-duration: 300ms;
+        }
+
+        &__enterFrom {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+
+        &__enterTo {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        &__leave {
+            transition-timing-function: cubic-bezier(0.4, 0, 1, 1);
+            transition-duration: 200ms;
+        }
+
+        &__leaveFrom {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        &__leaveTo {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+    }
+}

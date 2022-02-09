@@ -14,7 +14,7 @@ export const BoardCard: React.FC<BoardCardProps> = ({ board }) =>
         <Link className={cls.boardcard} to={board.id}>
             <img
                 className={cls.boardcard__cover}
-                src={board.coverURL}
+                src={board.cover.url}
                 alt="Image de couverture du tableau"
             />
             <h3 className={cls.boardcard__title}>{board.name}</h3>

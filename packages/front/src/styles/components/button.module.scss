@@ -14,9 +14,10 @@
     font-size: var(--font-size-md);
 
     --bg-color: transparent;
-    --outline-color: transparent;
-    --hover-bg-color: #fff;
+    --outline-color: var(--hollow-color-outline);
+    --hover-bg-color: var(--hollow-color);
     --fg-color: var(--text-color);
+    --hover-fg-color: var(--text-color);
 
     color: var(--fg-color);
     background-color: var(--bg-color);
@@ -30,12 +31,16 @@
 
     &:hover:not(.btn--static) {
         background-color: var(--hover-bg-color);
-        color: var(--bg-color);
+        color: var(--hover-fg-color);
         border: 1px solid var(--bg-color);
     }
 
     /* Button Elements */
-    &__icon {
+    &__leading_icon {
+        height: 1.5rem;
+    }
+
+    &__trailing_icon {
         height: 1.5rem;
     }
 }
@@ -45,6 +50,8 @@
     --bg-color: var(--primary-color);
     --fg-color: #fff;
     --outline-color: var(--primary-color-outline);
+    --hover-fg-color: var(--primary-color);
+    --hover-bg-color: transparent;
 }
 
 .btn--outline {
@@ -54,7 +61,7 @@
 
     &:focus,
     &:active {
-        box-shadow: 0 0 0 0.25rem rgba($secondaryColor, 50%);
+        box-shadow: 0 0 0 0.25rem var(--secondary-color-outline);
     }
 
     &:hover:not(.btn--static) {
@@ -77,10 +84,12 @@
 .btn--danger {
     --bg-color: var(--danger-color);
     --fg-color: #fff;
+    --hover-bg-color: transparent;
     --outline-color: var(--danger-color-outline);
 }
 
-.btn--black:not(.btn--static) {
+.btn--black {
+    --hover-bg-color: transparent;
     --bg-color: var(--black-color);
     --fg-color: #fff;
     --outline-color: var(--black-color-outline);
@@ -88,6 +97,10 @@
 
 .btn--block {
     width: 100%;
+}
+
+.btn--square {
+    padding: 0.5rem;
 }
 
 /* Button Sizes */
