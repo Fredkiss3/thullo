@@ -43,7 +43,10 @@ export const AddBoardForm = React.forwardRef<
                 });
             }
         };
-        getRandomPhoto();
+
+        if (cover === null) {
+            getRandomPhoto();
+        }
     }, []);
 
     const [boardName, setBoardName] = React.useState('');
@@ -107,8 +110,8 @@ export const AddBoardForm = React.forwardRef<
                     Cover
                 </Button>
                 <Button
-                    isStatic
-                    variant={!isPrivate ? 'hollow' : 'primary'}
+                    isStatic={isPrivate}
+                    variant={!isPrivate ? 'hollow' : 'black'}
                     onClick={() => setIsPrivate(!isPrivate)}
                     className={cls.addboard_form__actions_buttons__button}
                     renderLeadingIcon={(cls) => (
