@@ -41,7 +41,7 @@ export class SeeBoardsPresenterAdapter implements SeeBoardsPresenter {
                   id: short().fromUUID(board.id),
                   name: board.name,
                   cover: {
-                      url: board.cover.regularURL,
+                      url: board.cover.smallURL,
                       authorName: board.cover.authorName,
                       authorUserName: board.cover.authorUserName
                   },
