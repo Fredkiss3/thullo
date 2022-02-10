@@ -33,6 +33,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = () => {
                         PHOTO
                     </div>
                     <Avatar
+                        username={user.username}
                         photoURL={user.avatarURL}
                         name={user.name}
                         className={`${cls.profile_container__panel__field__avatar} ${cls.profile_container__panel__field__value}`}
@@ -43,14 +44,18 @@ export const ProfilePage: React.FC<ProfilePageProps> = () => {
                     <div className={cls.profile_container__panel__field__title}>
                         NAME
                     </div>
-                    <div className={cls.profile_container__panel__field__value}>{user.name}</div>
+                    <div className={cls.profile_container__panel__field__value}>
+                        {user.name}
+                    </div>
                 </li>
 
                 <li className={cls.profile_container__panel__field}>
                     <div className={cls.profile_container__panel__field__title}>
                         LOGIN
                     </div>
-                    <div className={cls.profile_container__panel__field__value}>{user.login}</div>
+                    <div className={cls.profile_container__panel__field__value}>
+                        {user.login}
+                    </div>
                 </li>
 
                 <li className={cls.profile_container__panel__field}>
@@ -58,7 +63,9 @@ export const ProfilePage: React.FC<ProfilePageProps> = () => {
                         EMAIL
                     </div>
 
-                    <div className={cls.profile_container__panel__field__value}>{user.email}</div>
+                    <div className={cls.profile_container__panel__field__value}>
+                        {user.email}
+                    </div>
                 </li>
             </ul>
         </Layout>

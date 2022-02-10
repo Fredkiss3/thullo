@@ -193,6 +193,8 @@ export function useAddBoardMutation() {
                         },
                         participants: [
                             {
+                                username: user!.username,
+                                id: user!.id,
                                 name: user!.name,
                                 avatarURL: user!.avatarURL,
                             },

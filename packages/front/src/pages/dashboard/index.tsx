@@ -3,21 +3,34 @@ import { Seo } from '../../components/seo';
 import cls from '../../styles/pages/dashboard/index.module.scss';
 import { Button } from '../../components/button';
 import { Icon } from '../../components/icon';
-import { useBoardsQuery } from '../../lib/hooks';
+import { useAuthenticatedUser, useBoardsQuery } from '../../lib/hooks';
 import { BoardCard } from '../../components/boardcard';
 import { Modal } from '../../components/modal';
 import { AddBoardForm } from '../../components/addboard-form';
+import { categorizeBoards } from '../../lib/functions';
+import { CategorizedBoards } from '../../lib/types';
+import { useMemo } from 'react';
 
 export interface DashboardIndexProps {}
 
 export const DashboardIndex: React.FC<DashboardIndexProps> = ({}) => {
     const { isLoading, data } = useBoardsQuery();
+    const { user } = useAuthenticatedUser();
+
+    const boardCategorized = useMemo<CategorizedBoards>(() => {
+        if (data && user) {
+            return categorizeBoards(data, user);
+        } else {
+            return { self: [], public: [] };
+        }
+    }, [data, user]);
+
     return (
         <>
             <Seo title="Dashboard" />
 
             <section className={cls.header_section}>
-                <h2>All Boards</h2>
+                <h2>Your Boards</h2>
                 <AddBoardModal />
             </section>
 
@@ -28,8 +41,34 @@ export const DashboardIndex: React.FC<DashboardIndexProps> = ({}) => {
                         <BoardCard loading />
                         <BoardCard loading />
                     </>
-                ) : data!.length > 0 ? (
-                    data!.map((board) => (
+                ) : boardCategorized.self.length > 0 ? (
+                    boardCategorized.self.map((board) => (
+                        <React.Fragment key={board?.id}>
+                            {board.id ? (
+                                <BoardCard board={board} />
+                            ) : (
+                                <BoardCard loading />
+                            )}
+                        </React.Fragment>
+                    ))
+                ) : (
+                    <p className={cls.card_section__empty}>No boards yet</p>
+                )}
+            </section>
+
+            <section className={cls.header_section}>
+                <h2>Public Boards</h2>
+            </section>
+
+            <section className={cls.card_section}>
+                {isLoading ? (
+                    <>
+                        <BoardCard loading />
+                        <BoardCard loading />
+                        <BoardCard loading />
+                    </>
+                ) : boardCategorized.public.length > 0 ? (
+                    boardCategorized.public.map((board) => (
                         <React.Fragment key={board?.id}>
                             {board.id ? (
                                 <BoardCard board={board} />

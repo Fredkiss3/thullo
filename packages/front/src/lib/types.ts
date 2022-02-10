@@ -10,8 +10,10 @@ export interface ApiResult<T> {
 }
 
 export type User = {
+    id: string;
     login: string;
     name: string;
+    username: string;
     email: string;
     avatarURL: string;
 };
@@ -23,7 +25,9 @@ export type Board = {
         url: string;
     };
     participants: Array<{
+        id: string;
         name: string;
+        username: string;
         avatarURL: string | null;
     }>;
 };
@@ -33,4 +37,6 @@ export type AddBoardRequest = {
     coverPhotoId: string;
     coverPhotoUrl: string;
     private: boolean;
-}
+};
+
+export type CategorizedBoards = { self: Board[]; public: Board[] };
