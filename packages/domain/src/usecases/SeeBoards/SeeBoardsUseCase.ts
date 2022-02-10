@@ -30,7 +30,7 @@ export class SeeBoardsUseCase {
             };
         } else {
             boards =
-                await this.boardRepository.getAllBoardsWhereMemberIsPresent(
+                await this.boardRepository.getAllBoardsWhereMemberIsPresentOrWherePublic(
                     member.id
                 );
         }

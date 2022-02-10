@@ -18,10 +18,19 @@ export class TypeORMBoardRepository
         return boardEntity.toDomain();
     }
 
-    async getAllBoardsWhereMemberIsPresent(memberId: string): Promise<Board[]> {
+    async getAllBoardsWhereMemberIsPresentOrWherePublic(
+        memberId: string
+    ): Promise<Board[]> {
         const boards = await this.find({
             where: {
-                'participants.member.uuid': memberId
+                $or: [
+                    {
+                        'participants.member.uuid': memberId,
+                    },
+                    {
+                        private: false
+                    }
+                ]
             }
         });
 

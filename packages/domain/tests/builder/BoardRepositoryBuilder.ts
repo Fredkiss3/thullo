@@ -1,21 +1,23 @@
 import { Board, BoardRepository } from '@thullo/domain';
 
 export class BoardRepositoryBuilder {
-    private getAllBoardsWhereMemberIsPresent: (
+    private getAllBoardsWhereMemberIsPresentOrWherePublic: (
         memberId: string
     ) => Promise<Board[]> = () => Promise.resolve([]);
 
-    private getBoardById: (id: string) => Promise<Board | null> = () => Promise.resolve(null);
-
+    private getBoardById: (id: string) => Promise<Board | null> = () =>
+        Promise.resolve(null);
 
     private addBoard: (board: Board) => Promise<Board> = (board: Board) =>
         Promise.resolve(board);
 
     withGetAllBoardsWhereMemberIsPresent(
-        getAllBoardsWhereMemberIsPresent: (memberId: string) => Promise<Board[]>
+        getAllBoardsWhereMemberIsPresentOrWherePublic: (
+            memberId: string
+        ) => Promise<Board[]>
     ) {
-        this.getAllBoardsWhereMemberIsPresent =
-            getAllBoardsWhereMemberIsPresent;
+        this.getAllBoardsWhereMemberIsPresentOrWherePublic =
+            getAllBoardsWhereMemberIsPresentOrWherePublic;
         return this;
     }
 
@@ -32,9 +34,9 @@ export class BoardRepositoryBuilder {
     build(): BoardRepository {
         return {
             addBoard: this.addBoard,
-            getAllBoardsWhereMemberIsPresent:
-                this.getAllBoardsWhereMemberIsPresent,
-            getBoardById: this.getBoardById,
+            getAllBoardsWhereMemberIsPresentOrWherePublic:
+                this.getAllBoardsWhereMemberIsPresentOrWherePublic,
+            getBoardById: this.getBoardById
         };
     }
 }
