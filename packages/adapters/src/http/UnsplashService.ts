@@ -136,15 +136,7 @@ export class UnsplashService implements UnsplashGateway {
         );
         const photo = response.data;
 
-        // Trigger unsplash download see: https://help.unsplash.com/en/articles/2511258-guideline-triggering-a-download
-        const { download_location } = photo.links;
-        await axios.get(download_location, {
-            headers: {
-                Authorization: `Client-ID ${this.apiKey}`
-            }
-        });
-
-        return this.uploadToCloudinary(photo);
+        return this.toPhoto(photo);
     }
 
     public async listPhotos(): Promise<UnsplashPhoto[]> {
