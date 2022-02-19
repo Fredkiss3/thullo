@@ -7,6 +7,16 @@ export class TypeORMBoardRepository
     extends MongoRepository<BoardEntity>
     implements BoardRepository
 {
+    async getAllPublicBoards(): Promise<Board[]> {
+        const boards = await this.find({
+            where: {
+                private: false
+            }
+        });
+
+        return boards.map(board => board.toDomain());
+    }
+
     async getBoardById(id: string): Promise<Board | null> {
         const entity = await this.findOne({ uuid: id });
         return entity ? entity.toDomain() : null;
@@ -25,7 +35,7 @@ export class TypeORMBoardRepository
             where: {
                 $or: [
                     {
-                        'participants.member.uuid': memberId,
+                        'participants.member.uuid': memberId
                     },
                     {
                         private: false
