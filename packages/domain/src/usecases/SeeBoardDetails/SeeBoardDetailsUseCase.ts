@@ -4,13 +4,13 @@ import { SeeBoardDetailsResponse } from './SeeBoardDetailsResponse';
 import { FieldErrors } from '../../lib/types';
 import Validator from 'validatorjs';
 import { BoardAggregateRepository } from '../../entities/BoardAggregate';
-import { MemberRepository } from '../../entities/Member';
+import { Member, MemberRepository } from '../../entities/Member';
 Validator.useLang('fr');
 
 export class SeeBoardDetailsUseCase {
     RULES = {
         boardId: 'required|string',
-        requesterId: 'required|string',
+        requesterId: 'string'
     };
 
     constructor(
@@ -28,9 +28,13 @@ export class SeeBoardDetailsUseCase {
             request.boardId
         );
 
-        const member = await this.memberRepository.getMemberById(
-            request.requesterId
-        );
+        let member: Member | null | undefined;
+
+        if (request.requesterId) {
+            member = await this.memberRepository.getMemberById(
+                request.requesterId
+            );
+        }
 
         if (board === null) {
             errors = {
@@ -42,10 +46,21 @@ export class SeeBoardDetailsUseCase {
                 requesterId: ["Cet utilisateur n'existe pas"]
             };
         } else {
-            if(board.isPrivate && !board.isParticipant(member!.id)) {
+            if (!board.isPrivate) {
+                // do nothing
+            } else if (!member) {
                 board = null;
                 errors = {
-                    requesterId: ["Vous n'êtes pas membre de ce tableau"]
+                    requesterId: [
+                        "Vous n'avez pas le droit de voir ce tableau car il est privé"
+                    ]
+                };
+            } else if (member && !board.isParticipant(member.id)) {
+                board = null;
+                errors = {
+                    requesterId: [
+                        "Vous n'avez pas le droit de voir ce tableau car vous n'y êtes pas invité"
+                    ]
                 };
             }
         }
@@ -55,8 +70,7 @@ export class SeeBoardDetailsUseCase {
 
     validate(request: SeeBoardDetailsRequest): FieldErrors {
         const validation = new Validator(request, this.RULES, {
-            'required.boardId': 'Le tableau est requis',
-            'required.requesterId': 'L\'utilisateur est requis',
+            'required.boardId': 'Le tableau est requis'
         });
 
         if (validation.passes()) {

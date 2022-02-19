@@ -20,19 +20,24 @@ export class SeeBoardsUseCase {
         let errors: FieldErrors = null;
         let boards: Board[] | null = null;
 
-        let member = await this.memberRepository.getMemberById(
-            request.memberId
-        );
+        let member: Member | null | undefined;
+
+        if (request.memberId) {
+            member = await this.memberRepository.getMemberById(
+                request.memberId
+            );
+        }
 
         if (null === member) {
             errors = {
                 memberId: ["Il n'existe aucun utilisateur ayant cet Id"]
             };
         } else {
-            boards =
-                await this.boardRepository.getAllBoardsWhereMemberIsPresentOrWherePublic(
-                    member.id
-                );
+            boards = member
+                ? await this.boardRepository.getAllBoardsWhereMemberIsPresentOrWherePublic(
+                      member.id
+                  )
+                : await this.boardRepository.getAllPublicBoards();
         }
 
         presenter.present(new SeeBoardsResponse(boards, errors));

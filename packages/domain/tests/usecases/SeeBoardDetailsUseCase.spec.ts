@@ -4,7 +4,8 @@ import {
     SeeBoardDetailsPresenter,
     SeeBoardDetailsResponse,
     BoardAggregate,
-    Member,
+    BoardAggregateBuilder,
+    Member
 } from '@thullo/domain';
 import { BoardAggregateRepositoryBuilder } from '../builder/BoardAggregateRepositoryBuilder';
 import { v4 as uuidv4 } from 'uuid';
@@ -75,7 +76,44 @@ describe('SeeBoardDetails Use case', () => {
 
         // Then
         expect(presenter.response).not.toBe(null);
-        expect(presenter.response?.aggregate).toBe(aggregate);
+        expect(presenter.response!.aggregate).toBe(aggregate);
+    });
+
+    it('is successful with no member', async () => {
+        // Given
+        const memberRepository = new MemberRepositoryBuilder().build();
+
+        const aggregateExpected = new BoardAggregateBuilder()
+            .withBoardId(BOARD_ID)
+            .withName('Dev Challenge Boards')
+            .withDescription('')
+            .withIsPrivate(false)
+            .withParticipants([
+                {
+                    isAdmin: true,
+                    member: admin
+                }
+            ])
+            .build();
+
+        const boardAggregateRepository = new BoardAggregateRepositoryBuilder()
+            .withGetBoardAggregateById(async () => {
+                return aggregateExpected;
+            })
+            .build();
+
+        const useCase = new SeeBoardDetailsUseCase(
+            memberRepository,
+            boardAggregateRepository
+        );
+
+        // When
+        await useCase.execute({ boardId: BOARD_ID }, presenter);
+
+        // Then
+        expect(presenter.response).not.toBe(null);
+        expect(presenter.response!.errors).toBe(null);
+        expect(presenter.response!.aggregate).toBe(aggregateExpected);
     });
 
     it('Should show errors if board does not exists', async () => {
@@ -150,22 +188,22 @@ describe('SeeBoardDetails Use case', () => {
         };
 
         const aggregate = new BoardAggregate(
-          {
-              id: BOARD_ID,
-              name: 'Dev Challenge Boards',
-              description: '',
-              private: false
-          },
-          {
-              cards: [],
-              lists: [],
-              participants: [
-                  {
-                      isAdmin: true,
-                      member: admin
-                  }
-              ]
-          }
+            {
+                id: BOARD_ID,
+                name: 'Dev Challenge Boards',
+                description: '',
+                private: false
+            },
+            {
+                cards: [],
+                lists: [],
+                participants: [
+                    {
+                        isAdmin: true,
+                        member: admin
+                    }
+                ]
+            }
         );
 
         const memberRepository = new MemberRepositoryBuilder()
@@ -230,13 +268,6 @@ describe('SeeBoardDetails Use case', () => {
                 request: {
                     ...request,
                     boardId: ''
-                }
-            },
-            {
-                label: 'No requesterId provided',
-                request: {
-                    ...request,
-                    requesterId: ''
                 }
             }
         ];

@@ -90,9 +90,7 @@ describe('SeeBoards Use case', () => {
             .build();
 
         const boardRepo: BoardRepository = new BoardRepositoryBuilder()
-            .withGetAllBoardsWhereMemberIsPresent(async () =>
-                boardsExpected.slice(0, 2)
-            )
+            .withGetAllBoardsWhereMemberIsPresent(async () => boardsExpected)
             .build();
 
         const useCase = new SeeBoardsUseCase(memberRepo, boardRepo);
@@ -101,9 +99,28 @@ describe('SeeBoards Use case', () => {
         await useCase.execute(request, presenter);
 
         // Then
-        expect(presenter.response?.boards).not.toBe(null);
-        expect(presenter.response?.boards).toStrictEqual(
-            boardsExpected.slice(0, 2)
+        expect(presenter.response!.boards).not.toBe(null);
+        expect(presenter.response!.boards).toBe(boardsExpected);
+    });
+
+    it('is successful with no member', async () => {
+        // Given
+        const memberRepo: MemberRepository =
+            new MemberRepositoryBuilder().build();
+
+        const boardRepo: BoardRepository = new BoardRepositoryBuilder()
+            .withGetAllPublicBoards(async () => boardsExpected.slice(0, 1))
+            .build();
+
+        const useCase = new SeeBoardsUseCase(memberRepo, boardRepo);
+
+        // When
+        await useCase.execute({}, presenter);
+
+        // Then
+        expect(presenter.response!.boards).not.toBe(null);
+        expect(presenter.response!.boards).toStrictEqual(
+            boardsExpected.slice(0, 1)
         );
     });
 
@@ -131,9 +148,7 @@ describe('SeeBoards Use case', () => {
 
         // Then
         expect(presenter.response?.errors).not.toBe(null);
-        expect(presenter.response?.errors?.memberId).toContainEqual(
-            "Il n'existe aucun utilisateur ayant cet Id"
-        );
+        expect(presenter.response?.errors?.memberId).toHaveLength(1);
         expect(presenter.response?.boards).toBe(null);
     });
 });

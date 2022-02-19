@@ -5,6 +5,9 @@ export class BoardRepositoryBuilder {
         memberId: string
     ) => Promise<Board[]> = () => Promise.resolve([]);
 
+    private getAllPublicBoards: () => Promise<Board[]> = () =>
+        Promise.resolve([]);
+
     private getBoardById: (id: string) => Promise<Board | null> = () =>
         Promise.resolve(null);
 
@@ -31,12 +34,18 @@ export class BoardRepositoryBuilder {
         return this;
     }
 
+    withGetAllPublicBoards(getAllPublicBoards: () => Promise<Board[]>) {
+        this.getAllPublicBoards = getAllPublicBoards;
+        return this;
+    }
+
     build(): BoardRepository {
         return {
             addBoard: this.addBoard,
             getAllBoardsWhereMemberIsPresentOrWherePublic:
                 this.getAllBoardsWhereMemberIsPresentOrWherePublic,
-            getBoardById: this.getBoardById
+            getBoardById: this.getBoardById,
+            getAllPublicBoards: this.getAllPublicBoards
         };
     }
 }

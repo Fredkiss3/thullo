@@ -1,3 +1,3 @@
 export interface SeeBoardsRequest {
-    memberId: string;
+    memberId?: string;
 }

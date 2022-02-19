@@ -1,4 +1,4 @@
-import { Board, BoardId } from "./";
+import { Board, BoardId } from './';
 
 export interface BoardRepository {
     addBoard(board: Board): Promise<Board>;
@@ -6,4 +6,5 @@ export interface BoardRepository {
     getAllBoardsWhereMemberIsPresentOrWherePublic(
         memberId: string
     ): Promise<Board[]>;
+    getAllPublicBoards(): Promise<Board[]>;
 }
