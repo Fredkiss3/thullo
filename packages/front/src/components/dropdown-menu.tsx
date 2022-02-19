@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Dropdown, DropdownProps } from './dropdown';
-import { Icon, Icons } from './icon';
+import { Icon, IconName } from './icon';
 
 import cls from '../styles/components/dropdown-menu.module.scss';
 import { Link } from 'react-router-dom';
@@ -9,12 +9,12 @@ import { Button } from './button';
 export type DropdownMenuItem = {
     label: string;
     link: string;
-    icon: typeof Icons[number];
+    icon: IconName;
 };
 
 export type DropdownMenuButton = {
     label: string;
-    icon: typeof Icons[number];
+    icon: IconName;
     onClick?: () => void;
     danger?: boolean;
 };
@@ -83,8 +83,13 @@ function getComponentFromType(
     );
 }
 
+export type DropdownItem =
+    | DropdownMenuItem
+    | DropdownMenuButton
+    | DropdownDivider;
+
 export type DropdownMenuProps = Omit<DropdownProps, 'children'> & {
-    items: (DropdownMenuItem | DropdownDivider | DropdownMenuButton)[];
+    items: DropdownItem[];
 };
 
 export function DropdownMenu({

@@ -3,7 +3,11 @@ import { Seo } from '../../components/seo';
 import cls from '../../styles/pages/dashboard/index.module.scss';
 import { Button } from '../../components/button';
 import { Icon } from '../../components/icon';
-import { useAuthenticatedUser, useBoardsQuery } from '../../lib/queries';
+import {
+    useAuthenticatedUser,
+    useBoardsQuery,
+    useUserQuery,
+} from '../../lib/queries';
 import { BoardCard } from '../../components/boardcard';
 import { Modal } from '../../components/modal';
 import { AddBoardForm } from '../../components/addboard-form';
@@ -14,47 +18,53 @@ import { useMemo } from 'react';
 export interface DashboardIndexProps {}
 
 export function DashboardIndex(props: DashboardIndexProps) {
-    const { isLoading, data } = useBoardsQuery();
-    const { user } = useAuthenticatedUser();
+    const { isLoading, data: boards } = useBoardsQuery();
+    const { data: user } = useUserQuery();
 
     const boardCategorized = useMemo<CategorizedBoards>(() => {
-        if (data && user) {
-            return categorizeBoards(data, user);
+        if (boards && user) {
+            return categorizeBoards(boards, user);
         } else {
-            return { self: [], public: [] };
+            return { self: [], public: boards ?? [] };
         }
-    }, [data, user]);
+    }, [boards, user]);
 
     return (
         <>
             <Seo title="Dashboard" />
 
-            <section className={cls.header_section}>
-                <h2>Your Boards</h2>
-                <AddBoardModal />
-            </section>
+            {user && (
+                <>
+                    <section className={cls.header_section}>
+                        <h2>Your Boards</h2>
+                        <AddBoardModal />
+                    </section>
 
-            <section className={cls.card_section}>
-                {isLoading ? (
-                    <>
-                        <BoardCard loading />
-                        <BoardCard loading />
-                        <BoardCard loading />
-                    </>
-                ) : boardCategorized.self.length > 0 ? (
-                    boardCategorized.self.map((board) => (
-                        <React.Fragment key={board?.id}>
-                            {board.id ? (
-                                <BoardCard board={board} />
-                            ) : (
+                    <section className={cls.card_section}>
+                        {isLoading ? (
+                            <>
                                 <BoardCard loading />
-                            )}
-                        </React.Fragment>
-                    ))
-                ) : (
-                    <p className={cls.card_section__empty}>No boards yet</p>
-                )}
-            </section>
+                                <BoardCard loading />
+                                <BoardCard loading />
+                            </>
+                        ) : boardCategorized.self.length > 0 ? (
+                            boardCategorized.self.map((board) => (
+                                <React.Fragment key={board?.id}>
+                                    {board.id ? (
+                                        <BoardCard board={board} />
+                                    ) : (
+                                        <BoardCard loading />
+                                    )}
+                                </React.Fragment>
+                            ))
+                        ) : (
+                            <p className={cls.card_section__empty}>
+                                No boards yet
+                            </p>
+                        )}
+                    </section>
+                </>
+            )}
 
             <section className={cls.header_section}>
                 <h2>Public Boards</h2>

@@ -4,8 +4,12 @@ import cls from '../styles/components/header.module.scss';
 import { Icon } from './icon';
 import { LinkButton } from './linkbutton';
 import { Input } from './input';
-import { useAuthenticatedUser, useLogoutMutation } from '../lib/queries';
-import { DropdownMenu } from './dropdown-menu';
+import {
+    useAuthenticatedUser,
+    useLogoutMutation,
+    useUserQuery,
+} from '../lib/queries';
+import { DropdownItem, DropdownMenu } from './dropdown-menu';
 import { Link } from 'react-router-dom';
 import { Button } from './button';
 
@@ -59,36 +63,56 @@ export function Header({ currentPageTitle }: HeaderProps) {
 }
 
 function HeaderAvatar() {
-    const { user, isLoading } = useAuthenticatedUser();
+    const { data: user, isLoading } = useUserQuery();
     const mutation = useLogoutMutation();
+
+    let items: DropdownItem[];
+
+    if (!isLoading && user) {
+        items = [
+            {
+                label: 'My Profile',
+                link: '/profile',
+                icon: 'user',
+            },
+            { divider: true },
+            {
+                label: 'Logout',
+                icon: 'logout',
+                onClick: () => {
+                    mutation.mutate();
+                },
+                danger: true,
+            },
+        ];
+    } else {
+        items = [
+            {
+                label: 'Login',
+                link: '/login',
+                icon: 'login',
+            },
+        ];
+    }
 
     return (
         <div className={cls.header__avatar}>
-            <img
-                src={user?.avatarURL}
-                alt={user?.name}
-                className={cls.header__avatar__image}
-            />
-            <span className={cls.header__avatar__name}>{user?.name}</span>
+            {user ? (
+                <img
+                    src={user.avatarURL}
+                    alt={user.name}
+                    className={cls.header__avatar__image}
+                />
+            ) : (
+                <div className={cls.header__avatar__placeholder}>G</div>
+            )}
+            <span className={cls.header__avatar__name}>
+                {user ? user.name : 'Guest'}
+            </span>
             <Icon className={cls.header__avatar__icon} icon={'chevron-down'} />
             {!isLoading && (
                 <DropdownMenu
-                    items={[
-                        {
-                            label: 'My Profile',
-                            link: '/profile',
-                            icon: 'user',
-                        },
-                        { divider: true },
-                        {
-                            label: 'Logout',
-                            icon: 'logout',
-                            onClick: () => {
-                                mutation.mutate();
-                            },
-                            danger: true,
-                        },
-                    ]}
+                    items={items}
                     className={cls.header__avatar__dropdown}
                 />
             )}

@@ -51,6 +51,19 @@
             background-color: var(--border-color);
         }
 
+        &__placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: var(--border-radius-md);
+            background-color: var(--border-color);
+            color: white;
+            font-weight: var(--font-weight-bold);
+            font-size: var(--font-size-xl);
+        }
+
         &__name {
             font-size: var(--font-size-sm);
             font-weight: var(--font-weight-bold);

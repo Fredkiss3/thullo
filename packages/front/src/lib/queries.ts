@@ -8,7 +8,7 @@ import { useErrorsContext } from '../context/ErrorContext';
 // Queries
 export function useUserQuery() {
     const { dispatch } = useErrorsContext();
-    return useQuery<User>(
+    return useQuery<User | null>(
         USER_QUERY,
         async () => {
             const { data, errors } = await jsonFetch<{ user: User } | null>(
@@ -25,10 +25,9 @@ export function useUserQuery() {
                     type: 'ADD_ERRORS',
                     errors,
                 });
-                throw new Error(JSON.stringify(errors));
             }
 
-            return data!.user;
+            return data ? data.user : null;
         },
         {
             retry: 1,

@@ -15,6 +15,7 @@ export const Icons = [
     'lock-closed',
     'media',
     'search',
+    'login',
 ] as const;
 
 export type IconName = typeof Icons[number];
@@ -54,9 +55,28 @@ export function Icon({ icon, className }: IconProps) {
             return <MediaSVG className={className} />;
         case 'search':
             return <SearchSVG className={className} />;
+        case 'login':
+            return <LoginSVG className={className} />;
         default:
             return null;
     }
+}
+
+function LoginSVG(props: SVGProps<SVGSVGElement>) {
+    return (
+        <svg
+            {...props}
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+        >
+            <path
+                fillRule="evenodd"
+                d="M3 3a1 1 0 011 1v12a1 1 0 11-2 0V4a1 1 0 011-1zm7.707 3.293a1 1 0 010 1.414L9.414 9H17a1 1 0 110 2H9.414l1.293 1.293a1 1 0 01-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0z"
+                clipRule="evenodd"
+            />
+        </svg>
+    );
 }
 
 function SearchSVG(props: SVGProps<SVGSVGElement>) {
