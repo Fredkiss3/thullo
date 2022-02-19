@@ -4,6 +4,7 @@ import { Icon } from './icon';
 export interface AlertProps {
     type?: 'success' | 'danger' | 'warning' | 'info';
     onClose?: () => void;
+    children?: React.ReactNode;
 }
 
 export function Alert({ children, type, onClose }: AlertProps) {

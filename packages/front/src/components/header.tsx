@@ -4,7 +4,7 @@ import cls from '../styles/components/header.module.scss';
 import { Icon } from './icon';
 import { LinkButton } from './linkbutton';
 import { Input } from './input';
-import { useAuthenticatedUser, useLogoutMutation } from '../lib/hooks';
+import { useAuthenticatedUser, useLogoutMutation } from '../lib/queries';
 import { DropdownMenu } from './dropdown-menu';
 import { Link } from 'react-router-dom';
 import { Button } from './button';

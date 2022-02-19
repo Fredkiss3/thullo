@@ -1,5 +1,3 @@
-@import '../base/variables';
-
 .header {
     display: flex;
     padding: 1rem;
@@ -23,13 +21,13 @@
         &__title {
             margin-left: 5rem;
             font-size: 1rem;
-            font-weight: $fWSemiBold;
+            font-weight: var(--font-weight-semi);
         }
 
         &__divider {
             width: 1px;
             height: 2.5rem;
-            background: $borderColor;
+            background: var(--border-color);
         }
     }
 
@@ -37,9 +35,6 @@
         display: flex;
         gap: 1rem;
         align-items: center;
-    }
-
-    &__search_input {
     }
 
     &__avatar {
@@ -52,13 +47,13 @@
         &__image {
             width: 2.5rem;
             height: 2.5rem;
-            border-radius: $bRdMedium;
-            background-color: $borderColor;
+            border-radius: var(--border-radius-md);
+            background-color: var(--border-color);
         }
 
         &__name {
-            font-size: $smallFontSize;
-            font-weight: $fWBold;
+            font-size: var(--font-size-sm);
+            font-weight: var(--font-weight-bold);
         }
 
         &__icon {

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useAuthenticatedUser } from '../lib/hooks';
+import { useAuthenticatedUser } from '../lib/queries';
 import { Loader } from '../components/loader';
 import { Layout } from '../components/Layout';
 import { Seo } from '../components/seo';

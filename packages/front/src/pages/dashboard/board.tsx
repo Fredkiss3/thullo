@@ -3,7 +3,7 @@ import { Seo } from '../../components/seo';
 
 export interface DashboardDetailsProps {}
 
-export const DashboardDetails = ({}: DashboardDetailsProps) => {
+export function DashboardDetails(props: DashboardDetailsProps) {
     return (
         <>
             <Seo title="Dashboard Details" />
@@ -19,4 +19,4 @@ export const DashboardDetails = ({}: DashboardDetailsProps) => {
             </div>
         </>
     );
-};
+}

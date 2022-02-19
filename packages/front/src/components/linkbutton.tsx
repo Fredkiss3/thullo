@@ -7,6 +7,7 @@ export interface LinkButtonProps {
     external?: boolean;
     renderIcon?: (classNames: string) => JSX.Element;
     variant?: typeof ButtonVariants[number];
+    children?: React.ReactNode;
 }
 
 export function LinkButton({

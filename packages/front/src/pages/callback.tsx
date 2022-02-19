@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useEffect } from 'react';
-import { useLoginMutation } from '../lib/hooks';
+import { useLoginMutation } from '../lib/queries';
 import { Loader } from '../components/loader';
 
 export interface CallBackPageProps {}

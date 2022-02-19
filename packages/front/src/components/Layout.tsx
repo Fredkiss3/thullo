@@ -6,6 +6,7 @@ export interface LayoutProps {
     className?: string;
     hideHeader?: boolean;
     hideFooter?: boolean;
+    children?: React.ReactNode;
     currentPageTitle?: string;
 }
 

@@ -3,7 +3,7 @@ import { Seo } from '../../components/seo';
 import cls from '../../styles/pages/dashboard/index.module.scss';
 import { Button } from '../../components/button';
 import { Icon } from '../../components/icon';
-import { useAuthenticatedUser, useBoardsQuery } from '../../lib/hooks';
+import { useAuthenticatedUser, useBoardsQuery } from '../../lib/queries';
 import { BoardCard } from '../../components/boardcard';
 import { Modal } from '../../components/modal';
 import { AddBoardForm } from '../../components/addboard-form';
@@ -13,7 +13,7 @@ import { useMemo } from 'react';
 
 export interface DashboardIndexProps {}
 
-export const DashboardIndex = ({}: DashboardIndexProps) => {
+export function DashboardIndex(props: DashboardIndexProps) {
     const { isLoading, data } = useBoardsQuery();
     const { user } = useAuthenticatedUser();
 
@@ -83,9 +83,9 @@ export const DashboardIndex = ({}: DashboardIndexProps) => {
             </section>
         </>
     );
-};
+}
 
-const AddBoardModal = () => {
+function AddBoardModal() {
     const [isOpen, setIsOpen] = React.useState(false);
     const cancelButtonRef = React.useRef<HTMLButtonElement>(null);
 
@@ -112,4 +112,4 @@ const AddBoardModal = () => {
             </Modal>
         </>
     );
-};
+}
