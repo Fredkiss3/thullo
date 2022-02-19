@@ -3,7 +3,7 @@ import { Seo } from '../../components/seo';
 
 export interface DashboardDetailsProps {}
 
-export const DashboardDetails: React.FC<DashboardDetailsProps> = ({}) => {
+export const DashboardDetails = ({}: DashboardDetailsProps) => {
     return (
         <>
             <Seo title="Dashboard Details" />

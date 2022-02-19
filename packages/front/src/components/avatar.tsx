@@ -9,22 +9,21 @@ export interface AvatarProps {
     username: string;
 }
 
-export const Avatar: React.FC<AvatarProps> = ({
-    photoURL,
-    className,
-    name,
-    username,
-}) => (
-    <div className={`${cls.avatar} ${className ?? ''}`}>
-        {photoURL ? (
-            <img
-                title={`${name} @${username}`}
-                src={photoURL}
-                alt={`Photo de ${name}`}
-                className={cls.avatar__image}
-            />
-        ) : (
-            <span className={cls.avatar__placeholder}>{getInitials(name)}</span>
-        )}
-    </div>
-);
+export function Avatar({ photoURL, className, name, username }: AvatarProps) {
+    return (
+        <div className={`${cls.avatar} ${className ?? ''}`}>
+            {photoURL ? (
+                <img
+                    title={`${name} @${username}`}
+                    src={photoURL}
+                    alt={`Photo de ${name}`}
+                    className={cls.avatar__image}
+                />
+            ) : (
+                <span className={cls.avatar__placeholder}>
+                    {getInitials(name)}
+                </span>
+            )}
+        </div>
+    );
+}

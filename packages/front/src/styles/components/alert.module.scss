@@ -1,51 +1,51 @@
-@import "../base/variables";
+@import '../base/variables';
 
 .alert {
-  padding: 1rem 1rem;
-  padding-right: 2.6rem;
-  border: 1px solid transparent;
-  border-radius: 8px;
-  gap: 0.25rem;
-  display: flex;
-  align-items: center;
-  position: relative;
-
-  &__icon_right {
-    height: 1.3rem;
-    justify-self: flex-end;
-  }
-
-  &__icon_left {
-    min-width: 40px;
-    max-width: 40px;
-  }
-
-  &__body {
-    margin: 0;
-  }
-
-  &__close_btn {
-    position: absolute;
-    right: 0;
-    top: 0;
-    display: flex;
-    max-width: min-content;
-    align-items: center;
-    border-radius: 8px;
-    text-decoration: none;
-    padding: .5rem;
+    padding: 1rem 1rem;
+    padding-right: 2.6rem;
     border: 1px solid transparent;
-    background-color: transparent;
-    cursor: pointer;
-  }
+    border-radius: 8px;
+    gap: 0.25rem;
+    display: flex;
+    align-items: center;
+    position: relative;
+
+    &__icon_right {
+        height: 1.3rem;
+        justify-self: flex-end;
+    }
+
+    &__icon_left {
+        min-width: 40px;
+        max-width: 40px;
+    }
+
+    &__body {
+        margin: 0;
+    }
+
+    &__close_btn {
+        position: absolute;
+        right: 0;
+        top: 0;
+        display: flex;
+        max-width: min-content;
+        align-items: center;
+        border-radius: 8px;
+        text-decoration: none;
+        padding: 0.5rem;
+        border: 1px solid transparent;
+        background-color: transparent;
+        cursor: pointer;
+    }
 }
 
 /* Alert Types */
 .alert--danger {
-  background-color: $dangerColor;
-  color: #fff;
-
-  .alert__icon_right {
+    background-color: $dangerColor;
     color: #fff;
-  }
+
+    .alert__icon_right {
+        color: #fff;
+    }
 }

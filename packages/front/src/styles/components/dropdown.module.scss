@@ -3,8 +3,8 @@
 .dropdown {
     background: #ffffff;
     position: absolute;
-    border: 1px solid $dividerColor;
-    border-radius: $bRdLarge;
+    border: 1px solid var(--divider-color);
+    border-radius: var(--border-radius-lg);
     top: calc(100% + 0.1rem);
     padding: 0.5rem;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);

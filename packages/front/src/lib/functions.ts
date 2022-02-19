@@ -1,5 +1,5 @@
 import { USER_TOKEN } from './constants';
-import { ApiResult, Board, CategorizedBoards, User } from "./types";
+import { ApiResult, Board, CategorizedBoards, User } from './types';
 
 export function parseQueryStringFromURL(url: string): {
     [key: string]: string;
@@ -85,9 +85,13 @@ export function getInitials(name: string): string {
     return initials.slice(0, 2).toUpperCase();
 }
 
-
-export function categorizeBoards(boards: Board[], user: User): CategorizedBoards {
-    const self = boards.filter((board) => board.participants.some((participant) => participant.id === user.id));
+export function categorizeBoards(
+    boards: Board[],
+    user: User
+): CategorizedBoards {
+    const self = boards.filter((board) =>
+        board.participants.some((participant) => participant.id === user.id)
+    );
     const others = boards.filter((board) => !self.includes(board));
     return { self, public: others };
 }

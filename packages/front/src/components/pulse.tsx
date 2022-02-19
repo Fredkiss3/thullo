@@ -5,10 +5,10 @@ export interface PulseProps {
     classNames?: string;
 }
 
-export const Pulse: React.FC<PulseProps> = ({ children, classNames }) => {
+export function Pulse({ children, classNames }: PulseProps) {
     return (
         <div className={`${cls.pulseWrapper} ${classNames ?? ''}`}>
             {children}
         </div>
     );
-};
+}

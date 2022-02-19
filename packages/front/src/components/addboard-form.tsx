@@ -25,7 +25,7 @@ export const AddBoardForm = React.forwardRef<
 
     // get a random cover from the API when the component mounts
     useEffect(() => {
-        const getRandomPhoto = async () => {
+        async function getRandomPhoto() {
             const { data, errors } = await jsonFetch<{
                 smallURL: string;
                 id: string;
@@ -42,7 +42,7 @@ export const AddBoardForm = React.forwardRef<
                     url: data!.smallURL,
                 });
             }
-        };
+        }
 
         if (cover === null) {
             getRandomPhoto();
@@ -52,7 +52,7 @@ export const AddBoardForm = React.forwardRef<
     const [boardName, setBoardName] = React.useState('');
     const [isPrivate, setIsPrivate] = React.useState(false);
 
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
 
         mutation.mutate({
@@ -64,7 +64,7 @@ export const AddBoardForm = React.forwardRef<
             },
             onSuccess: onClose,
         });
-    };
+    }
 
     return (
         <form className={cls.addboard_form} onSubmit={handleSubmit}>

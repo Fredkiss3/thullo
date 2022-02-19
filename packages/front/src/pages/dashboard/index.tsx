@@ -13,7 +13,7 @@ import { useMemo } from 'react';
 
 export interface DashboardIndexProps {}
 
-export const DashboardIndex: React.FC<DashboardIndexProps> = ({}) => {
+export const DashboardIndex = ({}: DashboardIndexProps) => {
     const { isLoading, data } = useBoardsQuery();
     const { user } = useAuthenticatedUser();
 

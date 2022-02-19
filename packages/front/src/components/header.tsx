@@ -13,7 +13,7 @@ export interface HeaderProps {
     currentPageTitle?: string;
 }
 
-export const Header: React.FC<HeaderProps> = ({ currentPageTitle }) => {
+export function Header({ currentPageTitle }: HeaderProps) {
     return (
         <header className={cls.header}>
             <div className={cls.header__left}>
@@ -47,16 +47,18 @@ export const Header: React.FC<HeaderProps> = ({ currentPageTitle }) => {
                     className={cls.header__search_input}
                     placeholder={'Keyword...'}
                     trailingElement={
-                        <Button variant={`primary`} isStatic>Search</Button>
+                        <Button variant={`primary`} isStatic>
+                            Search
+                        </Button>
                     }
                 />
                 <HeaderAvatar />
             </div>
         </header>
     );
-};
+}
 
-const HeaderAvatar: React.FC = () => {
+function HeaderAvatar() {
     const { user, isLoading } = useAuthenticatedUser();
     const mutation = useLogoutMutation();
 
@@ -92,4 +94,4 @@ const HeaderAvatar: React.FC = () => {
             )}
         </div>
     );
-};
+}

@@ -9,13 +9,13 @@ export interface LinkButtonProps {
     variant?: typeof ButtonVariants[number];
 }
 
-export const LinkButton: React.FC<LinkButtonProps> = ({
+export function LinkButton({
     external = false,
     href,
     children,
     renderIcon,
     variant = 'outline',
-}) => {
+}: LinkButtonProps) {
     return external ? (
         <a href={href} className={`${cls.btn} ${cls[`btn--${variant}`]}`}>
             {renderIcon && renderIcon(cls.btn__leading_icon)}
@@ -27,4 +27,4 @@ export const LinkButton: React.FC<LinkButtonProps> = ({
             {children}
         </Link>
     );
-};
+}

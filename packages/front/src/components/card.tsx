@@ -1,12 +1,7 @@
 import * as React from 'react';
 
-export interface CardProps  {
+export interface CardProps {}
 
+export function Card({}: CardProps) {
+    return <></>;
 }
-
-export const Card: React.FC<CardProps> = ({}) => {
- return (
-  <>
-  </>
- );
-};

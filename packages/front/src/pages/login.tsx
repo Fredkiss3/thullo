@@ -11,7 +11,7 @@ import { Logo } from '../components/logo';
 
 export interface LoginPageProps {}
 
-export const LoginPage: React.FC<LoginPageProps> = (props) => {
+export function LoginPage(props: LoginPageProps) {
     const { errors, dispatch } = useErrorsContext();
 
     function getAuthURL(provider: string): URLSearchParams {
@@ -38,13 +38,11 @@ export const LoginPage: React.FC<LoginPageProps> = (props) => {
                         <Logo />
                     </div>
 
-                    <h1>
-                        Take your next project to the moon 🚀 !
-                    </h1>
+                    <h1>Take your next project to the moon 🚀 !</h1>
 
                     <p>
-                        Thullo helps you collaborate and manage projects with your team in one
-                        place.
+                        Thullo helps you collaborate and manage projects with
+                        your team in one place.
                     </p>
 
                     {errors && (
@@ -101,4 +99,4 @@ export const LoginPage: React.FC<LoginPageProps> = (props) => {
             </div>
         </Layout>
     );
-};
+}

@@ -4,7 +4,7 @@ export interface SeoProps {
     title?: string;
 }
 
-export const Seo: React.FC<SeoProps> = ({ title }) => {
+export function Seo({ title }: SeoProps) {
     return (
         <Helmet>
             <title>{`${title ?? 'A Full Stack Trello Clone'} - Thullo`}</title>
@@ -12,4 +12,4 @@ export const Seo: React.FC<SeoProps> = ({ title }) => {
             <link rel="icon" href="/favicon.ico" />
         </Helmet>
     );
-};
+}

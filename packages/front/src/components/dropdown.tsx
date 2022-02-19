@@ -7,20 +7,20 @@ export interface DropdownProps {
     className?: string;
 }
 
-export const Dropdown: React.FC<DropdownProps> = ({
+export function Dropdown({
     children,
     className,
     align = 'left',
-}) => {
+}: DropdownProps) {
     return (
         <div
             className={`
-                    ${className ?? ''}
-                    ${cls.dropdown} 
-                    ${cls[`dropdown--${align}`]}
-                `}
+                ${className ?? ''}
+                ${cls.dropdown} 
+                ${cls[`dropdown--${align}`]}
+            `}
         >
             {children}
         </div>
     );
-};
+}

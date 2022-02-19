@@ -10,14 +10,14 @@ export interface InputProps {
     value?: string;
 }
 
-export const Input: React.FC<InputProps> = ({
+export function Input({
     trailingElement,
     type = 'text',
     placeholder,
     className,
     onChange,
     value,
-}) => {
+}: InputProps) {
     return (
         <div className={`${cls.input} ${className ?? ''}`}>
             <input
@@ -32,4 +32,4 @@ export const Input: React.FC<InputProps> = ({
             )}
         </div>
     );
-};
+}

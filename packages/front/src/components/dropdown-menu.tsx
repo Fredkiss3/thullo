@@ -87,11 +87,11 @@ export type DropdownMenuProps = Omit<DropdownProps, 'children'> & {
     items: (DropdownMenuItem | DropdownDivider | DropdownMenuButton)[];
 };
 
-export const DropdownMenu: React.FC<DropdownMenuProps> = ({
+export function DropdownMenu({
     items,
     align = 'left',
     className,
-}) => {
+}: DropdownMenuProps) {
     return (
         <Dropdown className={className} align={align}>
             <ul className={cls.dropdown_menu}>
@@ -103,4 +103,4 @@ export const DropdownMenu: React.FC<DropdownMenuProps> = ({
             </ul>
         </Dropdown>
     );
-};
+}

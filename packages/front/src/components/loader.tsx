@@ -1,6 +1,6 @@
 import * as React from 'react';
 import cls from '../styles/components/loader.module.scss';
 
-export const Loader: React.FC = ({}) => {
+export function Loader({}) {
     return <div className={cls.loader}>Loading...</div>;
-};
+}

@@ -9,13 +9,13 @@ export interface LayoutProps {
     currentPageTitle?: string;
 }
 
-export const Layout: React.FC<LayoutProps> = ({
+export function Layout({
     children,
     className,
     currentPageTitle,
     hideFooter = false,
     hideHeader = false,
-}) => {
+}: LayoutProps) {
     return (
         <>
             {!hideHeader && <Header currentPageTitle={currentPageTitle} />}
@@ -23,4 +23,4 @@ export const Layout: React.FC<LayoutProps> = ({
             {!hideFooter && <Footer />}
         </>
     );
-};
+}

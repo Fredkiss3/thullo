@@ -5,7 +5,7 @@ import { Loader } from '../components/loader';
 
 export interface CallBackPageProps {}
 
-export const CallBackPage: React.FC<CallBackPageProps> = () => {
+export function CallBackPage() {
     const mutation = useLoginMutation();
 
     useEffect(() => {
@@ -14,4 +14,4 @@ export const CallBackPage: React.FC<CallBackPageProps> = () => {
         mutation.mutate(code);
     }, []);
     return <Loader />;
-};
+}

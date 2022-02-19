@@ -10,8 +10,8 @@ export interface BoardCardProps {
     loading?: boolean;
 }
 
-export const BoardCard: React.FC<BoardCardProps> = ({ board, loading }) =>
-    !loading && board ? (
+export function BoardCard({ board, loading }: BoardCardProps) {
+    return !loading && board ? (
         <Link className={cls.boardcard} to={board.id!}>
             <img
                 className={cls.boardcard__cover}
@@ -22,7 +22,11 @@ export const BoardCard: React.FC<BoardCardProps> = ({ board, loading }) =>
             <ul className={cls.boardcard__avatar_list}>
                 {board.participants.slice(0, 3).map((p, index) => (
                     <li key={index}>
-                        <Avatar name={p.name} username={p.username} photoURL={p.avatarURL} />
+                        <Avatar
+                            name={p.name}
+                            username={p.username}
+                            photoURL={p.avatarURL}
+                        />
                     </li>
                 ))}
 
@@ -52,3 +56,4 @@ export const BoardCard: React.FC<BoardCardProps> = ({ board, loading }) =>
             </ul>
         </div>
     );
+}

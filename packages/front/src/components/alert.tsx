@@ -6,7 +6,7 @@ export interface AlertProps {
     onClose?: () => void;
 }
 
-export const Alert: React.FC<AlertProps> = ({ children, type, onClose }) => {
+export function Alert({ children, type, onClose }: AlertProps) {
     const leftIcon = type === 'danger' && 'x-circle';
 
     return (
@@ -23,4 +23,4 @@ export const Alert: React.FC<AlertProps> = ({ children, type, onClose }) => {
             </button>
         </div>
     );
-};
+}

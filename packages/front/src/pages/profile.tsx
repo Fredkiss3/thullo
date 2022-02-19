@@ -8,7 +8,7 @@ import { Avatar } from '../components/avatar';
 
 export interface ProfilePageProps {}
 
-export const ProfilePage: React.FC<ProfilePageProps> = () => {
+export function ProfilePage() {
     const { user, isLoading } = useAuthenticatedUser();
 
     return isLoading || !user ? (
@@ -70,4 +70,4 @@ export const ProfilePage: React.FC<ProfilePageProps> = () => {
             </ul>
         </Layout>
     );
-};
+}

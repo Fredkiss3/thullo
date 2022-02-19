@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 
 export interface HomePageProps {}
 
-export const HomePage: React.FC<HomePageProps> = () => {
+export function HomePage() {
     const { user, isLoading } = useAuthenticatedUser();
     const navigate = useNavigate();
 
@@ -27,4 +27,4 @@ export const HomePage: React.FC<HomePageProps> = () => {
             <Seo />
         </Layout>
     );
-};
+}

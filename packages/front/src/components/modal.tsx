@@ -8,15 +8,16 @@ export interface ModalProps {
     onClose: () => void;
     cancelButtonRef?: React.RefObject<HTMLButtonElement>;
     className?: string;
+    children: React.ReactNode;
 }
 
-export const Modal: React.FC<ModalProps> = ({
+export function Modal({
     isOpen,
     onClose,
     children,
     className,
     cancelButtonRef,
-}) => {
+}: ModalProps) {
     return (
         <>
             <Transition appear show={isOpen} as={Fragment}>
@@ -73,4 +74,4 @@ export const Modal: React.FC<ModalProps> = ({
             </Transition>
         </>
     );
-};
+}

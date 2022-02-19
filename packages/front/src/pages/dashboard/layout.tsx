@@ -7,7 +7,7 @@ import { Loader } from '../../components/loader';
 
 export interface DashboardLayoutProps {}
 
-export const DashboardLayout: React.FC<DashboardLayoutProps> = ({}) => {
+export const DashboardLayout = ({}: DashboardLayoutProps) => {
     const { isLoading } = useAuthenticatedUser();
 
     // const { boardId } = useParams<{ boardId?: string }>();

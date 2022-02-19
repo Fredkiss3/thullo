@@ -6,9 +6,9 @@ export interface SkeletonProps {
     as?: typeof HTMLElement['name'];
 }
 
-export const Skeleton: React.FC<SkeletonProps> = ({ className, as }) => {
+export function Skeleton({ className, as }: SkeletonProps) {
     const Tag = as || 'div';
 
     // @ts-ignore
     return <Tag className={`${className} ${cls.skeleton}`} />;
-};
+}
