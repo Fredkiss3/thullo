@@ -4,6 +4,7 @@ import { container } from 'tsyringe';
 import { MemberRepository } from '@thullo/domain';
 import short from 'short-uuid';
 import { ApiResult } from '../../lib/types';
+import { getUser } from '../lib/functions';
 
 export const authMiddleware = async (
     req: Request,
@@ -29,25 +30,10 @@ export const authMiddleware = async (
             },
         });
     } else {
-        // Get the token from the header
-        const token = header.split('Bearer ')[1].trim();
-
-        try {
-            // Verify the token
-            const decoded = jwt.verify(
-                token,
-                process.env.JWT_SECRET!
-            ) as JwtPayload;
-
-            // get the user from the user repository
-            const repository: MemberRepository = await container.resolve(
-                'MemberRepository'
-            );
-            res.locals.user = await repository.getMemberById(
-                short().toUUID(decoded.id)
-            );
+        res.locals.user = await getUser(req);
+        if (res.locals.user !== null) {
             return next();
-        } catch (error) {
+        } else {
             return res.status(401).json({
                 data: null,
                 errors: {

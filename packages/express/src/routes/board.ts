@@ -8,7 +8,6 @@ const Router = router();
 
 Router.post('/', authMiddleware, getController(AddBoardController)).get(
     '/',
-    authMiddleware,
     getController(GetAllBoardsController)
 );
 

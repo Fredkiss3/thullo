@@ -2,6 +2,7 @@ import { SeeBoardsPresenterAdapter } from '@thullo/adapters';
 import { SeeBoardsUseCase } from '@thullo/domain';
 import { Request, Response } from 'express';
 import { container, inject, injectable } from 'tsyringe';
+import { getUser } from '../lib/functions';
 import { AbstractController } from './AbstractController';
 
 @injectable()
@@ -20,9 +21,11 @@ export class GetAllBoardsController extends AbstractController {
             await container.resolve('BoardRepository')
         );
 
+        const member = await getUser(req);
+
         await useCase.execute(
             {
-                memberId: res.locals.user.id,
+                memberId: member?.id,
             },
             this.presenter
         );
