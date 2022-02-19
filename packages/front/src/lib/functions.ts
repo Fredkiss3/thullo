@@ -85,6 +85,9 @@ export function getInitials(name: string): string {
     return initials.slice(0, 2).toUpperCase();
 }
 
+/**
+ * Separate boards between self and others
+ */
 export function categorizeBoards(
     boards: Board[],
     user: User
@@ -94,4 +97,18 @@ export function categorizeBoards(
     );
     const others = boards.filter((board) => !self.includes(board));
     return { self, public: others };
+}
+
+/**
+ *  Call the specified function with a delay
+ */
+export function debounce(callback: Function, delay: number = 500) {
+    let timer: number | undefined;
+    return (...args: any[]) => {
+        clearTimeout(timer);
+        timer = window.setTimeout(() => {
+            // @ts-ignore
+            callback.apply(this, args);
+        }, delay);
+    };
 }

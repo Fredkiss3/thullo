@@ -40,3 +40,11 @@ export type AddBoardRequest = {
 };
 
 export type CategorizedBoards = { self: Board[]; public: Board[] };
+
+export type Photo = {
+    id: string;
+    thumbnailURL: string;
+    smallURL: string;
+    authorUserName: string;
+    authorName: string;
+};

@@ -6,7 +6,10 @@ import { Input } from './input';
 import { useEffect } from 'react';
 import { jsonFetch } from '../lib/functions';
 import { Skeleton } from './skeleton';
-import { useAddBoardMutation } from '../lib/hooks';
+import { useAddBoardMutation } from '../lib/queries';
+import { PhotoSearch } from './photo-search';
+import { Photo } from '../lib/types';
+import { useOnClickOutside } from '../lib/hooks';
 
 export interface AddBoardCardProps {
     onClose: () => void;
@@ -16,20 +19,10 @@ export const AddBoardForm = React.forwardRef<
     HTMLButtonElement,
     AddBoardCardProps
 >(({ onClose }, ref) => {
-    const [cover, setCover] = React.useState<{
-        id: string;
-        url: string;
-    } | null>(null);
-
-    const mutation = useAddBoardMutation();
-
-    // get a random cover from the API when the component mounts
+    // get a random cover from the API when the component is mounted
     useEffect(() => {
         async function getRandomPhoto() {
-            const { data, errors } = await jsonFetch<{
-                smallURL: string;
-                id: string;
-            } | null>(
+            const { data, errors } = await jsonFetch<Photo | null>(
                 `${import.meta.env.VITE_API_URL}/api/proxy/unsplash/random/`
             );
 
@@ -37,10 +30,7 @@ export const AddBoardForm = React.forwardRef<
             if (errors !== null || data === null) {
                 return;
             } else {
-                setCover({
-                    id: data!.id,
-                    url: data!.smallURL,
-                });
+                setCover(data);
             }
         }
 
@@ -49,8 +39,8 @@ export const AddBoardForm = React.forwardRef<
         }
     }, []);
 
-    const [boardName, setBoardName] = React.useState('');
-    const [isPrivate, setIsPrivate] = React.useState(false);
+    // use the mutation to create a new board
+    const mutation = useAddBoardMutation();
 
     function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
@@ -60,20 +50,43 @@ export const AddBoardForm = React.forwardRef<
                 name: boardName,
                 private: isPrivate,
                 coverPhotoId: cover!.id,
-                coverPhotoUrl: cover!.url,
+                coverPhotoUrl: cover!.smallURL,
             },
             onSuccess: onClose,
         });
     }
 
+    const [boardName, setBoardName] = React.useState('');
+    const [isPrivate, setIsPrivate] = React.useState(false);
+    const [isCoverDropdownOpen, SetIsCoverDropdownOpen] = React.useState(false);
+    const [cover, setCover] = React.useState<Photo | null>(null);
+    const coverButtonRef = React.useRef(null);
+
+    // when the user clicks outside of the cover dropdown, close it
+    useOnClickOutside(coverButtonRef, () => {
+        SetIsCoverDropdownOpen(false);
+    });
+
     return (
         <form className={cls.addboard_form} onSubmit={handleSubmit}>
             {cover ? (
-                <img
-                    className={cls.addboard_form__cover}
-                    src={cover.url}
-                    alt="Image de couverture du tableau"
-                />
+                <div className={cls.addboard_form__cover}>
+                    <img
+                        className={cls.addboard_form__cover__image}
+                        src={cover.smallURL}
+                        alt="Image de couverture du tableau"
+                    />
+
+                    <div className={cls.addboard_form__cover__author}>
+                        <a
+                            target={'_blank'}
+                            rel={'noopener noreferrer'}
+                            href={`https://unsplash.com/@${cover.authorUserName}?utm_source=thullo-front&utm_medium=referral`}
+                        >
+                            Photo By {cover.authorName}
+                        </a>
+                    </div>
+                </div>
             ) : (
                 <Skeleton className={cls.addboard_form__cover_placeholder} />
             )}
@@ -100,29 +113,50 @@ export const AddBoardForm = React.forwardRef<
 
             {/* Actions Button */}
             <div className={cls.addboard_form__actions_buttons}>
-                <Button
-                    variant="hollow"
-                    className={cls.addboard_form__actions_buttons__button}
-                    renderLeadingIcon={(cls) => (
-                        <Icon icon={'media'} className={cls} />
-                    )}
+                <div
+                    className={cls.addboard_form__actions_buttons__action}
+                    ref={coverButtonRef}
                 >
-                    Cover
-                </Button>
-                <Button
-                    isStatic={isPrivate}
-                    variant={!isPrivate ? 'hollow' : 'black'}
-                    onClick={() => setIsPrivate(!isPrivate)}
-                    className={cls.addboard_form__actions_buttons__button}
-                    renderLeadingIcon={(cls) => (
-                        <Icon
-                            icon={isPrivate ? 'lock-closed' : 'lock-open'}
-                            className={cls}
-                        />
-                    )}
-                >
-                    Private
-                </Button>
+                    <Button
+                        variant={isCoverDropdownOpen ? 'black' : 'hollow'}
+                        className={
+                            cls.addboard_form__actions_buttons__action__button
+                        }
+                        renderLeadingIcon={(cls) => (
+                            <Icon icon={'media'} className={cls} />
+                        )}
+                        onClick={() =>
+                            SetIsCoverDropdownOpen(!isCoverDropdownOpen)
+                        }
+                    >
+                        Cover
+                    </Button>
+
+                    <PhotoSearch
+                        show={isCoverDropdownOpen}
+                        onSelect={(photo) => {
+                            setCover(photo);
+                        }}
+                    />
+                </div>
+                <div className={cls.addboard_form__actions_buttons__action}>
+                    <Button
+                        isStatic={isPrivate}
+                        variant={!isPrivate ? 'hollow' : 'black'}
+                        onClick={() => setIsPrivate(!isPrivate)}
+                        className={
+                            cls.addboard_form__actions_buttons__action__button
+                        }
+                        renderLeadingIcon={(cls) => (
+                            <Icon
+                                icon={isPrivate ? 'lock-closed' : 'lock-open'}
+                                className={cls}
+                            />
+                        )}
+                    >
+                        Private
+                    </Button>
+                </div>
             </div>
 
             {/* Footer Buttons */}

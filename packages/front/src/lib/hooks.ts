@@ -1,217 +1,76 @@
-import { useMutation, useQuery, useQueryClient } from 'react-query';
-import { useNavigate } from 'react-router-dom';
-import { USER_QUERY, USER_TOKEN, BOARD_QUERY } from './constants';
-import { deleteCookie, getCookie, jsonFetch, setCookie } from './functions';
-import { AddBoardRequest, Board, User } from './types';
-import { useErrorsContext } from '../context/ErrorContext';
+import { RefObject, useEffect, useRef } from 'react';
 
-// Queries
-export function useUserQuery() {
-    const { dispatch } = useErrorsContext();
-    return useQuery<User>(
-        USER_QUERY,
-        async () => {
-            const { data, errors } = await jsonFetch<{ user: User } | null>(
-                `${import.meta.env.VITE_API_URL}/api/auth/me`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${getCookie(USER_TOKEN)}`,
-                    },
-                }
-            );
+function useEventListener<K extends keyof WindowEventMap>(
+    eventName: K,
+    handler: (event: WindowEventMap[K]) => void
+): void;
+function useEventListener<
+    K extends keyof HTMLElementEventMap,
+    T extends HTMLElement = HTMLDivElement
+>(
+    eventName: K,
+    handler: (event: HTMLElementEventMap[K]) => void,
+    element: RefObject<T>
+): void;
 
-            if (errors) {
-                dispatch({
-                    type: 'ADD_ERRORS',
-                    errors,
-                });
-                throw new Error(JSON.stringify(errors));
+function useEventListener<
+    KW extends keyof WindowEventMap,
+    KH extends keyof HTMLElementEventMap,
+    T extends HTMLElement | void = void
+>(
+    eventName: KW | KH,
+    handler: (
+        event: WindowEventMap[KW] | HTMLElementEventMap[KH] | Event
+    ) => void,
+    element?: RefObject<T>
+) {
+    // Create a ref that stores handler
+    const savedHandler = useRef<typeof handler>();
+
+    useEffect(() => {
+        // Define the listening target
+        const targetElement: T | Window = element?.current || window;
+        if (!(targetElement && targetElement.addEventListener)) {
+            return;
+        }
+
+        // Update saved handler if necessary
+        if (savedHandler.current !== handler) {
+            savedHandler.current = handler;
+        }
+
+        // Create event listener that calls handler function stored in ref
+        const eventListener: typeof handler = (event) => {
+            // eslint-disable-next-line no-extra-boolean-cast
+            if (!!savedHandler?.current) {
+                savedHandler.current(event);
             }
+        };
 
-            return data!.user;
-        },
-        {
-            retry: 1,
-        }
-    );
+        targetElement.addEventListener(eventName, eventListener);
+
+        // Remove event listener on cleanup
+        return () => {
+            targetElement.removeEventListener(eventName, eventListener);
+        };
+    }, [eventName, element, handler]);
 }
 
-export function useBoardsQuery() {
-    const { dispatch } = useErrorsContext();
-    return useQuery<Board[]>(
-        BOARD_QUERY,
-        async () => {
-            const { data, errors } = await jsonFetch<Board[]>(
-                `${import.meta.env.VITE_API_URL}/api/boards/`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${getCookie(USER_TOKEN)}`,
-                    },
-                }
-            );
+type Handler = (event: MouseEvent) => void;
 
-            if (errors) {
-                dispatch({
-                    type: 'ADD_ERRORS',
-                    errors,
-                });
-                throw new Error(JSON.stringify(errors));
-            }
+export function useOnClickOutside<T extends HTMLElement = HTMLElement>(
+    ref: RefObject<T>,
+    handler: Handler,
+    mouseEvent: 'mousedown' | 'mouseup' = 'mousedown'
+): void {
+    useEventListener(mouseEvent, (event) => {
+        const el = ref?.current;
 
-            return data;
-        },
-        {
-            retry: 1,
+        // Do nothing if clicking ref's element or descendent elements
+        if (!el || el.contains(event.target as Node)) {
+            return;
         }
-    );
-}
 
-export function useAuthenticatedUser(): {
-    user: User;
-    isLoading: boolean;
-} {
-    const navigate = useNavigate();
-    const { data, isLoading, status } = useUserQuery();
-
-    if (status === 'error') {
-        navigate(`/login`);
-    }
-    return {
-        user: data!,
-        isLoading,
-    };
-}
-
-// Mutations
-export function useLogoutMutation() {
-    const queryClient = useQueryClient();
-    const navigate = useNavigate();
-    return useMutation(
-        async () => {
-            deleteCookie(USER_TOKEN);
-        },
-        {
-            onMutate: async () => {
-                // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
-                await queryClient.cancelQueries(USER_QUERY);
-
-                // Remove the user from the cache
-                queryClient.setQueryData(USER_QUERY, null);
-            },
-            onSettled: () => {
-                navigate('/login');
-            },
-        }
-    );
-}
-
-export function useLoginMutation() {
-    const navigate = useNavigate();
-    const queryClient = useQueryClient();
-    const { dispatch } = useErrorsContext();
-    return useMutation(
-        (authCode: string | null) =>
-            jsonFetch<{ token?: string }>(
-                `${import.meta.env.VITE_API_URL}/api/auth`,
-                {
-                    method: 'POST',
-                    body: JSON.stringify({ authCode }),
-                }
-            ),
-        {
-            onSuccess: ({ data, errors }) => {
-                if (errors === null && data.token) {
-                    queryClient.invalidateQueries(USER_QUERY);
-                    setCookie(USER_TOKEN, data.token);
-                    navigate('/profile');
-                } else {
-                    dispatch({
-                        type: 'ADD_ERRORS',
-                        errors,
-                    });
-                    navigate(`/login`);
-                }
-            },
-            onError: (err, _, context) => {
-                dispatch({
-                    type: 'ADD_ERRORS',
-                    errors: JSON.parse((err as Error).message),
-                });
-                navigate(`/login`);
-            },
-        }
-    );
-}
-
-export function useAddBoardMutation() {
-    const queryClient = useQueryClient();
-    const { dispatch } = useErrorsContext();
-    return useMutation(
-        async ({
-            board,
-            onSuccess,
-        }: {
-            board: AddBoardRequest;
-            onSuccess: () => void;
-        }) => {
-            const { data, errors } = await jsonFetch<Board>(
-                `${import.meta.env.VITE_API_URL}/api/boards`,
-                {
-                    method: 'POST',
-                    body: JSON.stringify(board),
-                    headers: {
-                        Authorization: `Bearer ${getCookie(USER_TOKEN)}`,
-                    },
-                }
-            );
-
-            if (errors) {
-                dispatch({
-                    type: 'ADD_ERRORS',
-                    errors,
-                });
-                throw new Error(JSON.stringify(errors));
-            }
-
-            return { board: data!, onSuccess };
-        },
-        {
-            onMutate: async ({ board, onSuccess }) => {
-                // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
-                await queryClient.cancelQueries(BOARD_QUERY);
-
-                // Add the board to the cache
-                const data = queryClient.getQueryData<Board[]>(BOARD_QUERY);
-                const user = queryClient.getQueryData<User>(USER_QUERY);
-
-                queryClient.setQueryData<Board[]>(BOARD_QUERY, [
-                    ...data!,
-                    {
-                        name: board.name,
-                        cover: {
-                            url: board.coverPhotoUrl,
-                        },
-                        participants: [
-                            {
-                                username: user!.username,
-                                id: user!.id,
-                                name: user!.name,
-                                avatarURL: user!.avatarURL,
-                            },
-                        ],
-                    },
-                ]);
-            },
-            onSuccess: (ctx) => {
-                queryClient.invalidateQueries(BOARD_QUERY);
-                ctx.onSuccess();
-            },
-            onError: (err, _, context) => {
-                dispatch({
-                    type: 'ADD_ERRORS',
-                    errors: JSON.parse((err as Error).message),
-                });
-            },
-        }
-    );
+        handler(event);
+    });
 }
