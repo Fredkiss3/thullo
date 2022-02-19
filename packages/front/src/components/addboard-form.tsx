@@ -154,7 +154,7 @@ export const AddBoardForm = React.forwardRef<
                             />
                         )}
                     >
-                        Private
+                        {isPrivate ? 'Private' : 'Public'}
                     </Button>
                 </div>
             </div>
