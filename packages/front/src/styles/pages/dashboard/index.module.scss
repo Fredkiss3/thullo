@@ -1,3 +1,5 @@
+@import '../../base/layout.scss';
+
 .header_section {
     display: flex;
     align-items: center;
@@ -12,7 +14,20 @@
 
 .card_section {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(1, minmax(300px, 1fr));
+
+    @include phone {
+        grid-template-columns: repeat(2, minmax(300px, 1fr));
+    }
+
+    @include pc {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    @include laptop {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
     gap: 1rem;
     margin-top: 1rem;
     margin-bottom: 3rem;

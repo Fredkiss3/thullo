@@ -33,22 +33,27 @@ export function Header({ currentPageTitle }: HeaderProps) {
 
                         <div className={cls.header__left__divider} />
 
-                        <LinkButton
-                            href={'/dashboard'}
-                            variant={'hollow'}
-                            renderIcon={(classNames) => (
-                                <Icon className={classNames} icon={'grid'} />
-                            )}
-                        >
-                            All boards
-                        </LinkButton>
+                        <div className={cls.header__left__button}>
+                            <LinkButton
+                                href={'/dashboard'}
+                                variant={'hollow'}
+                                renderIcon={(classNames) => (
+                                    <Icon
+                                        className={classNames}
+                                        icon={'grid'}
+                                    />
+                                )}
+                            >
+                                All boards
+                            </LinkButton>
+                        </div>
                     </>
                 )}
             </div>
 
             <div className={cls.header__right}>
                 <Input
-                    className={cls.header__search_input}
+                    className={cls.header__right__search_input}
                     placeholder={'Keyword...'}
                     trailingElement={
                         <Button variant={`primary`} isStatic>

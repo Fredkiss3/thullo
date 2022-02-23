@@ -118,6 +118,7 @@ export const AddBoardForm = React.forwardRef<
                     ref={coverButtonRef}
                 >
                     <Button
+                        isStatic={isCoverDropdownOpen}
                         variant={isCoverDropdownOpen ? 'black' : 'hollow'}
                         className={
                             cls.addboard_form__actions_buttons__action__button

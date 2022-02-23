@@ -43,7 +43,7 @@ export function BoardCard({ board, loading }: BoardCardProps) {
             <Skeleton className={cls.boardcard__cover_skeleton} as="div" />
             <Skeleton className={cls.boardcard__title_skeleton} as="h3" />
             <ul className={cls.boardcard__avatar_list}>
-                {[1, 2, 3].map((p, index) => (
+                {[1, 2, 3].map((_, index) => (
                     <li key={index}>
                         <Skeleton
                             as={'div'}

@@ -11,13 +11,13 @@
         background-color: var(--secondary-color);
         border-radius: var(--border-radius-md);
         height: 150px;
-        width: 250px;
+        min-width: 250px;
         object-fit: cover;
         object-position: center;
 
         &_skeleton {
             height: 150px;
-            width: 250px;
+            min-width: 250px;
         }
     }
 
