@@ -1,12 +1,30 @@
-import { Board, BoardRepository } from '@thullo/domain';
+import {
+    Board,
+    BoardAggregate,
+    BoardAggregateRepository,
+    BoardRepository
+} from '@thullo/domain';
 import { EntityRepository, MongoRepository } from 'typeorm';
 import { BoardEntity } from '../entities/Board';
 
 @EntityRepository(BoardEntity)
 export class TypeORMBoardRepository
     extends MongoRepository<BoardEntity>
-    implements BoardRepository
+    implements BoardRepository, BoardAggregateRepository
 {
+    async saveAggregate(board: BoardAggregate): Promise<BoardAggregate> {
+        const boardEntity = BoardEntity.fromAggregate(board);
+        await this.save(boardEntity);
+        return boardEntity.toAggregate();
+    }
+
+    async getBoardAggregateById(
+        boardId: string
+    ): Promise<BoardAggregate | null> {
+        const board = await this.findOne({ uuid: boardId });
+        return board ? board.toAggregate() : null;
+    }
+
     async getAllPublicBoards(): Promise<Board[]> {
         const boards = await this.find({
             where: {

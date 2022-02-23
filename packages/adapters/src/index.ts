@@ -9,3 +9,4 @@ export * from './presenters/AddBoardPresenterAdapter';
 export * from './presenters/SeeBoardsPresenterAdapter';
 export * from './presenters/OAuthPresenterAdapter';
 export * from './presenters/SearchMembersPresenterAdapter';
+export * from './presenters/SeeBoardDetailsPresenterAdapter';

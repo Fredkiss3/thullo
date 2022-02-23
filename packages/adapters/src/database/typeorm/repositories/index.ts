@@ -11,6 +11,13 @@ container.register('BoardRepository', {
     }
 });
 
+container.register('BoardAggregateRepository', {
+    useFactory: async () => {
+        await container.resolve(TypeormDatabaseAdapter).connect();
+        return getCustomRepository(TypeORMBoardRepository);
+    }
+});
+
 container.register('MemberRepository', {
     useFactory: async () => {
         await container.resolve(TypeormDatabaseAdapter).connect();
