@@ -7,7 +7,8 @@
         "test": "echo \"Testing the app\" && exit 0",
         "build": "tsc",
         "start": "NODE_ENV=production node dist/api/index.js",
-        "dev": "cross-env NODE_ENV=dev nodemon api/index.ts"
+        "dev": "cross-env NODE_ENV=dev nodemon api/index.ts",
+        "gen": "node ./scripts/generate.js"
     },
     "keywords": [],
     "author": "",
@@ -37,6 +38,7 @@
         "@types/express": "^4.17.13",
         "@types/express-request-id": "^1.4.3",
         "@types/morgan": "^1.9.3",
+        "generate-template-files": "^3.2.0",
         "nodemon": "^2.0.15",
         "prettier": "^2.5.0",
         "ts-node": "^10.4.0",
