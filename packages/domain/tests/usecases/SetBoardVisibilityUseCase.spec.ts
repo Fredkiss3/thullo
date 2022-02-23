@@ -68,7 +68,7 @@ describe('SetBoardVisibility Use case', () => {
             .withGetBoardAggregateById(async () => {
                 return aggregate;
             })
-            .withSave(async (board) => {
+            .withSaveAggregate(async (board) => {
                 aggregateExpected = board;
                 return board;
             })
@@ -92,7 +92,7 @@ describe('SetBoardVisibility Use case', () => {
             .withGetBoardAggregateById(async () => {
                 return aggregate;
             })
-            .withSave(async (board) => {
+            .withSaveAggregate(async (board) => {
                 aggregateExpected = board;
                 return board;
             })
@@ -133,16 +133,16 @@ describe('SetBoardVisibility Use case', () => {
                     label: 'empty Board Id',
                     request: {
                         ...request,
-                        boardId: '',
+                        boardId: ''
                     }
                 },
                 {
                     label: 'empty requesterId',
                     request: {
                         ...request,
-                        requesterId: '',
+                        requesterId: ''
                     }
-                },
+                }
             ];
 
         it.each(dataset)(

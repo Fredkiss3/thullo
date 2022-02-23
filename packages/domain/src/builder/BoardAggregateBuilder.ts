@@ -38,7 +38,7 @@ export class BoardAggregateBuilder {
     public withCards(
         cards: PartialOmit<
             Card,
-            'comments' | 'attachments' | 'labels' | 'coverURL' | 'description'
+            'comments' | 'attachments' | 'labels' | 'cover' | 'description'
         >[]
     ): BoardAggregateBuilder {
         this.cards = cards.map((card) => ({
@@ -47,7 +47,7 @@ export class BoardAggregateBuilder {
             comments: card.comments ?? [],
             attachments: card.attachments ?? [],
             labels: card.labels ?? [],
-            coverURL: card.coverURL ?? null
+            cover: card.cover ?? null
         }));
         return this;
     }

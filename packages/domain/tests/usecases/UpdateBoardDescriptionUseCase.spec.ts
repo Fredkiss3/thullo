@@ -50,7 +50,7 @@ describe('UpdateBoardDescription Use case', () => {
             .withGetBoardAggregateById(async () => {
                 return aggregate;
             })
-            .withSave(async (boardAggregate) => {
+            .withSaveAggregate(async (boardAggregate) => {
                 boardExpected = boardAggregate;
                 return boardAggregate;
             })
@@ -90,7 +90,7 @@ describe('UpdateBoardDescription Use case', () => {
             .withGetBoardAggregateById(async () => {
                 return aggregate;
             })
-            .withSave(async (boardAggregate) => {
+            .withSaveAggregate(async (boardAggregate) => {
                 boardExpected = boardAggregate;
                 return boardAggregate;
             })
@@ -172,7 +172,7 @@ describe('UpdateBoardDescription Use case', () => {
                         .withGetBoardAggregateById(async () => {
                             return aggregate;
                         })
-                        .withSave(async (boardAggregate) => {
+                        .withSaveAggregate(async (boardAggregate) => {
                             boardExpected = boardAggregate;
                             return boardAggregate;
                         })

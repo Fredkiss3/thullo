@@ -3,9 +3,7 @@ import { AddListToBoardPresenter } from './AddListToBoardPresenter';
 import { AddListToBoardResponse } from './AddListToBoardResponse';
 import { FieldErrors } from '../../lib/types';
 import Validator from 'validatorjs';
-import {
-    BoardAggregateRepository,
-} from '../../entities/BoardAggregate';
+import { BoardAggregateRepository } from '../../entities/BoardAggregate';
 import { List } from '../../entities/List';
 Validator.useLang('fr');
 
@@ -37,7 +35,7 @@ export class AddListToBoardUseCase {
             } else {
                 const id = boardAggregate.addList(request.name);
                 list = boardAggregate.listsByIds[id];
-                await this.repository.save(boardAggregate);
+                await this.repository.saveAggregate(boardAggregate);
             }
         } else {
             errors = {

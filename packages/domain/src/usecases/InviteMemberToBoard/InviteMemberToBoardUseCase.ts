@@ -39,7 +39,7 @@ export class InviteMemberToBoardUseCase {
                 if (board.isParticipant(request.initiatorId)) {
                     try {
                         board.addMemberToBoard(member);
-                        await this.boardRepository.save(board);
+                        await this.boardRepository.saveAggregate(board);
                     } catch (e) {
                         errors = {
                             memberId: [(e as MemberAlreadyInBoardError).message]

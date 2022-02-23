@@ -32,7 +32,7 @@ const firstCard: Card = {
     comments: [],
     attachments: [],
     labels: [],
-    coverURL: null,
+    cover: null,
     description: ''
 };
 
@@ -84,7 +84,7 @@ describe('MoveCard Use case', () => {
                 .withGetBoardAggregateById(async () => {
                     return aggregate;
                 })
-                .withSave(async (boardAggregate) => {
+                .withSaveAggregate(async (boardAggregate) => {
                     boardExpected = boardAggregate;
                     return boardAggregate;
                 })
@@ -348,7 +348,7 @@ describe('MoveCard Use case', () => {
                         .withGetBoardAggregateById(async () => {
                             return aggregate;
                         })
-                        .withSave(async (boardAggregate) => {
+                        .withSaveAggregate(async (boardAggregate) => {
                             boardExpected = boardAggregate;
                             return boardAggregate;
                         })

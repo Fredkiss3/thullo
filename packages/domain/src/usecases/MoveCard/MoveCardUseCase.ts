@@ -45,7 +45,7 @@ export class MoveCardUseCase {
                         request.destinationPosition
                     );
 
-                    await this.boardRepository.save(board!);
+                    await this.boardRepository.saveAggregate(board!);
                 } catch (e) {
                     if (e instanceof ListNotFoundError) {
                         errors = {

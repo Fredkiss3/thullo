@@ -79,7 +79,7 @@ describe('AddCardToList Use case', () => {
             .withGetBoardAggregateById(async () => {
                 return aggregate;
             })
-            .withSave(async (board: BoardAggregate) => {
+            .withSaveAggregate(async (board: BoardAggregate) => {
                 aggregateExpected = board;
                 return board;
             })

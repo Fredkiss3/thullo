@@ -1,7 +1,8 @@
-import { Attachment } from "../Attachment";
-import { ListId } from "../List";
-import { Label } from "../Label";
-import { Comment } from "../Comment";
+import { UnsplashPhoto } from './../../lib/types';
+import { Attachment } from '../Attachment';
+import { ListId } from '../List';
+import { Label } from '../Label';
+import { Comment } from '../Comment';
 
 export type CardId = string;
 
@@ -9,8 +10,7 @@ export interface Card {
     id: CardId;
     parentListId: ListId;
     position: number;
-    coverURL: string | null;
-    coverId?: string;
+    cover: UnsplashPhoto | null;
     description: string;
     title: string;
     attachments: Attachment[];

@@ -38,7 +38,7 @@ export class AddCardToListUseCase {
             } else {
                 try {
                     board.addCardToList(request.title, request.listId);
-                    await this.boardAggregateRepository.save(board);
+                    await this.boardAggregateRepository.saveAggregate(board);
                 } catch (e) {
                     if (e instanceof ListNotFoundError) {
                         errors = {

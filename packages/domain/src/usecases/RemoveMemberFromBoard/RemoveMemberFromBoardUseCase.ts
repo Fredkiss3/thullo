@@ -45,7 +45,7 @@ export class RemoveMemberFromBoardUseCase {
                             member,
                             request.initiatorId
                         );
-                        await this.boardRepository.save(board!);
+                        await this.boardRepository.saveAggregate(board!);
                     } catch (e) {
                         if (e instanceof OperationUnauthorizedError) {
                             errors = {

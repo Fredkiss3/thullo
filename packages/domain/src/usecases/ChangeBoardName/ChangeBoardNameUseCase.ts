@@ -40,7 +40,7 @@ export class ChangeBoardNameUseCase {
             if (member) {
                 try {
                     board.setName(request.name, member.id);
-                    await this.boardAggregateRepository.save(board);
+                    await this.boardAggregateRepository.saveAggregate(board);
                 } catch (e) {
                     errors = {
                         requesterId: [(e as OperationUnauthorizedError).message]

@@ -3,5 +3,5 @@ import { BoardId } from '../Board';
 
 export interface BoardAggregateRepository {
     getBoardAggregateById(boardId: BoardId): Promise<BoardAggregate | null>;
-    save(board: BoardAggregate): Promise<BoardAggregate>;
+    saveAggregate(board: BoardAggregate): Promise<BoardAggregate>;
 }

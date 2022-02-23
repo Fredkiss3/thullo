@@ -67,7 +67,7 @@ describe('ChangeBoardName Use case', () => {
             .withGetBoardAggregateById(async () => {
                 return aggregate;
             })
-            .withSave(async (aggregate) => {
+            .withSaveAggregate(async (aggregate) => {
                 expectedAggregate = aggregate;
                 return aggregate;
             })

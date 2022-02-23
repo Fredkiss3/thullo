@@ -33,7 +33,7 @@ export class UpdateBoardDescriptionUseCase {
         } else {
             try {
                 board.setDescription(request.description, request.initiatorId);
-                await this.boardAggregateRepository.save(board);
+                await this.boardAggregateRepository.saveAggregate(board);
             } catch (e) {
                 errors = {
                     initiatorId: [(e as OperationUnauthorizedError).message]

@@ -70,7 +70,7 @@ describe('RemoveMemberFromBoard Use case', () => {
             .withGetBoardAggregateById(async () => {
                 return aggregate;
             })
-            .withSave(async (boardAggregate) => {
+            .withSaveAggregate(async (boardAggregate) => {
                 boardExpected = boardAggregate;
                 return boardAggregate;
             })
@@ -91,7 +91,7 @@ describe('RemoveMemberFromBoard Use case', () => {
         expect(boardExpected!.participants.length).toBe(1);
     });
 
-    it("should show errors if initiator is not an admin of the board", async () => {
+    it('should show errors if initiator is not an admin of the board', async () => {
         // Given
         const aggregate = new BoardAggregateBuilder()
             .withBoardId(BOARD_ID)
@@ -118,7 +118,7 @@ describe('RemoveMemberFromBoard Use case', () => {
             .withGetBoardAggregateById(async () => {
                 return aggregate;
             })
-            .withSave(async (boardAggregate) => {
+            .withSaveAggregate(async (boardAggregate) => {
                 boardExpected = boardAggregate;
                 return boardAggregate;
             })
@@ -139,7 +139,7 @@ describe('RemoveMemberFromBoard Use case', () => {
         expect(boardExpected!).toBeFalsy();
     });
 
-    it("should show errors if board does not exists", async () => {
+    it('should show errors if board does not exists', async () => {
         // Given
         const memberRepository: MemberRepository = new MemberRepositoryBuilder()
             .withGetMemberById(async (id) => {
@@ -167,7 +167,7 @@ describe('RemoveMemberFromBoard Use case', () => {
         expect(presenter.response!.errors!.boardId).toHaveLength(1);
     });
 
-    it("should show errors if member is not a participant of the board", async () => {
+    it('should show errors if member is not a participant of the board', async () => {
         // Given
         const aggregate = new BoardAggregateBuilder()
             .withBoardId(BOARD_ID)
@@ -205,7 +205,7 @@ describe('RemoveMemberFromBoard Use case', () => {
         expect(presenter.response!.errors!.memberId).toHaveLength(1);
     });
 
-    it("should show errors if memberId does not exists", async () => {
+    it('should show errors if memberId does not exists', async () => {
         // Given
         const aggregate = new BoardAggregateBuilder()
             .withBoardId(BOARD_ID)
@@ -280,39 +280,41 @@ describe('RemoveMemberFromBoard Use case', () => {
             async ({ request }) => {
                 // Given
                 const aggregate = new BoardAggregateBuilder()
-                  .withBoardId(BOARD_ID)
-                  .withParticipants([
-                      {
-                          isAdmin: true,
-                          member: admin
-                      },
-                      {
-                          isAdmin: false,
-                          member: otherMember
-                      }
-                  ])
-                  .build();
+                    .withBoardId(BOARD_ID)
+                    .withParticipants([
+                        {
+                            isAdmin: true,
+                            member: admin
+                        },
+                        {
+                            isAdmin: false,
+                            member: otherMember
+                        }
+                    ])
+                    .build();
 
-                const memberRepository: MemberRepository = new MemberRepositoryBuilder()
-                  .withGetMemberById(async (id) => {
-                      return otherMember;
-                  })
-                  .build();
+                const memberRepository: MemberRepository =
+                    new MemberRepositoryBuilder()
+                        .withGetMemberById(async (id) => {
+                            return otherMember;
+                        })
+                        .build();
 
                 let boardExpected: BoardAggregate;
-                const boardAggregateRepository = new BoardAggregateRepositoryBuilder()
-                  .withGetBoardAggregateById(async () => {
-                      return aggregate;
-                  })
-                  .withSave(async (boardAggregate) => {
-                      boardExpected = boardAggregate;
-                      return boardAggregate;
-                  })
-                  .build();
+                const boardAggregateRepository =
+                    new BoardAggregateRepositoryBuilder()
+                        .withGetBoardAggregateById(async () => {
+                            return aggregate;
+                        })
+                        .withSaveAggregate(async (boardAggregate) => {
+                            boardExpected = boardAggregate;
+                            return boardAggregate;
+                        })
+                        .build();
 
                 const useCase = new RemoveMemberFromBoardUseCase(
-                  memberRepository,
-                  boardAggregateRepository
+                    memberRepository,
+                    boardAggregateRepository
                 );
 
                 // When

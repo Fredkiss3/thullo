@@ -29,7 +29,7 @@ const admin: Member = {
 const request: AddListToBoardRequest = {
     requesterId: admin.id,
     boardId: BOARD_ID,
-    name: 'New List',
+    name: 'New List'
 };
 
 const aggregate = new BoardAggregate(
@@ -60,7 +60,7 @@ describe('AddListToBoard Use case', () => {
             .withGetBoardAggregateById(async () => {
                 return aggregate;
             })
-            .withSave(async (board: BoardAggregate) => {
+            .withSaveAggregate(async (board: BoardAggregate) => {
                 aggregateExpected = board;
                 return board;
             })

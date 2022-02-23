@@ -92,7 +92,7 @@ export class BoardAggregate {
             title,
             attachments: [],
             labels: [],
-            coverURL: null,
+            cover: null,
             description: '',
             comments: []
         };

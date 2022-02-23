@@ -31,7 +31,7 @@ export class SetBoardVisibilityUseCase {
         if (board) {
             try {
                 board.setVisibility(request.private, request.requesterId);
-                await this.boardAggregateRepository.save(board);
+                await this.boardAggregateRepository.saveAggregate(board);
             } catch (e) {
                 errors = {
                     requesterId: [(e as OperationUnauthorizedError).message]
@@ -49,7 +49,7 @@ export class SetBoardVisibilityUseCase {
     validate(request: SetBoardVisibilityRequest): FieldErrors {
         const validation = new Validator(request, this.RULES, {
             'required.boardId': 'Le tableau est requis',
-            'required.requesterId': 'L\'utilisateur est requis',
+            'required.requesterId': "L'utilisateur est requis",
             'required.private': 'La visibilité est requise',
             'boolean.private': 'La visibilité doit être un booléen'
         });

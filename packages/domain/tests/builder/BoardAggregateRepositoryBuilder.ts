@@ -9,8 +9,10 @@ export class BoardAggregateRepositoryBuilder {
         id: BoardId
     ) => Promise<BoardAggregate | null> = () => Promise.resolve(null);
 
-    private save: (aggregate: BoardAggregate) => Promise<BoardAggregate> =
-        (aggregate: BoardAggregate) => Promise.resolve(aggregate);
+    private saveAggregate: (
+        aggregate: BoardAggregate
+    ) => Promise<BoardAggregate> = (aggregate: BoardAggregate) =>
+        Promise.resolve(aggregate);
 
     withGetBoardAggregateById(
         getBoardAggregateById: (id: BoardId) => Promise<BoardAggregate | null>
@@ -19,17 +21,17 @@ export class BoardAggregateRepositoryBuilder {
         return this;
     }
 
-    withSave(
-        save: (aggregate: BoardAggregate) => Promise<BoardAggregate>
+    withSaveAggregate(
+        saveAggregate: (aggregate: BoardAggregate) => Promise<BoardAggregate>
     ): BoardAggregateRepositoryBuilder {
-        this.save = save;
+        this.saveAggregate = saveAggregate;
         return this;
     }
 
     build(): BoardAggregateRepository {
         return {
             getBoardAggregateById: this.getBoardAggregateById,
-            save: this.save
+            saveAggregate: this.saveAggregate
         };
     }
 }
