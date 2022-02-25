@@ -16,11 +16,13 @@ interface BoardAggregateData {
         id: string;
         name: string;
         avatarURL: string | null;
+        login: string;
     };
     participants: Array<{
         id: string;
         name: string;
         avatarURL: string | null;
+        login: string;
     }>;
     lists: Array<{
         id: string;
@@ -66,7 +68,7 @@ export class SeeBoardDetailsPresenterAdapter
         return board === null
             ? null
             : {
-                  id: board.boardId,
+                  id: short().fromUUID(board.boardId),
                   name: board.name,
                   description: board.description,
                   isPrivate: board.isPrivate,
@@ -75,12 +77,14 @@ export class SeeBoardDetailsPresenterAdapter
                       .map(({ member }) => ({
                           id: member.id,
                           name: member.name,
-                          avatarURL: member.avatarURL
+                          avatarURL: member.avatarURL,
+                          login: member.login
                       })),
                   admin: {
                       id: short().fromUUID(admin!.id),
                       name: admin!.name,
-                      avatarURL: admin!.avatarURL
+                      avatarURL: admin!.avatarURL,
+                      login: admin!.login
                   },
                   lists: Object.entries(board.cardsByLists).map(
                       ([id, cards]) => ({

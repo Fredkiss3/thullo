@@ -1,3 +1,4 @@
+import short from 'short-uuid';
 import { AddBoardPresenterAdapter } from '@thullo/adapters';
 import { AddBoardUseCase } from '@thullo/domain';
 import { Request, Response } from 'express';
@@ -23,7 +24,7 @@ export class AddBoardController extends AbstractController {
         await useCase.execute(
             {
                 ...req.body,
-                memberId: res.locals.user.id,
+                memberId: short().toUUID(res.locals.user.id),
             },
             this.presenter
         );

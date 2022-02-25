@@ -15,6 +15,7 @@ type BoardData = Array<{
     participants: Array<{
         id: string;
         name: string;
+        login: string;
         avatarURL: string | null;
     }>;
 }>;
@@ -47,9 +48,9 @@ export class SeeBoardsPresenterAdapter implements SeeBoardsPresenter {
                       authorUserName: board.cover.authorUserName
                   },
                   participants: board.participants.map(({ member }) => ({
-                      id: member.id,
+                      id: short().fromUUID(member.id),
                       name: member.name,
-                      username: member.login,
+                      login: member.login,
                       avatarURL: member.avatarURL
                   }))
               }));

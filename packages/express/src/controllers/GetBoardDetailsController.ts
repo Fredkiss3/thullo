@@ -1,7 +1,4 @@
-import {
-    SeeBoardDetailsPresenter,
-    SeeBoardDetailsUseCase,
-} from '@thullo/domain';
+import { SeeBoardDetailsUseCase } from '@thullo/domain';
 import short from 'short-uuid';
 import { SeeBoardDetailsPresenterAdapter } from '@thullo/adapters';
 import type { Request, Response } from 'express';
@@ -30,7 +27,7 @@ export class GetBoardDetailsController extends AbstractController {
         await useCase.execute(
             {
                 boardId: short().toUUID(req.params.boardId),
-                requesterId: member?.id,
+                requesterId: member ? short().toUUID(member.id) : undefined,
             },
             this.presenter
         );

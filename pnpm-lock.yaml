@@ -177,7 +177,7 @@ importers:
       react-router-dom: ^6.1.0
       remove: ^0.1.5
       sass: ^1.44.0
-      typescript: ^4.3.2
+      typescript: ^4.5.2
       vite: ^2.6.4
     dependencies:
       '@auth0/auth0-react': 1.8.0_react-dom@17.0.2+react@17.0.2
@@ -956,7 +956,7 @@ packages:
     peerDependencies:
       '@babel/core': ^7.0.0-0
     dependencies:
-      '@babel/core': 7.16.0
+      '@babel/core': 7.16.0_supports-color@8.1.1
       '@babel/helper-plugin-utils': 7.14.5
     dev: true
 
@@ -1020,7 +1020,7 @@ packages:
     peerDependencies:
       '@babel/core': ^7.0.0-0
     dependencies:
-      '@babel/core': 7.16.0
+      '@babel/core': 7.16.0_supports-color@8.1.1
       '@babel/helper-plugin-utils': 7.14.5
     dev: true
 
@@ -1048,7 +1048,7 @@ packages:
     peerDependencies:
       '@babel/core': ^7.0.0-0
     dependencies:
-      '@babel/core': 7.16.0
+      '@babel/core': 7.16.0_supports-color@8.1.1
       '@babel/helper-plugin-utils': 7.14.5
     dev: true
 
@@ -1057,7 +1057,7 @@ packages:
     peerDependencies:
       '@babel/core': ^7.0.0-0
     dependencies:
-      '@babel/core': 7.16.0
+      '@babel/core': 7.16.0_supports-color@8.1.1
       '@babel/helper-plugin-utils': 7.14.5
     dev: true
 
@@ -1066,7 +1066,7 @@ packages:
     peerDependencies:
       '@babel/core': ^7.0.0-0
     dependencies:
-      '@babel/core': 7.16.0
+      '@babel/core': 7.16.0_supports-color@8.1.1
       '@babel/helper-plugin-utils': 7.14.5
     dev: true
 
@@ -1075,7 +1075,7 @@ packages:
     peerDependencies:
       '@babel/core': ^7.0.0-0
     dependencies:
-      '@babel/core': 7.16.0
+      '@babel/core': 7.16.0_supports-color@8.1.1
       '@babel/helper-plugin-utils': 7.14.5
     dev: true
 
@@ -1084,7 +1084,7 @@ packages:
     peerDependencies:
       '@babel/core': ^7.0.0-0
     dependencies:
-      '@babel/core': 7.16.0
+      '@babel/core': 7.16.0_supports-color@8.1.1
       '@babel/helper-plugin-utils': 7.14.5
     dev: true
 
@@ -1093,7 +1093,7 @@ packages:
     peerDependencies:
       '@babel/core': ^7.0.0-0
     dependencies:
-      '@babel/core': 7.16.0
+      '@babel/core': 7.16.0_supports-color@8.1.1
       '@babel/helper-plugin-utils': 7.14.5
     dev: true
 

@@ -32,6 +32,9 @@ export async function getUser(req: Request): Promise<Member | null> {
             );
 
             member = await repository.getMemberById(short().toUUID(decoded.id));
+            if (member) {
+                member.id = short().fromUUID(member.id);
+            }
         } catch (error) {
             // do nothing
         }
