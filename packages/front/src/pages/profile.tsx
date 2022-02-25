@@ -33,7 +33,7 @@ export function ProfilePage() {
                         PHOTO
                     </div>
                     <Avatar
-                        username={user.username}
+                        username={user.login}
                         photoURL={user.avatarURL}
                         name={user.name}
                         className={`${cls.profile_container__panel__field__avatar} ${cls.profile_container__panel__field__value}`}
