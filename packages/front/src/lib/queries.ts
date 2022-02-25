@@ -1,8 +1,13 @@
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useNavigate } from 'react-router-dom';
-import { USER_QUERY, USER_TOKEN, BOARD_QUERY } from './constants';
+import {
+    USER_QUERY,
+    USER_TOKEN,
+    BOARD_QUERY,
+    SINGLE_BOARD_QUERY,
+} from './constants';
 import { deleteCookie, getCookie, jsonFetch, setCookie } from './functions';
-import { AddBoardRequest, Board, User } from './types';
+import { AddBoardRequest, Board, BoardDetails, User } from './types';
 import { useErrorsContext } from '../context/ErrorContext';
 
 // Queries
@@ -54,7 +59,6 @@ export function useBoardsQuery() {
                     type: 'ADD_ERRORS',
                     errors,
                 });
-                throw new Error(JSON.stringify(errors));
             }
 
             return data;
@@ -192,7 +196,7 @@ export function useAddBoardMutation() {
                         },
                         participants: [
                             {
-                                username: user!.username,
+                                login: user!.login,
                                 id: user!.id,
                                 name: user!.name,
                                 avatarURL: user!.avatarURL,
@@ -211,6 +215,37 @@ export function useAddBoardMutation() {
                     errors: JSON.parse((err as Error).message),
                 });
             },
+        }
+    );
+}
+
+export function useSingleBoardQuery(id: string) {
+    const { dispatch } = useErrorsContext();
+    return useQuery<BoardDetails | null>(
+        [SINGLE_BOARD_QUERY, id],
+        async () => {
+            const { data, errors } = await jsonFetch<BoardDetails | null>(
+                `${import.meta.env.VITE_API_URL}/api/boards/${id}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${getCookie(USER_TOKEN)}`,
+                    },
+                }
+            );
+
+            if (errors) {
+                dispatch({
+                    type: 'ADD_ERRORS',
+                    errors,
+                });
+                // indicate that the board is not found
+                throw new Error(JSON.stringify(errors));
+            }
+
+            return data;
+        },
+        {
+            retry: 0,
         }
     );
 }

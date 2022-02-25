@@ -25,7 +25,8 @@ html,
 body {
     width: 100%;
     margin: 0;
-    background-color: #f8f9fd;
+    background-color: var(--body-color);
+    height: 100%;
 }
 
 main {
@@ -64,6 +65,7 @@ input {
 
 :root {
     // Variant Colors
+    --body-color: #f8f9fd;
     --primary-color: #{$primaryColor};
     --primary-color-outline: #{$primaryColorOutline};
     --secondary-color: #{$secondaryColor};

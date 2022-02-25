@@ -13,9 +13,15 @@ export type User = {
     id: string;
     login: string;
     name: string;
-    username: string;
     email: string;
     avatarURL: string;
+};
+
+export type BoardMember = {
+    id: string;
+    name: string;
+    login: string;
+    avatarURL: string | null;
 };
 
 export type Board = {
@@ -24,12 +30,34 @@ export type Board = {
     cover: {
         url: string;
     };
-    participants: Array<{
-        id: string;
-        name: string;
-        username: string;
-        avatarURL: string | null;
-    }>;
+    participants: BoardMember[];
+};
+
+export type Card = {
+    id: string;
+    title: string;
+    coverURL: string | null;
+
+    // TODO: add more fields
+    // labels: [];
+    // comments: [];
+    // attachments: [];
+};
+
+export type List = {
+    id: string;
+    name: string;
+    cards: Card[];
+};
+
+export type BoardDetails = {
+    id: string;
+    name: string;
+    description: string | null;
+    participants: BoardMember[];
+    isPrivate: boolean;
+    admin: BoardMember;
+    lists: List[];
 };
 
 export type AddBoardRequest = {

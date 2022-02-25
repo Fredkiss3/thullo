@@ -16,6 +16,6 @@
         "noEmit": true,
         "jsx": "react-jsx"
     },
-    "include": ["./src", "../next/components", "../next/pages/boards.tsx"],
+    "include": ["./src", "./src/**/*.ts", "./src/**/*.tsx", "./src/**/*.d.ts"],
     "exclude": ["./node_modules", "cypress"]
 }

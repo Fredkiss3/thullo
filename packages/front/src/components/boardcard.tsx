@@ -24,7 +24,7 @@ export function BoardCard({ board, loading }: BoardCardProps) {
                     <li key={index}>
                         <Avatar
                             name={p.name}
-                            username={p.username}
+                            username={p.login}
                             photoURL={p.avatarURL}
                         />
                     </li>

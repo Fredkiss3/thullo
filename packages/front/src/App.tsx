@@ -8,7 +8,6 @@ import { LoginPage } from './pages/login';
 import { ProfilePage } from './pages/profile';
 import { Error404Page } from './pages/404';
 import { DashboardIndex } from './pages/dashboard';
-import { DashboardLayout } from './pages/dashboard/layout';
 import { ErrorProvider, errorReducer } from './context/ErrorContext';
 import { useReducer } from 'react';
 import { DashboardDetails } from './pages/dashboard/board';
@@ -40,13 +39,11 @@ function App() {
                         <Route path="/login" element={<LoginPage />} />
                         <Route path="/callback" element={<CallBackPage />} />
                         <Route path="/profile" element={<ProfilePage />} />
-                        <Route path="/dashboard" element={<DashboardLayout />}>
-                            <Route index element={<DashboardIndex />} />
-                            <Route
-                                path=":boardId"
-                                element={<DashboardDetails />}
-                            />
-                        </Route>
+                        <Route path="/dashboard" element={<DashboardIndex />} />
+                        <Route
+                            path="/dashboard/:boardId"
+                            element={<DashboardDetails />}
+                        />
                         <Route path="*" element={<Error404Page />} />
                     </Routes>
                 </div>

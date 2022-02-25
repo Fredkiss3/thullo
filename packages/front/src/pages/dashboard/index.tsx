@@ -3,17 +3,14 @@ import { Seo } from '../../components/seo';
 import cls from '../../styles/pages/dashboard/index.module.scss';
 import { Button } from '../../components/button';
 import { Icon } from '../../components/icon';
-import {
-    useAuthenticatedUser,
-    useBoardsQuery,
-    useUserQuery,
-} from '../../lib/queries';
+import { useBoardsQuery, useUserQuery } from '../../lib/queries';
 import { BoardCard } from '../../components/boardcard';
 import { Modal } from '../../components/modal';
 import { AddBoardForm } from '../../components/addboard-form';
 import { categorizeBoards } from '../../lib/functions';
 import { CategorizedBoards } from '../../lib/types';
 import { useMemo } from 'react';
+import { DashboardLayout } from './layout';
 
 export interface DashboardIndexProps {}
 
@@ -30,7 +27,7 @@ export function DashboardIndex(props: DashboardIndexProps) {
     }, [boards, user]);
 
     return (
-        <>
+        <DashboardLayout>
             <Seo title="Dashboard" />
 
             {user && (
@@ -91,7 +88,7 @@ export function DashboardIndex(props: DashboardIndexProps) {
                     <p className={cls.card_section__empty}>No boards yet</p>
                 )}
             </section>
-        </>
+        </DashboardLayout>
     );
 }
 

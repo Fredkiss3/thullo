@@ -1,30 +1,24 @@
 import * as React from 'react';
-import { Outlet } from 'react-router-dom';
 import { Layout } from '../../components/Layout';
 import cls from '../../styles/pages/dashboard/layout.module.scss';
-import { useUserQuery } from '../../lib/queries';
-import { Loader } from '../../components/loader';
 
-export interface DashboardLayoutProps {}
+export interface DashboardLayoutProps {
+    children: React.ReactNode;
+    headerTitle?: string;
+    className?: string;
+}
 
-export function DashboardLayout({}: DashboardLayoutProps) {
-    const { isLoading, status } = useUserQuery();
-
-    // const { boardId } = useParams<{ boardId?: string }>();
-    // if (!boardId) {
-    //     // TODO : load board to get the name and pass it to the layout
-    // }
+export function DashboardLayout({
+    children,
+    headerTitle,
+    className,
+}: DashboardLayoutProps) {
     return (
-        <>
-            {isLoading ? (
-                <Loader />
-            ) : (
-                <>
-                    <Layout className={cls.main}>
-                        <Outlet />
-                    </Layout>
-                </>
-            )}
-        </>
+        <Layout
+            className={className ?? cls.main}
+            currentPageTitle={headerTitle}
+        >
+            {children}
+        </Layout>
     );
 }
