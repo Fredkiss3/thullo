@@ -15,7 +15,7 @@ export function DashboardLayout({
 }: DashboardLayoutProps) {
     return (
         <Layout
-            className={className ?? cls.main}
+            className={`${cls.main} ${className ?? ''}`}
             currentPageTitle={headerTitle}
         >
             {children}

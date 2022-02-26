@@ -27,7 +27,7 @@ export function DashboardIndex(props: DashboardIndexProps) {
     }, [boards, user]);
 
     return (
-        <DashboardLayout>
+        <DashboardLayout className={cls.page}>
             <Seo title="Dashboard" />
 
             {user && (

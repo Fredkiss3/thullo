@@ -48,7 +48,7 @@ function App() {
                     </Routes>
                 </div>
 
-                <ReactQueryDevtools initialIsOpen={false} />
+                <ReactQueryDevtools initialIsOpen />
             </QueryClientProvider>
         </ErrorProvider>
     );

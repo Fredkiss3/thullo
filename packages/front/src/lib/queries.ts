@@ -35,7 +35,7 @@ export function useUserQuery() {
             return data ? data.user : null;
         },
         {
-            retry: 1,
+            retry: 2,
         }
     );
 }
