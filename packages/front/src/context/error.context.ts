@@ -1,5 +1,5 @@
-import { createContext, useContext, useState } from 'react';
-import { ApiErrors } from '../lib/types';
+import { createContext, useContext } from 'react';
+import { ApiErrors } from '@/lib/types';
 
 // Dispatches errors to the ErrorContext
 
@@ -71,5 +71,3 @@ export const ErrorContext = createContext<{
 export const useErrorsContext = () => {
     return useContext(ErrorContext);
 };
-
-export const ErrorProvider = ErrorContext.Provider;

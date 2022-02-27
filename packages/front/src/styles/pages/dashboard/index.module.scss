@@ -1,4 +1,9 @@
-@import '../../base/layout.scss';
+@import '../../base/responsive';
+
+.page {
+    background-color: var(--body-color);
+    padding-bottom: 5rem;
+}
 
 .header_section {
     display: flex;

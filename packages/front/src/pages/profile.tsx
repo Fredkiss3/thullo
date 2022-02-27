@@ -1,14 +1,17 @@
 import * as React from 'react';
-import { useAuthenticatedUser } from '../lib/queries';
-import { Layout } from '../components/Layout';
-import { Seo } from '../components/seo';
-import { Loader } from '../components/loader';
-import cls from '../styles/pages/profile.module.scss';
-import { Avatar } from '../components/avatar';
+// Functions & Other
+import { useAuthenticatedUser } from '@/lib/queries';
+// Components
+import { Layout } from '@/components/Layout';
+import { Seo } from '@/components/seo';
+import { Loader } from '@/components/loader';
+import { Avatar } from '@/components/avatar';
+// Styles
+import cls from '@/styles/pages/profile.module.scss';
 
 export interface ProfilePageProps {}
 
-export function ProfilePage() {
+export function ProfilePage(props: ProfilePageProps) {
     const { user, isLoading } = useAuthenticatedUser();
 
     return isLoading || !user ? (

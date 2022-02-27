@@ -1,5 +1,8 @@
-import cls from '../styles/components/alert.module.scss';
+// Components
 import { Icon } from './icon';
+
+// styles
+import cls from '@/styles/components/alert.module.scss';
 
 export interface AlertProps {
     type?: 'success' | 'danger' | 'warning' | 'info';

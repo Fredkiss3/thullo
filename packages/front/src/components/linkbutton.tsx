@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import cls from '../styles/components/button.module.scss';
+import cls from '@/styles/components/button.module.scss';
 import { ButtonVariants } from './button';
 
 export interface LinkButtonProps {

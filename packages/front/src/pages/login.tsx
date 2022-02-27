@@ -1,17 +1,21 @@
 import * as React from 'react';
-import { Alert } from '../components/alert';
-import { Icon } from '../components/icon';
-import { LinkButton } from '../components/linkbutton';
-import { Seo } from '../components/seo';
-import { getHostWithScheme } from '../lib/functions';
-import { useErrorsContext } from '../context/ErrorContext';
-import { Layout } from '../components/Layout';
-import cls from '../styles/pages/login.module.scss';
-import { Logo } from '../components/logo';
 
-export interface LoginPageProps {}
+// Functions & Others
+import { getHostWithScheme } from "@/lib/functions";
+import { useErrorsContext } from "@/context/error.context";
 
-export function LoginPage(props: LoginPageProps) {
+// Components
+import { Alert } from "@/components/alert";
+import { Icon } from "@/components/icon";
+import { LinkButton } from "@/components/linkbutton";
+import { Seo } from "@/components/seo";
+import { Layout } from "@/components/Layout";
+import { Logo } from "@/components/logo";
+
+// Styles
+import cls from '@/styles/pages/login.module.scss';
+
+export function LoginPage() {
     const { errors, dispatch } = useErrorsContext();
 
     function getAuthURL(provider: string): URLSearchParams {
@@ -38,7 +42,7 @@ export function LoginPage(props: LoginPageProps) {
                         <Logo />
                     </div>
 
-                    <h1>Take your next project to the moon 🚀 !</h1>
+                    <h1>Take your next project to the moon 🚀</h1>
 
                     <p>
                         Thullo helps you collaborate and manage projects with

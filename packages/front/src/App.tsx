@@ -1,16 +1,22 @@
+// External
+import { useReducer } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { Route, Routes } from 'react-router-dom';
-import cls from './App.module.scss';
+
+// Functions & Others
+import { errorReducer, ErrorContext } from './context/error.context';
+import { ToastContext, toastReducer } from '@/context/toast.context';
+
+// components
 import { CallBackPage } from './pages/callback';
 import { HomePage } from './pages/home';
 import { LoginPage } from './pages/login';
 import { ProfilePage } from './pages/profile';
 import { Error404Page } from './pages/404';
 import { DashboardIndex } from './pages/dashboard';
-import { ErrorProvider, errorReducer } from './context/ErrorContext';
-import { useReducer } from 'react';
 import { DashboardDetails } from './pages/dashboard/board';
+import { ToastArea } from '@/components/toast-area';
 
 const queryClient = new QueryClient({
     // do not refetch on window focus
@@ -23,17 +29,23 @@ const queryClient = new QueryClient({
 });
 
 function App() {
+    const [toasts, toastDispatcher] = useReducer(toastReducer, null);
     const [errors, dispatch] = useReducer(errorReducer, null);
 
     return (
-        <ErrorProvider
+        <ErrorContext.Provider
             value={{
                 errors,
                 dispatch,
             }}
         >
-            <QueryClientProvider client={queryClient}>
-                <div className={cls.App}>
+            <ToastContext.Provider
+                value={{
+                    toasts,
+                    dispatch: toastDispatcher,
+                }}
+            >
+                <QueryClientProvider client={queryClient}>
                     <Routes>
                         <Route path="/" element={<HomePage />} />
                         <Route path="/login" element={<LoginPage />} />
@@ -46,11 +58,11 @@ function App() {
                         />
                         <Route path="*" element={<Error404Page />} />
                     </Routes>
-                </div>
-
-                <ReactQueryDevtools initialIsOpen />
-            </QueryClientProvider>
-        </ErrorProvider>
+                    <ReactQueryDevtools initialIsOpen />
+                    <ToastArea />
+                </QueryClientProvider>
+            </ToastContext.Provider>
+        </ErrorContext.Provider>
     );
 }
 

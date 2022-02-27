@@ -1,20 +1,24 @@
 import * as React from 'react';
-import { Seo } from '../../components/seo';
-import cls from '../../styles/pages/dashboard/index.module.scss';
-import { Button } from '../../components/button';
-import { Icon } from '../../components/icon';
-import { useBoardsQuery, useUserQuery } from '../../lib/queries';
-import { BoardCard } from '../../components/boardcard';
-import { Modal } from '../../components/modal';
-import { AddBoardForm } from '../../components/addboard-form';
-import { categorizeBoards } from '../../lib/functions';
-import { CategorizedBoards } from '../../lib/types';
+// Functions & Others
+import { categorizeBoards } from '@/lib/functions';
+import type { CategorizedBoards } from '@/lib/types';
+import { useToastContext } from '@/context/toast.context';
+
+// Components
+import { Seo } from '@/components/seo';
+import { Button } from '@/components/button';
+import { Icon } from '@/components/icon';
+import { useBoardsQuery, useUserQuery } from '@/lib/queries';
+import { BoardCard } from '@/components/boardcard';
+import { Modal } from '@/components/modal';
+import { AddBoardForm } from '@/components/addboard-form';
 import { useMemo } from 'react';
-import { DashboardLayout } from './layout';
+import { Layout } from '@/components/Layout';
 
-export interface DashboardIndexProps {}
+// styles
+import cls from '@/styles/pages/dashboard/index.module.scss';
 
-export function DashboardIndex(props: DashboardIndexProps) {
+export function DashboardIndex() {
     const { isLoading, data: boards } = useBoardsQuery();
     const { data: user } = useUserQuery();
 
@@ -27,7 +31,7 @@ export function DashboardIndex(props: DashboardIndexProps) {
     }, [boards, user]);
 
     return (
-        <DashboardLayout className={cls.page}>
+        <Layout className={cls.page}>
             <Seo title="Dashboard" />
 
             {user && (
@@ -43,10 +47,11 @@ export function DashboardIndex(props: DashboardIndexProps) {
                                 <BoardCard loading />
                                 <BoardCard loading />
                                 <BoardCard loading />
+                                <BoardCard loading />
                             </>
                         ) : boardCategorized.self.length > 0 ? (
-                            boardCategorized.self.map((board) => (
-                                <React.Fragment key={board?.id}>
+                            boardCategorized.self.map((board, index) => (
+                                <React.Fragment key={board?.id ?? index}>
                                     {board.id ? (
                                         <BoardCard board={board} />
                                     ) : (
@@ -73,10 +78,11 @@ export function DashboardIndex(props: DashboardIndexProps) {
                         <BoardCard loading />
                         <BoardCard loading />
                         <BoardCard loading />
+                        <BoardCard loading />
                     </>
                 ) : boardCategorized.public.length > 0 ? (
-                    boardCategorized.public.map((board) => (
-                        <React.Fragment key={board?.id}>
+                    boardCategorized.public.map((board, index) => (
+                        <React.Fragment key={board?.id ?? index}>
                             {board.id ? (
                                 <BoardCard board={board} />
                             ) : (
@@ -88,13 +94,14 @@ export function DashboardIndex(props: DashboardIndexProps) {
                     <p className={cls.card_section__empty}>No boards yet</p>
                 )}
             </section>
-        </DashboardLayout>
+        </Layout>
     );
 }
 
 function AddBoardModal() {
     const [isOpen, setIsOpen] = React.useState(false);
     const cancelButtonRef = React.useRef<HTMLButtonElement>(null);
+    const { dispatch } = useToastContext();
 
     return (
         <>
@@ -114,7 +121,14 @@ function AddBoardModal() {
             >
                 <AddBoardForm
                     ref={cancelButtonRef}
-                    onClose={() => setIsOpen(false)}
+                    onClose={() => {
+                        setIsOpen(false);
+                        dispatch({
+                            type: 'ADD_SUCCESS',
+                            key: 'add-board-success',
+                            message: 'Board added successfully',
+                        });
+                    }}
                 />
             </Modal>
         </>

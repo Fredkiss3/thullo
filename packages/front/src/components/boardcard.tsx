@@ -1,9 +1,15 @@
 import * as React from 'react';
-import { Board } from '../lib/types';
-import { Avatar } from './avatar';
-import cls from '../styles/components/boardcard.module.scss';
+
+// Functions & Others
+import type { Board } from '@/lib/types';
+
+// Components
 import { Link } from 'react-router-dom';
+import { Avatar } from './avatar';
 import { Skeleton } from './skeleton';
+
+// Styles
+import cls from '../styles/components/boardcard.module.scss';
 
 export interface BoardCardProps {
     board?: Board;

@@ -1,18 +1,31 @@
+@import "../base/responsive";
+
 .login_pane {
     border: 1px solid var(--border-color);
-    padding: 60px;
+    padding: 40px;
+
+    @include phone {
+        padding: 60px;
+    }
+
     max-width: 474px;
     border-radius: var(--border-radius-xl);
     display: flex;
     flex-direction: column;
     gap: 2rem;
+    margin-left: auto;
+    margin-right: auto;
 
     &__header {
         display: flex;
         flex-direction: column;
         justify-content: start;
-        text-align: start;
+        text-align: center;
         gap: 1rem;
+
+        @include phone {
+            text-align: start;
+        }
 
         &__logo {
             align-self: center;

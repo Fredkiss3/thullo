@@ -16,7 +16,7 @@ export type DropdownMenuButton = {
     label: string;
     icon: IconName;
     onClick?: () => void;
-    danger?: boolean;
+    error?: boolean;
 };
 
 export type DropdownDivider = {
@@ -50,7 +50,7 @@ function getComponentFromType(
                     className={`
                         ${cls.dropdown_menu__item__button}
                         ${
-                            item.danger
+                            item.error
                                 ? cls[`dropdown_menu__item__button--danger`]
                                 : ''
                         }

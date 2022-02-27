@@ -7,15 +7,14 @@ export function Footer({}: FooterProps) {
     return (
         <footer className={cls.footer}>
             <p>
-                Created by{' '}
+                Created by&nbsp;
                 <a
                     href={`https://github.com/Fredkiss3`}
                     className={cls.footer__username}
                 >
                     Fredkiss3
-                </a>{' '}
+                </a>, devchallenges.io
             </p>
-            <p>&copy;Thullo 2022</p>
         </footer>
     );
 }

@@ -1,9 +1,9 @@
+
 .details_page {
-    background-color: #fff;
-    padding: 2rem;
     width: 100%;
-    height: 92vh;
-    padding-top: 7rem;
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 3rem;
 
     &__header {
         display: flex;
@@ -28,8 +28,9 @@
         background-color: var(--body-color);
         padding: 2rem;
         border-radius: var(--border-radius-xl);
-        height: 92%;
+        //height: 100%;
         // overflow-y: scroll;
+        flex-grow: 1;
         overflow-x: scroll;
     }
 }

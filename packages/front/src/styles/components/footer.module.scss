@@ -2,11 +2,16 @@
 
 .footer {
     width: 100%;
-    color: $secondaryColor;
+    color: var(--secondary-color);
     display: flex;
     align-items: center;
     padding: 1rem;
-    justify-content: space-between;
+    justify-content: center;
+    background-color: white;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
 
     &__username {
         text-decoration: underline;

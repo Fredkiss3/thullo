@@ -42,7 +42,7 @@
 
 /* Alert Types */
 .alert--danger {
-    background-color: $dangerColor;
+    background-color: var(--danger-color);
     color: #fff;
 
     .alert__icon_right {

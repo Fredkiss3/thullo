@@ -1,5 +1,7 @@
 import * as React from 'react';
-import cls from '../styles/components/skeleton.module.scss';
+
+// styles
+import cls from '@/styles/components/skeleton.module.scss';
 
 export interface SkeletonProps {
     className?: string;
@@ -7,7 +9,7 @@ export interface SkeletonProps {
 }
 
 export function Skeleton({ className, as }: SkeletonProps) {
-    const Tag = as || 'div';
+    const Tag = as ?? 'div';
 
     // @ts-ignore
     return <Tag className={`${className} ${cls.skeleton}`} />;

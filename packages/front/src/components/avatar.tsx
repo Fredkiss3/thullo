@@ -1,6 +1,9 @@
 import * as React from 'react';
-import { getInitials } from '../lib/functions';
-import cls from '../styles/components/avatar.module.scss';
+// Functions & Others
+import { getInitials } from '@/lib/functions';
+
+// styles
+import cls from '@/styles/components/avatar.module.scss';
 
 export interface AvatarProps {
     photoURL?: string | null;

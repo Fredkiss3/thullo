@@ -87,7 +87,7 @@ function HeaderAvatar() {
                 onClick: () => {
                     mutation.mutate();
                 },
-                danger: true,
+                error: true,
             },
         ];
     } else {

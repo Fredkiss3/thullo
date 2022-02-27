@@ -4,6 +4,19 @@ export type ApiErrors =
       } & { global?: [string] })
     | null;
 
+export type ToastType = 'success' | 'error' | 'warning' | 'info';
+
+export type ToastMessage = {
+    type: ToastType;
+    message: string;
+    duration?: number;
+    keep?: boolean;
+};
+
+export type ToastContextData = {
+    [key: string]: ToastMessage;
+} | null;
+
 export interface ApiResult<T> {
     data: T;
     errors: ApiErrors;

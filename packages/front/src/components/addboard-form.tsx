@@ -1,15 +1,16 @@
 import * as React from 'react';
 import { Button } from './button';
-import cls from '../styles/components/addboard-form.module.scss';
 import { Icon } from './icon';
 import { Input } from './input';
-import { useEffect } from 'react';
-import { jsonFetch } from '../lib/functions';
+import { jsonFetch } from "@/lib/functions";
 import { Skeleton } from './skeleton';
-import { useAddBoardMutation } from '../lib/queries';
 import { PhotoSearch } from './photo-search';
-import { Photo } from '../lib/types';
-import { useOnClickOutside } from '../lib/hooks';
+
+import { useAddBoardMutation } from "@/lib/queries";
+import { Photo } from "@/lib/types";
+import { useOnClickOutside } from "@/lib/hooks";
+
+import cls from '@/styles/components/addboard-form.module.scss';
 
 export interface AddBoardCardProps {
     onClose: () => void;
@@ -20,13 +21,12 @@ export const AddBoardForm = React.forwardRef<
     AddBoardCardProps
 >(({ onClose }, ref) => {
     // get a random cover from the API when the component is mounted
-    useEffect(() => {
+    React.useEffect(() => {
         async function getRandomPhoto() {
             const { data, errors } = await jsonFetch<Photo | null>(
                 `${import.meta.env.VITE_API_URL}/api/proxy/unsplash/random/`
             );
 
-            console.log(data, errors);
             if (errors !== null || data === null) {
                 return;
             } else {

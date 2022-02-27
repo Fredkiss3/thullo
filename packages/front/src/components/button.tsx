@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { forwardRef } from 'react';
-import cls from '../styles/components/button.module.scss';
+import cls from '@/styles/components/button.module.scss';
 
 export const ButtonVariants = [
     'primary',

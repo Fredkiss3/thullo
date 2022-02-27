@@ -1,33 +1,44 @@
 import * as React from 'react';
+
+// Functions & Other
 import { useNavigate, useParams } from 'react-router-dom';
-import { Loader } from '../../components/loader';
-import { Seo } from '../../components/seo';
-import { useSingleBoardQuery, useUserQuery } from '../../lib/queries';
-import { DashboardLayout } from './layout';
-import cls from '../../styles/pages/dashboard/board.module.scss';
-import { BoardDetails } from '../../lib/types';
-import { Button } from '../../components/button';
-import { Icon } from '../../components/icon';
-import { Avatar } from '../../components/avatar';
+import { useSingleBoardQuery, useUserQuery } from '@/lib/queries';
+import { useToastContext } from '@/context/toast.context';
+import type { BoardDetails } from '@/lib/types';
 
-export interface DashboardDetailsProps {}
+// Components
+import { Loader } from '@/components/loader';
+import { Seo } from '@/components/seo';
+import { Layout } from '@/components/Layout';
+import { Button } from '@/components/button';
+import { Icon } from '@/components/icon';
+import { Avatar } from '@/components/avatar';
 
-export function DashboardDetails(props: DashboardDetailsProps) {
+// styles
+import cls from '@/styles/pages/dashboard/board.module.scss';
+
+export function DashboardDetails() {
     const { boardId } = useParams<{ boardId: string }>();
     const { data: user } = useUserQuery();
     const { data: board, isLoading } = useSingleBoardQuery(boardId!);
+    const { dispatch } = useToastContext();
 
     const navigate = useNavigate();
 
     React.useEffect(() => {
         if (!isLoading && !board) {
+            dispatch({
+                type: 'ADD_ERROR',
+                key: 'board-not-found',
+                message: 'The board you are looking for does not exist.',
+            });
             navigate('/dashboard');
         }
     }, [board, isLoading]);
 
     // When the board is not found, we render null to avoid rendering the layout
-    if (board === null) {
-        return null;
+    if (!board && !isLoading) {
+        return <></>;
     }
 
     const isBoardAdmin = user?.id === board?.admin.id;
@@ -37,9 +48,10 @@ export function DashboardDetails(props: DashboardDetailsProps) {
         ) ?? false;
 
     return (
-        <DashboardLayout
-            headerTitle={isLoading ? 'Loading...' : board!.name}
-            className={cls.details_page}
+        <Layout
+            unConstrained
+            currentPageTitle={isLoading ? 'Loading...' : board!.name}
+            containerClassName={cls.details_page}
         >
             <Seo title="Dashboard Details" />
             {isLoading ? (
@@ -54,7 +66,7 @@ export function DashboardDetails(props: DashboardDetailsProps) {
                     <ColumnsSection {...board!} />
                 </>
             )}
-        </DashboardLayout>
+        </Layout>
     );
 }
 

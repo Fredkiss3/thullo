@@ -1,9 +1,7 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 
-export interface Error404PageProps {}
-
-export function Error404Page(props: Error404PageProps) {
+export function Error404Page() {
     return (
         <>
             <main style={{ padding: '1rem' }}>

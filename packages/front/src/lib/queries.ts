@@ -7,8 +7,15 @@ import {
     SINGLE_BOARD_QUERY,
 } from './constants';
 import { deleteCookie, getCookie, jsonFetch, setCookie } from './functions';
-import { AddBoardRequest, Board, BoardDetails, User } from './types';
-import { useErrorsContext } from '../context/ErrorContext';
+import type {
+    AddBoardRequest,
+    ApiErrors,
+    Board,
+    BoardDetails,
+    User,
+} from './types';
+import { useErrorsContext } from '@/context/error.context';
+import { useToastContext } from '@/context/toast.context';
 
 // Queries
 export function useUserQuery() {
@@ -148,7 +155,7 @@ export function useLoginMutation() {
 
 export function useAddBoardMutation() {
     const queryClient = useQueryClient();
-    const { dispatch } = useErrorsContext();
+    const { dispatch } = useToastContext();
     return useMutation(
         async ({
             board,
@@ -169,10 +176,6 @@ export function useAddBoardMutation() {
             );
 
             if (errors) {
-                dispatch({
-                    type: 'ADD_ERRORS',
-                    errors,
-                });
                 throw new Error(JSON.stringify(errors));
             }
 
@@ -210,10 +213,23 @@ export function useAddBoardMutation() {
                 ctx.onSuccess();
             },
             onError: (err, _, context) => {
-                dispatch({
-                    type: 'ADD_ERRORS',
-                    errors: JSON.parse((err as Error).message),
-                });
+                const errors = JSON.parse((err as Error).message) as ApiErrors;
+                if (errors) {
+                    dispatch({
+                        type: 'ADD_TOASTS',
+                        toasts: Object.entries(errors).map(([key, values]) => ({
+                            key,
+                            type: 'error',
+                            message: values.join(', '),
+                        })),
+                    });
+                }
+
+                // dispatch({
+                //     type: 'ADD_ERROR',
+                //     key: 'addBoard',
+                //     message: (err as Error).message,
+                // });
             },
         }
     );
