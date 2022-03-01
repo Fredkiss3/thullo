@@ -101,7 +101,6 @@ export function DashboardIndex() {
 function AddBoardModal() {
     const [isOpen, setIsOpen] = React.useState(false);
     const cancelButtonRef = React.useRef<HTMLButtonElement>(null);
-    const { dispatch } = useToastContext();
 
     return (
         <>
@@ -123,11 +122,6 @@ function AddBoardModal() {
                     ref={cancelButtonRef}
                     onClose={() => {
                         setIsOpen(false);
-                        dispatch({
-                            type: 'ADD_SUCCESS',
-                            key: 'add-board-success',
-                            message: 'Board added successfully',
-                        });
                     }}
                 />
             </Modal>

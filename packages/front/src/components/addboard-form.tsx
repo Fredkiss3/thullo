@@ -2,15 +2,16 @@ import * as React from 'react';
 import { Button } from './button';
 import { Icon } from './icon';
 import { Input } from './input';
-import { jsonFetch } from "@/lib/functions";
+import { jsonFetch } from '@/lib/functions';
 import { Skeleton } from './skeleton';
 import { PhotoSearch } from './photo-search';
 
-import { useAddBoardMutation } from "@/lib/queries";
-import { Photo } from "@/lib/types";
-import { useOnClickOutside } from "@/lib/hooks";
+import { useAddBoardMutation } from '@/lib/queries';
+import { Photo } from '@/lib/types';
+import { useOnClickOutside } from '@/lib/hooks';
 
 import cls from '@/styles/components/addboard-form.module.scss';
+import { useToastContext } from '@/context/toast.context';
 
 export interface AddBoardCardProps {
     onClose: () => void;
@@ -20,6 +21,8 @@ export const AddBoardForm = React.forwardRef<
     HTMLButtonElement,
     AddBoardCardProps
 >(({ onClose }, ref) => {
+    const { dispatch } = useToastContext();
+
     // get a random cover from the API when the component is mounted
     React.useEffect(() => {
         async function getRandomPhoto() {
@@ -52,7 +55,14 @@ export const AddBoardForm = React.forwardRef<
                 coverPhotoId: cover!.id,
                 coverPhotoUrl: cover!.smallURL,
             },
-            onSuccess: onClose,
+            onSuccess: () => {
+                onClose();
+                dispatch({
+                    type: 'ADD_SUCCESS',
+                    key: 'add-board-success',
+                    message: 'Board added successfully',
+                });
+            },
         });
     }
 
