@@ -14,7 +14,7 @@ export class TypeORMBoardRepository
 {
     async saveAggregate(board: BoardAggregate): Promise<BoardAggregate> {
         const boardEntity = BoardEntity.fromAggregate(board);
-        await this.save(boardEntity);
+        await this.update({ uuid: board.boardId }, boardEntity);
         return boardEntity.toAggregate();
     }
 
@@ -62,6 +62,8 @@ export class TypeORMBoardRepository
             }
         });
 
-        return Promise.resolve(boards.map(board => board.toDomain()));
+        return boards.map(board => {
+            return board.toDomain();
+        });
     }
 }
