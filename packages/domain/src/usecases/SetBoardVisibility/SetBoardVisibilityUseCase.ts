@@ -5,7 +5,8 @@ import { FieldErrors } from '../../lib/types';
 import Validator from 'validatorjs';
 import {
     BoardAggregateRepository,
-    OperationUnauthorizedError
+    OperationUnauthorizedError,
+    BoardAggregate
 } from '../../entities/BoardAggregate';
 Validator.useLang('fr');
 
@@ -24,26 +25,31 @@ export class SetBoardVisibilityUseCase {
     ): Promise<void> {
         let errors = this.validate(request);
 
-        const board = await this.boardAggregateRepository.getBoardAggregateById(
-            request.boardId
-        );
+        let board: BoardAggregate | null = null;
 
-        if (board) {
-            try {
-                board.setVisibility(request.private, request.requesterId);
-                await this.boardAggregateRepository.saveAggregate(board);
-            } catch (e) {
+        if (!errors) {
+            board = await this.boardAggregateRepository.getBoardAggregateById(
+                request.boardId
+            );
+
+            if (board) {
+                try {
+                    board.setVisibility(request.private, request.requesterId);
+                    await this.boardAggregateRepository.saveAggregate(board);
+                } catch (e) {
+                    board = null;
+                    errors = {
+                        requesterId: [(e as OperationUnauthorizedError).message]
+                    };
+                }
+            } else {
                 errors = {
-                    requesterId: [(e as OperationUnauthorizedError).message]
+                    boardId: ["Ce tableau n'existe pas"]
                 };
             }
-        } else {
-            errors = {
-                boardId: ["Ce tableau n'existe pas"]
-            };
         }
 
-        presenter.present(new SetBoardVisibilityResponse(errors));
+        presenter.present(new SetBoardVisibilityResponse(board, errors));
     }
 
     validate(request: SetBoardVisibilityRequest): FieldErrors {

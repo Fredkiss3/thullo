@@ -82,6 +82,7 @@ describe('SetBoardVisibility Use case', () => {
         // Then
         expect(aggregateExpected).not.toBe(null);
         expect(aggregateExpected!.isPrivate).toBe(false);
+        expect(aggregateExpected).toBe(presenter.response!.board);
     });
 
     it('Show errors if operation resulted in an error', async () => {
@@ -107,6 +108,7 @@ describe('SetBoardVisibility Use case', () => {
         expect(aggregateExpected).toBe(null);
         expect(presenter.response?.errors).not.toBe(null);
         expect(presenter.response?.errors!.requesterId).toHaveLength(1);
+        expect(presenter.response!.board).toBe(null);
     });
 
     it('Should show errors if board does not exists', async () => {
@@ -124,6 +126,7 @@ describe('SetBoardVisibility Use case', () => {
         // Then
         expect(presenter.response?.errors).not.toBe(null);
         expect(presenter.response?.errors!.boardId).toHaveLength(1);
+        expect(presenter.response!.board).toBe(null);
     });
 
     describe('Invalid Requests', () => {
@@ -163,6 +166,7 @@ describe('SetBoardVisibility Use case', () => {
 
                 // Then
                 expect(presenter.response?.errors).not.toBe(null);
+                expect(presenter.response!.board).toBe(null);
             }
         );
     });
