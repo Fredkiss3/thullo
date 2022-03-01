@@ -1,10 +1,8 @@
-@import '../base/variables';
-
 /* Button Block */
 .btn {
     display: flex;
     align-items: center;
-    border-radius: 8px;
+    border-radius: var(--border-radius-md);
     padding: 0.5rem 1rem;
     text-decoration: none;
     gap: 0.5rem;
@@ -14,9 +12,9 @@
     font-size: var(--font-size-md);
 
     --bg-color: transparent;
-    --outline-color: var(--hollow-color-outline);
-    --hover-bg-color: var(--hollow-color);
     --fg-color: var(--text-color);
+    --outline-color: var(--hollow-color-ring);
+    --hover-bg-color: var(--hollow-color);
     --hover-fg-color: var(--text-color);
 
     color: var(--fg-color);
@@ -49,7 +47,7 @@
 .btn--primary {
     --bg-color: var(--primary-color);
     --fg-color: #fff;
-    --outline-color: var(--primary-color-outline);
+    --outline-color: var(--primary-color-ring);
     --hover-fg-color: var(--primary-color);
     --hover-bg-color: transparent;
 }
@@ -61,7 +59,7 @@
 
     &:focus,
     &:active {
-        box-shadow: 0 0 0 0.25rem var(--secondary-color-outline);
+        box-shadow: 0 0 0 0.25rem var(--secondary-color-ring);
     }
 
     &:hover:not(.btn--static) {
@@ -73,7 +71,7 @@
 .btn--hollow {
     --bg-color: var(--hollow-color);
     --fg-color: #828282;
-    --outline-color: var(--hollow-color-outline);
+    --outline-color: var(--hollow-color-ring);
 
     &:hover:not(.btn--static) {
         color: var(--fg-color);
@@ -85,14 +83,14 @@
     --bg-color: var(--danger-color);
     --fg-color: #fff;
     --hover-bg-color: transparent;
-    --outline-color: var(--danger-color-outline);
+    --outline-color: var(--danger-color-ring);
 }
 
 .btn--black {
     --hover-bg-color: transparent;
     --bg-color: var(--black-color);
     --fg-color: #fff;
-    --outline-color: var(--black-color-outline);
+    --outline-color: var(--black-color-ring);
 }
 
 .btn--block {

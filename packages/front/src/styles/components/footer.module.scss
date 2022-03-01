@@ -1,5 +1,3 @@
-@import '../base/variables';
-
 .footer {
     width: 100%;
     color: var(--secondary-color);
@@ -15,10 +13,10 @@
 
     &__username {
         text-decoration: underline;
-        font-weight: $fWBold;
+        font-weight: var(--font-weight-bold);
     }
 
     p {
-        font-size: $textFontSize;
+        font-size: var(--font-size-md);
     }
 }

@@ -1,5 +1,3 @@
-@import '../base/variables';
-
 .logo {
     height: 2rem;
     display: inline-flex;
@@ -8,8 +6,8 @@
 
     &__text {
         font-family: 'Poppins', sans-serif;
-        font-weight: $fWBold;
-        font-size: $titleFontSize;
+        font-weight: var(--font-weight-bold);
+        font-size: var(--font-size-xl);
     }
 
     &__image {
