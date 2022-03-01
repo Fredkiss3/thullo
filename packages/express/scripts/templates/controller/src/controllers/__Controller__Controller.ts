@@ -6,7 +6,9 @@ import { AbstractController } from './AbstractController';
 
 @injectable()
 export class __Controller__Controller extends AbstractController {
-    constructor(@inject('__UC__Presenter') presenter: __UC__PresenterAdapter) {
+    constructor(
+        @inject('__UC__Presenter') private presenter: __UC__PresenterAdapter
+    ) {
         super();
     }
 
