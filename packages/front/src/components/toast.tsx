@@ -16,6 +16,7 @@ export interface ToastProps {
     duration?: number;
     children: React.ReactNode;
     keep?: boolean;
+    closeable?: boolean;
 }
 
 export function Toast({
@@ -24,6 +25,7 @@ export function Toast({
     duration = 5000,
     keep = false,
     type = 'success',
+    closeable = true,
 }: ToastProps) {
     React.useEffect(() => {
         const timer = keep ? undefined : window.setTimeout(onClose, duration);
@@ -35,12 +37,14 @@ export function Toast({
     return (
         <div className={`${cls.toast} ${cls[`toast--${type}`] ?? ''}`}>
             <div className={cls.toast__body}>{children}</div>
-            <button
-                className={cls.toast__close_btn}
-                onClick={() => onClose && onClose()}
-            >
-                <Icon icon={'x-icon'} className={cls.toast__icon_right} />
-            </button>
+            {closeable && (
+                <button
+                    className={cls.toast__close_btn}
+                    onClick={() => onClose && onClose()}
+                >
+                    <Icon icon={'x-icon'} className={cls.toast__icon_right} />
+                </button>
+            )}
         </div>
     );
 }

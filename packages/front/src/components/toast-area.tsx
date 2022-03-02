@@ -22,6 +22,7 @@ export function ToastArea({}: ToastAreaProps) {
                         key={key}
                         keep={message.keep}
                         type={message.type}
+                        closeable={message.closeable}
                         duration={message.duration}
                         onClose={() => dispatch({ type: 'REMOVE_TOAST', key })}
                     >
