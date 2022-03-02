@@ -160,7 +160,7 @@ export const AddBoardForm = React.forwardRef<
                         }
                         renderLeadingIcon={(cls) => (
                             <Icon
-                                icon={isPrivate ? 'lock-closed' : 'lock-open'}
+                                icon={isPrivate ? 'lock-closed' : 'globe'}
                                 className={cls}
                             />
                         )}

@@ -1,5 +1,12 @@
 import { USER_TOKEN } from './constants';
-import { ApiResult, Board, CategorizedBoards, User } from './types';
+import {
+    ApiResult,
+    Board,
+    CategorizedBoards,
+    User,
+    ApiErrors,
+    ToastType,
+} from './types';
 
 export function parseQueryStringFromURL(url: string): {
     [key: string]: string;
@@ -111,4 +118,21 @@ export function debounce(callback: Function, delay: number = 500) {
             callback.apply(this, args);
         }, delay);
     };
+}
+
+/**
+ * Chnage APIErrors Format to toast format
+ */
+export function formatAPIError(errors: ApiErrors): {
+    key: string;
+    type: ToastType;
+    message: string;
+}[] {
+    return !errors
+        ? []
+        : Object.entries(errors).map(([key, values]) => ({
+              key,
+              type: 'error',
+              message: values.join(', '),
+          }));
 }

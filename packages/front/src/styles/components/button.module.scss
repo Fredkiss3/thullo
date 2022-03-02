@@ -27,6 +27,11 @@
         box-shadow: 0 0 0 0.25rem var(--outline-color);
     }
 
+    &:active {
+        background-color: var(--hover-bg-color);
+        color: var(--hover-fg-color);
+    }
+
     &:hover:not(.btn--static) {
         background-color: var(--hover-bg-color);
         color: var(--hover-fg-color);

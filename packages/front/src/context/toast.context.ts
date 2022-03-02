@@ -1,12 +1,13 @@
 import { createContext, useContext } from 'react';
-import type { ToastContextData, ToastType } from '@/lib/types';
+import type { ToastContextData, ToastMessage, ToastType } from '@/lib/types';
 
 type AddToastAction = {
-    type: 'ADD_ERROR' | 'ADD_SUCCESS';
+    type: 'ADD_ERROR' | 'ADD_SUCCESS' | 'ADD_INFO';
     duration?: number;
     key: string;
     message: string;
     keep?: boolean;
+    closeable?: boolean;
 };
 
 type AddToastsAction = {
@@ -41,50 +42,64 @@ export function toastReducer(
     switch (action.type) {
         case 'ADD_ERROR': {
             const { key, message } = action;
-
-            if (data === null) {
-                return {
-                    [key]: {
-                        type: 'error',
-                        message: message,
-                        duration: action.duration,
-                        keep: action.keep,
-                    },
-                };
-            }
-
-            return {
-                ...data,
+            const newElement: ToastContextData = {
                 [key]: {
                     type: 'error',
                     message: message,
                     duration: action.duration,
                     keep: action.keep,
+                    closeable: action.closeable,
                 },
             };
-        }
-        case 'ADD_SUCCESS': {
-            const { key, message } = action;
 
             if (data === null) {
-                return {
-                    [key]: {
-                        type: 'success',
-                        message: message,
-                        duration: action.duration,
-                        keep: action.keep,
-                    },
-                };
+                return newElement;
             }
 
             return {
                 ...data,
+                ...newElement,
+            };
+        }
+        case 'ADD_INFO':
+            const { key, message } = action;
+            const newElement: ToastContextData = {
+                [key]: {
+                    type: 'info',
+                    message: message,
+                    duration: action.duration,
+                    keep: action.keep,
+                    closeable: action.closeable,
+                },
+            };
+
+            if (data === null) {
+                return newElement;
+            }
+
+            return {
+                ...data,
+                ...newElement,
+            };
+        case 'ADD_SUCCESS': {
+            const { key, message } = action;
+            const newElement: ToastContextData = {
                 [key]: {
                     type: 'success',
                     message: message,
                     duration: action.duration,
                     keep: action.keep,
+                    closeable: action.closeable,
                 },
+            };
+
+            if (data === null) {
+                return newElement;
+            }
+
+            return {
+                ...data,
+                ...newElement,
             };
         }
         case 'REMOVE_TOAST': {

@@ -6,7 +6,13 @@ import {
     BOARD_QUERY,
     SINGLE_BOARD_QUERY,
 } from './constants';
-import { deleteCookie, getCookie, jsonFetch, setCookie } from './functions';
+import {
+    deleteCookie,
+    formatAPIError,
+    getCookie,
+    jsonFetch,
+    setCookie,
+} from './functions';
 import type {
     AddBoardRequest,
     ApiErrors,
@@ -90,6 +96,37 @@ export function useAuthenticatedUser(): {
         user: data!,
         isLoading,
     };
+}
+
+export function useSingleBoardQuery(id: string) {
+    const { dispatch } = useErrorsContext();
+    return useQuery<BoardDetails | null>(
+        [SINGLE_BOARD_QUERY, id],
+        async () => {
+            const { data, errors } = await jsonFetch<BoardDetails | null>(
+                `${import.meta.env.VITE_API_URL}/api/boards/${id}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${getCookie(USER_TOKEN)}`,
+                    },
+                }
+            );
+
+            if (errors) {
+                dispatch({
+                    type: 'ADD_ERRORS',
+                    errors,
+                });
+                // indicate that the board is not found
+                throw new Error(JSON.stringify(errors));
+            }
+
+            return data;
+        },
+        {
+            retry: 0,
+        }
+    );
 }
 
 // Mutations
@@ -212,37 +249,41 @@ export function useAddBoardMutation() {
                 queryClient.invalidateQueries(BOARD_QUERY);
                 ctx.onSuccess();
             },
-            onError: (err, _, context) => {
+            onError: (err, _) => {
                 const errors = JSON.parse((err as Error).message) as ApiErrors;
                 if (errors) {
                     dispatch({
                         type: 'ADD_TOASTS',
-                        toasts: Object.entries(errors).map(([key, values]) => ({
-                            key,
-                            type: 'error',
-                            message: values.join(', '),
-                        })),
+                        toasts: formatAPIError(errors),
                     });
                 }
-
-                // dispatch({
-                //     type: 'ADD_ERROR',
-                //     key: 'addBoard',
-                //     message: (err as Error).message,
-                // });
             },
         }
     );
 }
 
-export function useSingleBoardQuery(id: string) {
-    const { dispatch } = useErrorsContext();
-    return useQuery<BoardDetails | null>(
-        [SINGLE_BOARD_QUERY, id],
-        async () => {
+export function useSetBoardVisibilityMutation() {
+    const queryClient = useQueryClient();
+    const { dispatch } = useToastContext();
+    return useMutation(
+        async ({
+            isPrivate,
+            boardId,
+            onSuccess,
+        }: {
+            boardId: string;
+            isPrivate: boolean;
+            onSuccess: () => void;
+        }) => {
             const { data, errors } = await jsonFetch<BoardDetails | null>(
-                `${import.meta.env.VITE_API_URL}/api/boards/${id}`,
+                `${
+                    import.meta.env.VITE_API_URL
+                }/api/boards/${boardId}/set-visibility`,
                 {
+                    method: 'PUT',
+                    body: JSON.stringify({
+                        private: isPrivate,
+                    }),
                     headers: {
                         Authorization: `Bearer ${getCookie(USER_TOKEN)}`,
                     },
@@ -250,18 +291,85 @@ export function useSingleBoardQuery(id: string) {
             );
 
             if (errors) {
-                dispatch({
-                    type: 'ADD_ERRORS',
-                    errors,
-                });
-                // indicate that the board is not found
                 throw new Error(JSON.stringify(errors));
             }
 
-            return data;
+            return { onSuccess, boardId };
         },
         {
-            retry: 0,
+            onMutate: async ({ boardId, isPrivate }) => {
+                // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
+                dispatch({
+                    type: 'ADD_INFO',
+                    key: `board-set-visibility-${boardId}`,
+                    message: `Setting the visibility of the board to ${
+                        isPrivate ? 'private' : 'public'
+                    }...`,
+                    keep: true,
+                    closeable: false,
+                });
+                await queryClient.cancelQueries([SINGLE_BOARD_QUERY, boardId]);
+
+                // Change optimistically the board in the cache
+                const data = queryClient.getQueryData<BoardDetails>([
+                    SINGLE_BOARD_QUERY,
+                    boardId,
+                ]);
+
+                queryClient.setQueryData<BoardDetails>(
+                    [SINGLE_BOARD_QUERY, boardId],
+                    {
+                        ...data!,
+                        isPrivate,
+                    }
+                );
+            },
+            onSettled: (ctx) => {
+                ctx &&
+                    dispatch({
+                        type: 'REMOVE_TOAST',
+                        key: `board-set-visibility-${ctx.boardId}`,
+                    });
+            },
+            onSuccess: (ctx) => {
+                ctx.onSuccess();
+            },
+            onError: (err, { boardId, isPrivate }) => {
+                try {
+                    console.log(`Error: ${err}`);
+                    const errors = JSON.parse(
+                        (err as Error).message
+                    ) as ApiErrors;
+                    if (errors) {
+                        dispatch({
+                            type: 'ADD_TOASTS',
+                            toasts: formatAPIError(errors),
+                        });
+                    }
+                } catch (e) {
+                    dispatch({
+                        type: 'ADD_ERROR',
+                        key: `board-set-visibility-${new Date().getTime()}`,
+                        message: `Could not set the visibility of board to ${
+                            isPrivate ? 'private' : 'public'
+                        }`,
+                    });
+                }
+
+                // return the board to its previous state
+                const data = queryClient.getQueryData<BoardDetails>([
+                    SINGLE_BOARD_QUERY,
+                    boardId,
+                ]);
+
+                queryClient.setQueryData<BoardDetails>(
+                    [SINGLE_BOARD_QUERY, boardId],
+                    {
+                        ...data!,
+                        isPrivate: !isPrivate,
+                    }
+                );
+            },
         }
     );
 }

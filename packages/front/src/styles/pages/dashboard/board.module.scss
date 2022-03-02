@@ -16,6 +16,10 @@
             align-items: center;
             gap: 1rem;
 
+            &__toggle_btn {
+                position: relative;
+            }
+
             &__participant_list {
                 display: flex;
                 align-items: center;

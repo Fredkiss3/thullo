@@ -16,6 +16,8 @@ import { Avatar } from '@/components/avatar';
 
 // styles
 import cls from '@/styles/pages/dashboard/board.module.scss';
+import { BoardVisilityDropdown } from '@/components/board-visibility-toggler';
+import { useOnClickOutside } from '@/lib/hooks';
 
 export function DashboardDetails() {
     const { boardId } = useParams<{ boardId: string }>();
@@ -75,27 +77,53 @@ function HeaderSection({
     userIsParticipant,
     participants,
     isPrivate,
+    id,
 }: BoardDetails & {
     userIsBoardAdmin: boolean;
     userIsParticipant: boolean;
 }) {
+    const [showVisibilityTogglerDropdown, setShowVisibilityTogglerDropdown] =
+        React.useState(false);
+
+    const toggleButtonRef = React.useRef(null);
+
+    // when the user clicks outside of the cover dropdown, close it
+    useOnClickOutside(toggleButtonRef, () => {
+        setShowVisibilityTogglerDropdown(false);
+    });
+
     return (
         <section className={cls.details_page__header}>
             <div className={cls.details_page__header__left}>
-                <Button
-                    disabled={!userIsBoardAdmin}
-                    renderLeadingIcon={(cls) => (
-                        <Icon
-                            className={cls}
-                            icon={isPrivate ? 'lock-closed' : 'lock-open'}
-                        />
-                    )}
-                    isStatic={isPrivate}
-                    variant={isPrivate ? 'black' : 'hollow'}
+                <div
+                    className={cls.details_page__header__left__toggle_btn}
+                    ref={toggleButtonRef}
                 >
-                    {isPrivate ? 'Private' : 'Public'}
-                </Button>
+                    <Button
+                        disabled={!userIsBoardAdmin}
+                        renderLeadingIcon={(cls) => (
+                            <Icon
+                                className={cls}
+                                icon={isPrivate ? 'lock-closed' : 'globe'}
+                            />
+                        )}
+                        isStatic={isPrivate}
+                        variant={isPrivate ? 'black' : 'hollow'}
+                        onClick={() =>
+                            setShowVisibilityTogglerDropdown(
+                                !showVisibilityTogglerDropdown
+                            )
+                        }
+                    >
+                        {isPrivate ? 'Private' : 'Public'}
+                    </Button>
 
+                    <BoardVisilityDropdown
+                        boardId={id}
+                        isBoardPrivate={isPrivate}
+                        show={showVisibilityTogglerDropdown}
+                    />
+                </div>
                 <ul
                     className={cls.details_page__header__left__participant_list}
                 >
@@ -123,7 +151,7 @@ function HeaderSection({
             </div>
             <div className={cls.details_page__header__right}>
                 <Button
-                    variant="hollow"
+                    variant="outline"
                     renderLeadingIcon={(cls) => (
                         <Icon icon="h-dots" className={cls} />
                     )}

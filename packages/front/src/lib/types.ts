@@ -11,6 +11,7 @@ export type ToastMessage = {
     message: string;
     duration?: number;
     keep?: boolean;
+    closeable?: boolean;
 };
 
 export type ToastContextData = {
@@ -73,13 +74,6 @@ export type BoardDetails = {
     lists: List[];
 };
 
-export type AddBoardRequest = {
-    name: string;
-    coverPhotoId: string;
-    coverPhotoUrl: string;
-    private: boolean;
-};
-
 export type CategorizedBoards = { self: Board[]; public: Board[] };
 
 export type Photo = {
@@ -88,4 +82,12 @@ export type Photo = {
     smallURL: string;
     authorUserName: string;
     authorName: string;
+};
+
+// mutation requests
+export type AddBoardRequest = {
+    name: string;
+    coverPhotoId: string;
+    coverPhotoUrl: string;
+    private: boolean;
 };

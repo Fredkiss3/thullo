@@ -4,10 +4,9 @@ import { Dropdown } from './dropdown';
 import { Icon } from './icon';
 import { Input } from './input';
 
-import cls from '../styles/components/photo-search.module.scss';
-import type { ApiErrors, Photo } from '../lib/types';
-import { debounce, jsonFetch } from '../lib/functions';
-import { Skeleton } from './skeleton';
+import cls from '@/styles/components/photo-search.module.scss';
+import type { ApiErrors, Photo } from '@/lib/types';
+import { debounce, jsonFetch } from '@/lib/functions';
 import { Skeletons } from './skeletons';
 
 export interface PhotoSeachProps {
