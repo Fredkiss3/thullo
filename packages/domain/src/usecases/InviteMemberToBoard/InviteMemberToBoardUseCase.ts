@@ -1,8 +1,8 @@
 import Validator from 'validatorjs';
-import { BoardAggregateRepository } from '../../entities/BoardAggregate';
+import { BoardAggregate, BoardAggregateRepository } from "../../entities/BoardAggregate";
 import { MemberRepository } from '../../entities/Member';
 import { FieldErrors } from '../../lib/types';
-import { MemberAlreadyInBoardError } from './../../entities/BoardAggregate/Exceptions';
+import { MemberAlreadyInBoardError } from "../../entities/BoardAggregate";
 import { InviteMemberToBoardPresenter } from './InviteMemberToBoardPresenter';
 import { InviteMemberToBoardRequest } from './InviteMemberToBoardRequest';
 import { InviteMemberToBoardResponse } from './InviteMemberToBoardResponse';
@@ -26,44 +26,51 @@ export class InviteMemberToBoardUseCase {
     ): Promise<void> {
         let errors = this.validate(request);
 
-        const board = await this.boardRepository.getBoardAggregateById(
-            request.boardId
-        );
+        let board: BoardAggregate | null = null;
 
-        const member = await this.memberRepository.getMemberById(
-            request.memberId
-        );
+       if (!errors) {
+           board = await this.boardRepository.getBoardAggregateById(
+             request.boardId
+           );
 
-        if (member != null) {
-            if (board != null) {
-                if (board.isParticipant(request.initiatorId)) {
-                    try {
-                        board.addMemberToBoard(member);
-                        await this.boardRepository.saveAggregate(board);
-                    } catch (e) {
-                        errors = {
-                            memberId: [(e as MemberAlreadyInBoardError).message]
-                        };
-                    }
-                } else {
-                    errors = {
-                        initiatorId: [
-                            "Ce membre n'est pas un participant de ce tableau."
-                        ]
-                    };
-                }
-            } else {
-                errors = {
-                    boardId: ["Ce tableau n'existe pas."]
-                };
-            }
-        } else {
-            errors = {
-                memberId: ["Cet utilisateur n'existe pas."]
-            };
-        }
+           const member = await this.memberRepository.getMemberById(
+             request.memberId
+           );
 
-        presenter.present(new InviteMemberToBoardResponse(errors));
+           if (member != null) {
+               if (board != null) {
+                   if (board.isParticipant(request.initiatorId)) {
+                       try {
+                           board.addMemberToBoard(member);
+                           await this.boardRepository.saveAggregate(board);
+                       } catch (e) {
+                           board = null;
+                           errors = {
+                               memberId: [(e as MemberAlreadyInBoardError).message]
+                           };
+                       }
+                   } else {
+                       board = null;
+                       errors = {
+                           initiatorId: [
+                               "Ce membre n'est pas un participant de ce tableau."
+                           ]
+                       };
+                   }
+               } else {
+                   errors = {
+                       boardId: ["Ce tableau n'existe pas."]
+                   };
+               }
+           } else {
+               board = null;
+               errors = {
+                   memberId: ["Cet utilisateur n'existe pas."]
+               };
+           }
+       }
+
+        presenter.present(new InviteMemberToBoardResponse(board, errors));
     }
 
     validate(request: InviteMemberToBoardRequest): FieldErrors {

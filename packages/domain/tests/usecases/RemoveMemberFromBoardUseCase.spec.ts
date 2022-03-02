@@ -89,6 +89,7 @@ describe('RemoveMemberFromBoard Use case', () => {
         expect(presenter.response!.errors).toBe(null);
         expect(boardExpected!).not.toBeFalsy();
         expect(boardExpected!.participants.length).toBe(1);
+        expect(boardExpected!).toBe(presenter.response!.aggregate);
     });
 
     it('should show errors if initiator is not an admin of the board', async () => {
@@ -137,6 +138,7 @@ describe('RemoveMemberFromBoard Use case', () => {
         expect(presenter.response!.errors).not.toBe(null);
         expect(presenter.response!.errors!.initiatorId).toHaveLength(1);
         expect(boardExpected!).toBeFalsy();
+        expect(presenter.response!.aggregate).toBeNull();
     });
 
     it('should show errors if board does not exists', async () => {
@@ -165,6 +167,7 @@ describe('RemoveMemberFromBoard Use case', () => {
         expect(presenter.response).not.toBe(null);
         expect(presenter.response!.errors).not.toBe(null);
         expect(presenter.response!.errors!.boardId).toHaveLength(1);
+        expect(presenter.response!.aggregate).toBeNull();
     });
 
     it('should show errors if member is not a participant of the board', async () => {
@@ -203,6 +206,7 @@ describe('RemoveMemberFromBoard Use case', () => {
         expect(presenter.response).not.toBe(null);
         expect(presenter.response!.errors).not.toBe(null);
         expect(presenter.response!.errors!.memberId).toHaveLength(1);
+        expect(presenter.response!.aggregate).toBeNull();
     });
 
     it('should show errors if memberId does not exists', async () => {
@@ -245,6 +249,7 @@ describe('RemoveMemberFromBoard Use case', () => {
         expect(presenter.response).not.toBe(null);
         expect(presenter.response!.errors).not.toBe(null);
         expect(presenter.response!.errors!.memberId).toHaveLength(1);
+        expect(presenter.response!.aggregate).toBeNull();
     });
 
     describe('Invalid Requests', () => {
@@ -324,6 +329,7 @@ describe('RemoveMemberFromBoard Use case', () => {
                 expect(presenter.response).not.toBe(null);
                 expect(presenter.response!.errors).not.toBe(null);
                 expect(boardExpected!).toBeFalsy();
+                expect(presenter.response!.aggregate).toBeNull();
             }
         );
     });

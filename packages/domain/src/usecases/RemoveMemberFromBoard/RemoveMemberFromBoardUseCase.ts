@@ -5,6 +5,7 @@ import { FieldErrors } from '../../lib/types';
 import Validator from 'validatorjs';
 import { MemberRepository } from '../../entities/Member';
 import {
+    BoardAggregate,
     BoardAggregateRepository,
     MemberNotInBoardError,
     OperationUnauthorizedError
@@ -29,8 +30,9 @@ export class RemoveMemberFromBoardUseCase {
     ): Promise<void> {
         let errors = this.validate(request);
 
+        let board: BoardAggregate | null = null;
         if (errors === null) {
-            const board = await this.boardRepository.getBoardAggregateById(
+            board = await this.boardRepository.getBoardAggregateById(
                 request.boardId
             );
 
@@ -47,6 +49,7 @@ export class RemoveMemberFromBoardUseCase {
                         );
                         await this.boardRepository.saveAggregate(board!);
                     } catch (e) {
+                        board = null;
                         if (e instanceof OperationUnauthorizedError) {
                             errors = {
                                 initiatorId: [
@@ -65,12 +68,13 @@ export class RemoveMemberFromBoardUseCase {
                     };
                 }
             } else {
+                board = null;
                 errors = {
                     memberId: ["Cet utilisateur n'existe pas."]
                 };
             }
         }
-        presenter.present(new RemoveMemberFromBoardResponse(errors));
+        presenter.present(new RemoveMemberFromBoardResponse(board, errors));
     }
 
     validate(request: RemoveMemberFromBoardRequest): FieldErrors {
