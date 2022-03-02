@@ -34,7 +34,7 @@ app.use(
 
 app.use(
     morgan(
-        '[:date[iso] #:id] Completed in \x1b[36m:response-time ms\x1b[0m with status \x1b[32m:status\x1b[0m'
+        '[:date[iso] #:id] Completed \x1b[33m :method\x1b[0m \x1b[34m:url\x1b[0m in \x1b[36m:response-time ms\x1b[0m with status \x1b[32m:status\x1b[0m'
     )
 );
 
