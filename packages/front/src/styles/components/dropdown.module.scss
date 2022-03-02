@@ -6,6 +6,7 @@
     top: calc(100% + 0.1rem);
     padding: 0.5rem;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    color: var(--dropdown-text-color);
 
     &--right {
         left: 0;
