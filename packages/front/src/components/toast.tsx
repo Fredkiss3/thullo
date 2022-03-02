@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { Transition } from '@headlessui/react';
 
 // functions & Others
 import { ToastType } from '@/lib/types';
@@ -27,20 +26,37 @@ export function Toast({
     type = 'success',
     closeable = true,
 }: ToastProps) {
+    const [removed, setRemoved] = React.useState(false);
+
     React.useEffect(() => {
-        const timer = keep ? undefined : window.setTimeout(onClose, duration);
+        const timer = keep
+            ? undefined
+            : window.setTimeout(() => setRemoved(true), duration);
 
         return () => {
             clearTimeout(timer);
         };
     }, [onClose, duration]);
+
+    function removeToast() {
+        if (removed) {
+            onClose();
+        }
+    }
+
     return (
-        <div className={`${cls.toast} ${cls[`toast--${type}`] ?? ''}`}>
+        <div
+            className={`${cls.toast} ${cls[`toast--${type}`] ?? ''} ${
+                removed && cls[`toast--removed`]
+            }`}
+            // Remove toast after animation ends
+            onAnimationEnd={removeToast}
+        >
             <div className={cls.toast__body}>{children}</div>
             {closeable && (
                 <button
                     className={cls.toast__close_btn}
-                    onClick={() => onClose && onClose()}
+                    onClick={() => setRemoved(true)}
                 >
                     <Icon icon={'x-icon'} className={cls.toast__icon_right} />
                 </button>

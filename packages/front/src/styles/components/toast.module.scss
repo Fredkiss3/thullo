@@ -7,6 +7,25 @@
     display: flex;
     align-items: center;
     position: relative;
+    animation: translate-in 0.3s 0.1s both;
+
+    @keyframes translate-in {
+        from {
+            opacity: 0;
+            transform: translate(200%, 0);
+        }
+    }
+
+    @keyframes translate-out {
+        to {
+            opacity: 0;
+            transform: translate(200%, 0);
+        }
+    }
+
+    &--removed {
+        animation: translate-out 0.3s 0.1s both;
+    }
 
     &__icon_right {
         height: 1.3rem;
