@@ -6,6 +6,10 @@ export class MemberRepositoryBuilder {
 
     private getMemberById: (id: string) => Promise<Member | null> = () =>
         Promise.resolve(null);
+
+    private getMembersByIds: (ids: string[]) => Promise<Member[]> = () =>
+        Promise.resolve([]);
+
     private register: (member: Member) => Promise<void> = () =>
         Promise.resolve();
 
@@ -23,6 +27,11 @@ export class MemberRepositoryBuilder {
 
     withGetMemberById(getMemberById: (id: string) => Promise<Member | null>) {
         this.getMemberById = getMemberById;
+        return this;
+    }
+
+    withGetMembersByIds(getMembersByIds: (ids: string[]) => Promise<Member[]>) {
+        this.getMembersByIds = getMembersByIds;
         return this;
     }
 
@@ -46,7 +55,8 @@ export class MemberRepositoryBuilder {
             getMemberById: this.getMemberById,
             register: this.register,
             searchMembersNotInBoard: this.searchMembersNotInBoard,
-            getMembersByEmail: this.getMemberByEmail
+            getMembersByEmail: this.getMemberByEmail,
+            getMembersByIds: this.getMembersByIds
         };
     }
 }

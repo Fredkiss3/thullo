@@ -25,18 +25,22 @@ export class SearchMembersUseCase {
     ): Promise<void> {
         let errors = this.validate(request);
 
-        const board = await this.boardRepository.getBoardById(request.boardId);
         let members: Member[] = [];
-
-        if (!board) {
-            errors = {
-                boardId: ["Ce tableau n'existe pas"]
-            };
-        } else {
-            members = await this.memberRepository.searchMembersNotInBoard(
-                request.query,
+        if (errors === null) {
+            const board = await this.boardRepository.getBoardById(
                 request.boardId
             );
+
+            if (!board) {
+                errors = {
+                    boardId: ["Ce tableau n'existe pas"]
+                };
+            } else {
+                members = await this.memberRepository.searchMembersNotInBoard(
+                    request.query,
+                    request.boardId
+                );
+            }
         }
 
         presenter.present(

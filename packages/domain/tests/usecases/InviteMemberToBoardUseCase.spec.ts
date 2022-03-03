@@ -36,7 +36,7 @@ const memberToAdd: Member = {
 };
 
 const request: InviteMemberToBoardRequest = {
-    memberId: memberToAdd.id,
+    memberIds: [memberToAdd.id],
     initiatorId: admin.id,
     boardId: BOARD_ID
 };
@@ -65,8 +65,8 @@ describe('InviteMemberToBoard Use case', () => {
 
         let boardExpected: BoardAggregate;
         const memberRepository: MemberRepository = new MemberRepositoryBuilder()
-            .withGetMemberById(async (id) => {
-                return memberToAdd;
+            .withGetMembersByIds(async (ids) => {
+                return [memberToAdd];
             })
             .build();
 
@@ -121,8 +121,8 @@ describe('InviteMemberToBoard Use case', () => {
             }
         );
         const memberRepository: MemberRepository = new MemberRepositoryBuilder()
-            .withGetMemberById(async (id) => {
-                return memberToAdd;
+            .withGetMembersByIds(async (ids) => {
+                return [memberToAdd];
             })
             .build();
 
@@ -155,7 +155,7 @@ describe('InviteMemberToBoard Use case', () => {
         expect(presenter.response!.aggregate).toBeNull();
     });
 
-    it('Should show errors if member already present in board', async () => {
+    it('Should not do anything if member already present in board', async () => {
         // Given
         let boardExpected: BoardAggregate | null = null;
         const aggregate = new BoardAggregate(
@@ -181,8 +181,8 @@ describe('InviteMemberToBoard Use case', () => {
             }
         );
         const memberRepository: MemberRepository = new MemberRepositoryBuilder()
-            .withGetMemberById(async (id) => {
-                return memberToAdd;
+            .withGetMembersByIds(async (ids) => {
+                return [memberToAdd];
             })
             .build();
 
@@ -206,71 +206,17 @@ describe('InviteMemberToBoard Use case', () => {
 
         // Then
         expect(presenter.response).not.toBe(null);
-        expect(presenter.response!.errors).not.toBe(null);
-        expect(presenter.response!.errors!.memberId).toHaveLength(1);
-        expect(boardExpected!).toBe(null);
-        expect(presenter.response!.aggregate).toBeNull();
-    });
-
-    it('should show errors if member does not exist', async () => {
-        // Given
-        let boardExpected: BoardAggregate | null = null;
-        const aggregate = new BoardAggregate(
-            {
-                id: BOARD_ID,
-                name: 'Dev Challenge Boards',
-                description: '',
-                private: true
-            },
-            {
-                cards: [],
-                lists: [],
-                participants: [
-                    {
-                        isAdmin: true,
-                        member: admin
-                    }
-                ]
-            }
-        );
-        const memberRepository: MemberRepository = new MemberRepositoryBuilder()
-            .withGetMemberById(async (id) => {
-                return null;
-            })
-            .build();
-
-        const boardAggregateRepository = new BoardAggregateRepositoryBuilder()
-            .withGetBoardAggregateById(async () => {
-                return aggregate;
-            })
-            .withSaveAggregate(async (boardAggregate) => {
-                boardExpected = boardAggregate;
-                return boardAggregate;
-            })
-            .build();
-
-        const useCase = new InviteMemberToBoardUseCase(
-            memberRepository,
-            boardAggregateRepository
-        );
-
-        // When
-        await useCase.execute(request, presenter);
-
-        // Then
-        expect(presenter.response).not.toBe(null);
-        expect(presenter.response!.errors).not.toBe(null);
-        expect(presenter.response!.errors!.memberId).toHaveLength(1);
-        expect(boardExpected!).toBe(null);
-        expect(presenter.response!.aggregate).toBeNull();
+        expect(presenter.response!.errors).toBeNull();
+        expect(presenter.response!.aggregate).not.toBeNull();
+        expect(presenter.response!.aggregate?.participants).toHaveLength(2);
     });
 
     it('Should show errors if board does not exist', async () => {
         // Given
         let boardExpected: BoardAggregate | null = null;
         const memberRepository: MemberRepository = new MemberRepositoryBuilder()
-            .withGetMemberById(async (id) => {
-                return memberToAdd;
+            .withGetMembersByIds(async (ids) => {
+                return [memberToAdd];
             })
             .build();
 
@@ -309,7 +255,7 @@ describe('InviteMemberToBoard Use case', () => {
                 label: 'MemberId empty',
                 request: {
                     ...request,
-                    memberId: ''
+                    memberIds: []
                 }
             },
             {

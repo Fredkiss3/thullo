@@ -1,4 +1,4 @@
-import { UnsplashPhotoBuilder } from './../builder/UnsplashPhotoBuilder';
+import { UnsplashPhotoBuilder } from "../builder/UnsplashPhotoBuilder";
 import {
     SearchMembersRequest,
     SearchMembersUseCase,
@@ -238,6 +238,7 @@ describe('SearchMembers Use case', () => {
 
                 // Then
                 expect(presenter.response?.errors).not.toBe(null);
+                expect(presenter.response!.members).toHaveLength(0);
             }
         );
     });

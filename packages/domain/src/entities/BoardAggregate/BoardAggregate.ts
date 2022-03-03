@@ -8,7 +8,6 @@ import {
     CardNotFoundError,
     InvalidPositionError,
     ListNotFoundError,
-    MemberAlreadyInBoardError,
     MemberNotInBoardError,
     OperationUnauthorizedError
 } from './Exceptions';
@@ -56,10 +55,6 @@ export class BoardAggregate {
                 ...this._data.participants,
                 { isAdmin: false, member }
             ];
-        } else {
-            throw new MemberAlreadyInBoardError(
-                'Ce membre participe déjà au tableau'
-            );
         }
     }
 

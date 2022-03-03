@@ -1,18 +1,3 @@
-export class MemberAlreadyInBoardError extends Error {
-  constructor(message: string) {
-    super(message);
-
-    if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, MemberAlreadyInBoardError);
-    }
-
-    // For custom errors, we should explicitly set prototypes
-    // Or else it will considers this as an "Error"
-    Object.setPrototypeOf(this, MemberAlreadyInBoardError.prototype);
-    this.name = 'MemberAlreadyInBoardError';
-  }
-}
-
 export class OperationUnauthorizedError extends Error {
   constructor(message: string) {
     super(message);

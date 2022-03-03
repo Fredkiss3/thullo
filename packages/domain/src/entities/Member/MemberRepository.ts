@@ -8,5 +8,6 @@ export interface MemberRepository {
         boardId: BoardId
     ): Promise<Member[]>;
     getMemberById(id: MemberId): Promise<Member | null>;
+    getMembersByIds(ids: MemberId[]): Promise<Member[]>;
     register(member: Member): Promise<void>;
 }

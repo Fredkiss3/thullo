@@ -8,7 +8,6 @@ import {
     List,
     ListNotFoundError,
     Member,
-    MemberAlreadyInBoardError,
     MemberNotInBoardError,
     OperationUnauthorizedError
 } from '@thullo/domain';
@@ -80,6 +79,7 @@ describe('Board aggregate test', () => {
                 parentListId: todoListID,
                 title: "Add What you'd like to work on below",
                 position: 1,
+                cover: null,
                 labels: [
                     {
                         id: uuidv4(),
@@ -89,13 +89,13 @@ describe('Board aggregate test', () => {
                     }
                 ],
                 attachments: [],
-                coverURL: null,
                 description: '',
                 comments: []
             },
             {
                 id: secondCardID,
                 parentListId: todoListID,
+                cover: null,
                 title: 'Github Jobs challenge',
                 position: 0,
                 labels: [
@@ -114,11 +114,11 @@ describe('Board aggregate test', () => {
                 ],
                 attachments: [],
                 comments: [],
-                coverURL: 'https://picsum.photos/200/400',
                 description: ''
             },
             {
                 id: thirdCardID,
+                cover: null,
                 parentListId: DoneListID,
                 title: 'A task well done',
                 position: 0,
@@ -138,24 +138,19 @@ describe('Board aggregate test', () => {
                 ],
                 attachments: [],
                 comments: [],
-                coverURL: 'https://picsum.photos/200/400',
                 description: ''
             }
         ];
 
-        aggregate = new BoardAggregate(
-            {
-                id: BOARD_ID,
-                name: 'Dev Challenge Boards',
-                description: '',
-                private: true
-            },
-            {
-                cards,
-                lists,
-                participants: [{ isAdmin: true, member: members[2] }]
-            }
-        );
+        aggregate = new BoardAggregateBuilder()
+            .withBoardId(BOARD_ID)
+            .withName('Dev Challenge Boards')
+            .withCards(cards)
+            .withLists(lists)
+            .withIsPrivate(true)
+            .withDescription('')
+            .withParticipants([{ isAdmin: true, member: members[2] }])
+            .build();
     });
 
     describe('Board Organization', function () {
@@ -227,11 +222,9 @@ describe('Board aggregate test', () => {
             expect(aggregate.participants[1].isAdmin).toBe(false);
         });
 
-        it('cannot add a member two times in a board', () => {
-            expect(() => {
-                aggregate.addMemberToBoard(members[0]);
-                aggregate.addMemberToBoard(members[0]);
-            }).toThrow(MemberAlreadyInBoardError);
+        it('should not add the new member if they are already a participant', () => {
+            aggregate.addMemberToBoard(members[0]);
+            aggregate.addMemberToBoard(members[0]);
             expect(aggregate.participants).toHaveLength(2);
         });
     });
