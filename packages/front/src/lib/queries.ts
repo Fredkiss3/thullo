@@ -18,6 +18,7 @@ import type {
     ApiErrors,
     Board,
     BoardDetails,
+    BoardMember,
     User,
 } from './types';
 import { useErrorsContext } from '@/context/error.context';
@@ -367,6 +368,117 @@ export function useSetBoardVisibilityMutation() {
                     {
                         ...data!,
                         isPrivate: !isPrivate,
+                    }
+                );
+            },
+        }
+    );
+}
+
+export function useInviteMemberMutation() {
+    const queryClient = useQueryClient();
+    const { dispatch } = useToastContext();
+    return useMutation(
+        async ({
+            members,
+            boardId,
+            onSuccess,
+        }: {
+            boardId: string;
+            members: BoardMember[];
+            onSuccess: () => void;
+        }) => {
+            const { errors } = await jsonFetch<BoardDetails | null>(
+                `${import.meta.env.VITE_API_URL}/api/boards/${boardId}/invite`,
+                {
+                    method: 'PUT',
+                    body: JSON.stringify({
+                        memberIds: members.map((m) => m.id),
+                    }),
+                    headers: {
+                        Authorization: `Bearer ${getCookie(USER_TOKEN)}`,
+                    },
+                }
+            );
+
+            if (errors) {
+                throw new Error(JSON.stringify(errors));
+            }
+
+            return { onSuccess, boardId };
+        },
+        {
+            onMutate: async ({ boardId, members }) => {
+                // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
+                dispatch({
+                    type: 'ADD_INFO',
+                    key: `board-invite-${boardId}`,
+                    message: `Adding a new member to the board...`,
+                    keep: true,
+                    closeable: false,
+                });
+                await queryClient.cancelQueries([SINGLE_BOARD_QUERY, boardId]);
+
+                // Change optimistically the board in the cache
+                const data = queryClient.getQueryData<BoardDetails>([
+                    SINGLE_BOARD_QUERY,
+                    boardId,
+                ]);
+
+                queryClient.setQueryData<BoardDetails>(
+                    [SINGLE_BOARD_QUERY, boardId],
+                    {
+                        ...data!,
+                        participants: [...data!.participants, ...members],
+                    }
+                );
+            },
+            onSettled: (ctx) => {
+                ctx &&
+                    dispatch({
+                        type: 'REMOVE_TOAST',
+                        key: `board-invite-${ctx.boardId}`,
+                    });
+            },
+            onSuccess: (ctx) => {
+                ctx.onSuccess();
+            },
+            onError: (err, { boardId, members }) => {
+                try {
+                    console.log(`Error: ${err}`);
+                    const errors = JSON.parse(
+                        (err as Error).message
+                    ) as ApiErrors;
+                    if (errors) {
+                        dispatch({
+                            type: 'ADD_TOASTS',
+                            toasts: formatAPIError(errors),
+                        });
+                    }
+                } catch (e) {
+                    dispatch({
+                        type: 'ADD_ERROR',
+                        key: `board-set-visibility-${new Date().getTime()}`,
+                        message: `Could not add members to the board`,
+                    });
+                }
+
+                // return the board to its previous state
+                const data = queryClient.getQueryData<BoardDetails>([
+                    SINGLE_BOARD_QUERY,
+                    boardId,
+                ]);
+
+                // remove the members that were added
+                const oldParticipants = data!.participants.filter(
+                    (p) => !members.some((m) => m.id === p.id)
+                );
+
+                queryClient.setQueryData<BoardDetails>(
+                    [SINGLE_BOARD_QUERY, boardId],
+                    {
+                        ...data!,
+                        participants: oldParticipants,
                     }
                 );
             },

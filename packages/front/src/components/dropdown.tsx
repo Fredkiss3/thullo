@@ -2,7 +2,7 @@ import * as React from 'react';
 import cls from '../styles/components/dropdown.module.scss';
 
 export interface DropdownProps {
-    children: React.ReactNode;
+    children?: React.ReactNode;
     align?: 'left' | 'right';
     className?: string;
 }

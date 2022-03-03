@@ -12,5 +12,5 @@ export function Skeleton({ className, as }: SkeletonProps) {
     const Tag = as ?? 'div';
 
     // @ts-ignore
-    return <Tag className={`${className} ${cls.skeleton}`} />;
+    return <Tag className={`${cls.skeleton} ${className ?? ''}`} />;
 }

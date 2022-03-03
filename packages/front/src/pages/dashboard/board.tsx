@@ -18,6 +18,7 @@ import { Avatar } from '@/components/avatar';
 import cls from '@/styles/pages/dashboard/board.module.scss';
 import { BoardVisilityDropdown } from '@/components/board-visibility-toggler';
 import { useOnClickOutside } from '@/lib/hooks';
+import { MemberSearch } from '@/components/member-search';
 
 export function DashboardDetails() {
     const { boardId } = useParams<{ boardId: string }>();
@@ -84,12 +85,19 @@ function HeaderSection({
 }) {
     const [showVisibilityTogglerDropdown, setShowVisibilityTogglerDropdown] =
         React.useState(false);
+    const [showInviteDropdown, setShowInviteDropdown] = React.useState(false);
 
     const toggleButtonRef = React.useRef(null);
+    const inviteButtonRef = React.useRef(null);
 
-    // when the user clicks outside of the cover dropdown, close it
+    // when the user clicks outside of the visibility dropdown, close it
     useOnClickOutside(toggleButtonRef, () => {
         setShowVisibilityTogglerDropdown(false);
+    });
+
+    // when the user clicks outside of the invite dropdown, close it
+    useOnClickOutside(inviteButtonRef, () => {
+        setShowInviteDropdown(false);
     });
 
     return (
@@ -139,13 +147,25 @@ function HeaderSection({
 
                     {userIsParticipant ||
                         (userIsBoardAdmin && (
-                            <Button
-                                square
-                                variant="primary"
-                                renderTrailingIcon={(cls) => (
-                                    <Icon icon="plus" className={cls} />
+                            <div
+                                className={
+                                    cls.details_page__header__left__invite_btn
+                                }
+                                ref={inviteButtonRef}
+                            >
+                                <Button
+                                    square
+                                    variant="primary"
+                                    onClick={() => setShowInviteDropdown(true)}
+                                    renderTrailingIcon={(cls) => (
+                                        <Icon icon="plus" className={cls} />
+                                    )}
+                                />
+
+                                {showInviteDropdown && (
+                                    <MemberSearch boardId={id} show />
                                 )}
-                            />
+                            </div>
                         ))}
                 </ul>
             </div>
@@ -164,5 +184,5 @@ function HeaderSection({
 }
 
 function ColumnsSection({ lists }: BoardDetails) {
-    return <section className={cls.details_page__columns}></section>;
+    return <section className={cls.details_page__columns} />;
 }

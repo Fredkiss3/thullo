@@ -1,0 +1,162 @@
+.member_search {
+    display: none;
+    flex-direction: column;
+    gap: 1rem;
+    filter: drop-shadow(0 0 0.5rem rgba(0, 0, 0, 0.05));
+    top: calc(100% + 0.5rem);
+    padding: 1rem;
+
+    align-items: center;
+
+    &--open {
+        display: flex;
+    }
+
+    &__header {
+        text-align: left;
+        width: 100%;
+
+        &__title {
+            font-size: var(--font-size-md);
+            font-weight: var(--font-weight-bold);
+        }
+
+        &__description {
+            color: var(--secondary-color);
+            font-size: var(--font-size-md);
+            font-weight: var(--font-weight-light);
+        }
+    }
+
+    &__input {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        gap: 0.5rem;
+
+        &__field {
+            width: 100%;
+        }
+
+        &__results {
+            position: static;
+            display: none;
+
+            &__list {
+                display: flex;
+                flex-direction: column;
+                gap: 0.5rem;
+                width: 100%;
+                max-height: 190px;
+                overflow-y: scroll;
+
+                &__empty {
+                    width: 100%;
+                    text-align: center;
+                    font-style: italic;
+                    color: var(--secondary-color);
+                    font-size: var(--font-size-md);
+                }
+
+                &__item {
+                    cursor: pointer;
+                    padding: 0.5rem;
+                    border-radius: var(--border-radius-md);
+                    display: flex;
+                    gap: 0.5rem;
+                    align-items: center;
+
+                    &__avatar {
+                        width: 40px;
+                        height: 40px;
+                    }
+
+                    &__name {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 0.2rem;
+                        flex-grow: 1;
+                        text-align: left;
+
+                        & :first-child {
+                            width: 100%;
+                            border-radius: var(--border-radius-sm);
+                            font-size: var(--font-size-md);
+                            font-weight: var(--font-weight-bold);
+                            flex-grow: 1;
+                            min-height: 1rem;
+                        }
+
+                        & :nth-child(2) {
+                            min-height: 0.5rem;
+                            border-radius: var(--border-radius-xs);
+                            font-size: var(--font-size-sm);
+                            color: var(--secondary-color);
+                            font-style: italic;
+                        }
+                    }
+
+                    &_placeholder {
+                        .member_search__input__results__list__item__name {
+                            gap: 0.5rem;
+                            cursor: wait;
+
+                            & :nth-child(2) {
+                                width: 50%;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        &:focus-within &__results {
+            display: flex;
+        }
+    }
+
+    &__selected_members {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        gap: 0.5rem;
+
+        &__item {
+            width: 100%;
+            padding: 0.5rem;
+            border-radius: var(--border-radius-md);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            & :first-child {
+                display: flex;
+                gap: 0.5rem;
+            }
+
+            &__avatar {
+                min-width: 40px;
+                max-width: 40px;
+                min-height: 40px;
+                max-height: 40px;
+            }
+
+            &__name {
+                & :first-child {
+                    width: 100%;
+                    border-radius: var(--border-radius-sm);
+                    font-size: var(--font-size-md);
+                    font-weight: var(--font-weight-bold);
+                    flex-grow: 1;
+                }
+
+                & :nth-child(2) {
+                    border-radius: var(--border-radius-xs);
+                    font-size: var(--font-size-sm);
+                    color: var(--secondary-color);
+                    font-style: italic;
+                }
+            }
+        }
+    }
+}

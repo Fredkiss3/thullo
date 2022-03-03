@@ -8,6 +8,8 @@ export interface InputProps {
     className?: string;
     onChange?: (newValue: string) => void;
     value?: string;
+    onBlur?: () => void;
+    onFocus?: () => void;
 }
 
 export function Input({
@@ -17,10 +19,14 @@ export function Input({
     className,
     onChange,
     value,
+    onBlur,
+    onFocus,
 }: InputProps) {
     return (
         <div className={`${cls.input} ${className ?? ''}`}>
             <input
+                onBlur={onBlur}
+                onFocus={onFocus}
                 value={value}
                 onChange={(event) => onChange?.(event.target.value)}
                 type={type}

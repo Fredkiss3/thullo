@@ -1,13 +1,17 @@
 import * as React from 'react';
-import { Button } from './button';
-import { Dropdown } from './dropdown';
-import { Icon } from './icon';
-import { Input } from './input';
-
-import cls from '@/styles/components/photo-search.module.scss';
-import type { ApiErrors, Photo } from '@/lib/types';
+// Functions & Others
 import { debounce, jsonFetch } from '@/lib/functions';
-import { Skeletons } from './skeletons';
+import type { ApiErrors, Photo } from '@/lib/types';
+
+// Components
+import { Skeletons } from '@/components/skeletons';
+import { Button } from '@/components/button';
+import { Dropdown } from '@/components/dropdown';
+import { Icon } from '@/components/icon';
+import { Input } from '@/components/input';
+
+// Styles
+import cls from '@/styles/components/photo-search.module.scss';
 
 export interface PhotoSeachProps {
     show?: boolean;
