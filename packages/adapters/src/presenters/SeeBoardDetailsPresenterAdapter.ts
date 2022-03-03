@@ -75,7 +75,7 @@ export class SeeBoardDetailsPresenterAdapter
                   participants: board.participants
                       .filter(({ isAdmin }) => !isAdmin)
                       .map(({ member }) => ({
-                          id: member.id,
+                          id: short().fromUUID(member.id),
                           name: member.name,
                           avatarURL: member.avatarURL,
                           login: member.login
