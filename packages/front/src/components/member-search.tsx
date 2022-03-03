@@ -260,6 +260,7 @@ export function MemberSearch({ show, boardId }: MemberSearchProps) {
                             <Button
                                 onClick={() => deleteMember(member)}
                                 square
+                                disabled={mutation.isLoading}
                                 variant={`danger`}
                                 renderTrailingIcon={(cls) => (
                                     <Icon icon="x-icon" className={cls} />
@@ -270,7 +271,7 @@ export function MemberSearch({ show, boardId }: MemberSearchProps) {
                 </ul>
             ) : (
                 <p className={cls.member_search__selected_members_empty}>
-                    No members selected
+                    Search for a member to add
                 </p>
             )}
 

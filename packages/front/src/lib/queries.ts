@@ -302,7 +302,7 @@ export function useSetBoardVisibilityMutation() {
                 // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
                 dispatch({
                     type: 'ADD_INFO',
-                    key: `board-set-visibility-${boardId}`,
+                    key: `board-set-visibility`,
                     message: `Setting the visibility of the board to ${
                         isPrivate ? 'private' : 'public'
                     }...`,
@@ -326,10 +326,9 @@ export function useSetBoardVisibilityMutation() {
                 );
             },
             onSettled: (ctx) => {
-                ctx &&
                     dispatch({
                         type: 'REMOVE_TOAST',
-                        key: `board-set-visibility-${ctx.boardId}`,
+                        key: `board-set-visibility`,
                     });
             },
             onSuccess: (ctx) => {
@@ -389,7 +388,9 @@ export function useInviteMemberMutation() {
             onSuccess: () => void;
         }) => {
             const { errors } = await jsonFetch<BoardDetails | null>(
-                `${import.meta.env.VITE_API_URL}/api/boards/${boardId}/invite`,
+                `${
+                    import.meta.env.VITE_API_URL
+                }/api/boards/${boardId}/participants/add`,
                 {
                     method: 'PUT',
                     body: JSON.stringify({
@@ -412,7 +413,7 @@ export function useInviteMemberMutation() {
                 // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
                 dispatch({
                     type: 'ADD_INFO',
-                    key: `board-invite-${boardId}`,
+                    key: `board-invite-member`,
                     message: `Adding a new member to the board...`,
                     keep: true,
                     closeable: false,
@@ -434,13 +435,13 @@ export function useInviteMemberMutation() {
                 );
             },
             onSettled: (ctx) => {
-                ctx &&
-                    dispatch({
-                        type: 'REMOVE_TOAST',
-                        key: `board-invite-${ctx.boardId}`,
-                    });
+                dispatch({
+                    type: 'REMOVE_TOAST',
+                    key: `board-invite-member`,
+                });
             },
             onSuccess: (ctx) => {
+                queryClient.invalidateQueries(BOARD_QUERY);
                 ctx.onSuccess();
             },
             onError: (err, { boardId, members }) => {
@@ -458,7 +459,7 @@ export function useInviteMemberMutation() {
                 } catch (e) {
                     dispatch({
                         type: 'ADD_ERROR',
-                        key: `board-set-visibility-${new Date().getTime()}`,
+                        key: `board-invite-${new Date().getTime()}`,
                         message: `Could not add members to the board`,
                     });
                 }
@@ -479,6 +480,120 @@ export function useInviteMemberMutation() {
                     {
                         ...data!,
                         participants: oldParticipants,
+                    }
+                );
+            },
+        }
+    );
+}
+
+export function useRemoveMemberMutation() {
+    const queryClient = useQueryClient();
+    const { dispatch } = useToastContext();
+
+    return useMutation(
+        async ({
+            member,
+            boardId,
+            onSuccess,
+        }: {
+            boardId: string;
+            member: BoardMember;
+            onSuccess: () => void;
+        }) => {
+            const { errors } = await jsonFetch<BoardDetails | null>(
+                `${
+                    import.meta.env.VITE_API_URL
+                }/api/boards/${boardId}/participants/remove`,
+                {
+                    method: 'PUT',
+                    body: JSON.stringify({
+                        memberId: member.id,
+                    }),
+                    headers: {
+                        Authorization: `Bearer ${getCookie(USER_TOKEN)}`,
+                    },
+                }
+            );
+
+            if (errors) {
+                throw new Error(JSON.stringify(errors));
+            }
+
+            return { onSuccess, boardId };
+        },
+        {
+            onMutate: async ({ boardId, member }) => {
+                // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
+                dispatch({
+                    type: 'ADD_INFO',
+                    key: `board-remove-member`,
+                    message: `Removing the member from the board...`,
+                    keep: true,
+                    closeable: false,
+                });
+                await queryClient.cancelQueries([SINGLE_BOARD_QUERY, boardId]);
+
+                // Change optimistically the board in the cache
+                const data = queryClient.getQueryData<BoardDetails>([
+                    SINGLE_BOARD_QUERY,
+                    boardId,
+                ]);
+
+                const newParticipants = data!.participants.filter(
+                    (p) => p.id !== member.id
+                );
+
+                queryClient.setQueryData<BoardDetails>(
+                    [SINGLE_BOARD_QUERY, boardId],
+                    {
+                        ...data!,
+                        participants: newParticipants,
+                    }
+                );
+            },
+            onSettled: (ctx) => {
+                dispatch({
+                    type: 'REMOVE_TOAST',
+                    key: `board-remove-member`,
+                });
+            },
+            onSuccess: (ctx) => {
+                queryClient.invalidateQueries(BOARD_QUERY);
+                ctx.onSuccess();
+            },
+            onError: (err, { boardId, member }) => {
+                try {
+                    console.log(`Error: ${err}`);
+                    const errors = JSON.parse(
+                        (err as Error).message
+                    ) as ApiErrors;
+                    if (errors) {
+                        dispatch({
+                            type: 'ADD_TOASTS',
+                            toasts: formatAPIError(errors),
+                        });
+                    }
+                } catch (e) {
+                    dispatch({
+                        type: 'ADD_ERROR',
+                        key: `board-remove-${new Date().getTime()}`,
+                        message: `Could not remove the member from the board`,
+                    });
+                }
+
+                // return the board to its previous state
+                const data = queryClient.getQueryData<BoardDetails>([
+                    SINGLE_BOARD_QUERY,
+                    boardId,
+                ]);
+
+                // readd the member that has been removed
+                queryClient.setQueryData<BoardDetails>(
+                    [SINGLE_BOARD_QUERY, boardId],
+                    {
+                        ...data!,
+                        participants: [...data!.participants, member],
                     }
                 );
             },

@@ -2,9 +2,14 @@ import * as React from 'react';
 
 // Functions & Other
 import { useNavigate, useParams } from 'react-router-dom';
-import { useSingleBoardQuery, useUserQuery } from '@/lib/queries';
+import {
+    useRemoveMemberMutation,
+    useSingleBoardQuery,
+    useUserQuery,
+} from '@/lib/queries';
 import { useToastContext } from '@/context/toast.context';
-import type { BoardDetails } from '@/lib/types';
+import { useOnClickOutside } from '@/lib/hooks';
+import type { BoardDetails, BoardMember, User } from '@/lib/types';
 
 // Components
 import { Loader } from '@/components/loader';
@@ -13,12 +18,12 @@ import { Layout } from '@/components/Layout';
 import { Button } from '@/components/button';
 import { Icon } from '@/components/icon';
 import { Avatar } from '@/components/avatar';
+import { MemberSearch } from '@/components/member-search';
+import { Dropdown } from '@/components/dropdown';
+import { BoardVisilityDropdown } from '@/components/board-visibility-toggler';
 
 // styles
 import cls from '@/styles/pages/dashboard/board.module.scss';
-import { BoardVisilityDropdown } from '@/components/board-visibility-toggler';
-import { useOnClickOutside } from '@/lib/hooks';
-import { MemberSearch } from '@/components/member-search';
 
 export function DashboardDetails() {
     const { boardId } = useParams<{ boardId: string }>();
@@ -63,6 +68,7 @@ export function DashboardDetails() {
                 <>
                     <HeaderSection
                         {...board!}
+                        currentUser={user!}
                         userIsBoardAdmin={isBoardAdmin}
                         userIsParticipant={isParticipant}
                     />
@@ -78,10 +84,13 @@ function HeaderSection({
     userIsParticipant,
     participants,
     isPrivate,
+    currentUser,
+    admin,
     id,
 }: BoardDetails & {
     userIsBoardAdmin: boolean;
     userIsParticipant: boolean;
+    currentUser: User | null;
 }) {
     const [showVisibilityTogglerDropdown, setShowVisibilityTogglerDropdown] =
         React.useState(false);
@@ -99,6 +108,10 @@ function HeaderSection({
     useOnClickOutside(inviteButtonRef, () => {
         setShowInviteDropdown(false);
     });
+
+    const participantsFiltered = currentUser
+        ? [admin, ...participants].filter((m) => m.id !== currentUser.id)
+        : [admin, ...participants];
 
     return (
         <section className={cls.details_page__header}>
@@ -135,38 +148,38 @@ function HeaderSection({
                 <ul
                     className={cls.details_page__header__left__participant_list}
                 >
-                    {participants.map(({ id, name, avatarURL, login }) => (
-                        <li key={id}>
-                            <Avatar
-                                photoURL={avatarURL}
-                                name={name}
-                                username={login}
+                    {participantsFiltered.map((p) => {
+                        return (
+                            <AvatarButton
+                                key={p.id}
+                                member={p}
+                                boardId={id}
+                                canRemove={userIsBoardAdmin}
                             />
-                        </li>
-                    ))}
+                        );
+                    })}
 
-                    {userIsParticipant ||
-                        (userIsBoardAdmin && (
-                            <div
-                                className={
-                                    cls.details_page__header__left__invite_btn
-                                }
-                                ref={inviteButtonRef}
-                            >
-                                <Button
-                                    square
-                                    variant="primary"
-                                    onClick={() => setShowInviteDropdown(true)}
-                                    renderTrailingIcon={(cls) => (
-                                        <Icon icon="plus" className={cls} />
-                                    )}
-                                />
-
-                                {showInviteDropdown && (
-                                    <MemberSearch boardId={id} show />
+                    {(userIsParticipant || userIsBoardAdmin) && (
+                        <div
+                            className={
+                                cls.details_page__header__left__invite_btn
+                            }
+                            ref={inviteButtonRef}
+                        >
+                            <Button
+                                square
+                                variant="primary"
+                                onClick={() => setShowInviteDropdown(true)}
+                                renderTrailingIcon={(cls) => (
+                                    <Icon icon="plus" className={cls} />
                                 )}
-                            </div>
-                        ))}
+                            />
+
+                            {showInviteDropdown && (
+                                <MemberSearch boardId={id} show />
+                            )}
+                        </div>
+                    )}
                 </ul>
             </div>
             <div className={cls.details_page__header__right}>
@@ -180,6 +193,72 @@ function HeaderSection({
                 </Button>
             </div>
         </section>
+    );
+}
+
+function AvatarButton({
+    member,
+    boardId,
+    canRemove,
+}: {
+    member: BoardMember;
+    boardId: string;
+    canRemove: boolean;
+}) {
+    const [showMenu, setShowMenu] = React.useState(false);
+    const avatarRef = React.useRef<HTMLDivElement>(null);
+    const mutation = useRemoveMemberMutation();
+    const { dispatch } = useToastContext();
+
+    // when the user clicks outside of the invite dropdown, close it
+    useOnClickOutside(avatarRef, () => {
+        setShowMenu(false);
+    });
+
+    const removeMember = React.useCallback(() => {
+        mutation.mutate({
+            boardId,
+            member,
+            onSuccess: () => {
+                dispatch({
+                    type: 'ADD_SUCCESS',
+                    key: `board-remove-${new Date().getTime()}`,
+                    message: 'Member successfully removed from the board.',
+                });
+                setShowMenu(false);
+            },
+        });
+    }, []);
+
+    return (
+        <div className={cls.avatar_wrapper} ref={avatarRef}>
+            <Button
+                disabled={!canRemove}
+                className={cls.avatar_wrapper__button}
+                onClick={() => setShowMenu(true)}
+            >
+                <Avatar
+                    photoURL={member.avatarURL}
+                    name={member.name}
+                    username={member.login}
+                />
+            </Button>
+
+            {showMenu && (
+                <Dropdown
+                    align={`right`}
+                    className={cls.avatar_wrapper__dropdown}
+                >
+                    <Button
+                        variant={`danger-hollow`}
+                        className={cls.avatar_wrapper__dropdown__button}
+                        onClick={removeMember}
+                    >
+                        Remove from Board
+                    </Button>
+                </Dropdown>
+            )}
+        </div>
     );
 }
 

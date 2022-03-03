@@ -92,6 +92,14 @@
     --hover-fg-color: var(--danger-color);
 }
 
+.btn--danger-hollow {
+    --bg-color: transparent;
+    --fg-color: var(--danger-color);
+    --hover-bg-color: var(--danger-color-hollow);
+    --outline-color: var(--danger-color-ring);
+    --hover-fg-color: var(--danger-color);
+}
+
 .btn--black {
     --hover-bg-color: transparent;
     --bg-color: var(--black-color);

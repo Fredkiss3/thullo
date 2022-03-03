@@ -37,7 +37,7 @@
 
             &:hover {
                 color: var(--danger-color) !important;
-                background-color: rgba(235, 87, 87, 0.1) !important;
+                background-color: var(--danger-color-hollow) !important;
             }
         }
     }

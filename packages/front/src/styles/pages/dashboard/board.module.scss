@@ -44,3 +44,22 @@
         overflow-x: scroll;
     }
 }
+
+.avatar_wrapper {
+    position: relative;
+
+    &__button {
+        padding: 0;
+    }
+
+    &__dropdown {
+        top: calc(100% + 0.5rem);
+        display: flex;
+        width: 200px;
+
+        &__button {
+            width: 100%;
+            flex-grow: 1;
+        }
+    }
+}
