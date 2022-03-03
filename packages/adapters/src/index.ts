@@ -11,3 +11,5 @@ export * from './presenters/OAuthPresenterAdapter';
 export * from './presenters/SearchMembersPresenterAdapter';
 export * from './presenters/SeeBoardDetailsPresenterAdapter';
 export * from './presenters/SetBoardVisibilityPresenterAdapter';
+export * from './presenters/InviteMemberToBoardPresenterAdapter';
+export * from './presenters/RemoveMemberFromBoardPresenterAdapter';

@@ -5,11 +5,13 @@ import {
     SearchMembersPresenter,
     SearchMembersResponse
 } from '@thullo/domain';
+import short from 'short-uuid';
 
 type MemberData = Array<{
     id: string;
     name: string;
     avatarURL: string | null;
+    login: string;
 }>;
 
 export interface SearchMembersViewModel {
@@ -29,10 +31,11 @@ export class SearchMembersPresenterAdapter implements SearchMembersPresenter {
     }
 
     toMemberData(members: Member[]): MemberData {
-        return members.map((member) => ({
-            id: member.id,
+        return members.map(member => ({
+            id: short().fromUUID(member.id),
             name: member.name,
-            avatarURL: member.avatarURL
+            avatarURL: member.avatarURL,
+            login: member.login
         }));
     }
 }

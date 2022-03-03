@@ -43,8 +43,8 @@ export class TypeORMMemberRepository
                         // search by login or name case insensitive
                         $or: [
                             { login: { $regex: loginOrName, $options: 'i' } },
-                            { name: { $regex: loginOrName, $options: 'i' } },
-                        ],
+                            { name: { $regex: loginOrName, $options: 'i' } }
+                        ]
                     },
                     {
                         // Exclude board members
@@ -59,6 +59,18 @@ export class TypeORMMemberRepository
             // Order by login alphabetically
             order: {
                 login: 'ASC'
+            }
+        });
+
+        return members.map(m => m.toDomain());
+    }
+
+    async getMembersByIds(ids: MemberId[]): Promise<Member[]> {
+        const members = await this.find({
+            where: {
+                uuid: {
+                    $in: ids
+                }
             }
         });
 
