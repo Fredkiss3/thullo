@@ -3,6 +3,7 @@ import { SearchMembersUseCase } from '@thullo/domain';
 import { Request, Response } from 'express';
 import { container, inject, injectable } from 'tsyringe';
 import { AbstractController } from './AbstractController';
+import short from 'short-uuid';
 
 @injectable()
 export class SearchMemberController extends AbstractController {
@@ -22,8 +23,10 @@ export class SearchMemberController extends AbstractController {
 
         await useCase.execute(
             {
-                query: req.query.q?.toString() ?? '',
-                boardId: req.query.boardId?.toString() ?? '',
+                query: req.query.query?.toString() ?? '',
+                boardId: req.query.boardId
+                    ? short().toUUID(req.query.boardId?.toString())
+                    : '',
                 limit: Number(req.query.limit) || 5,
             },
             this.presenter

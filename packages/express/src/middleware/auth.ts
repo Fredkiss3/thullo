@@ -6,7 +6,7 @@ import short from 'short-uuid';
 import { ApiResult } from '../../lib/types';
 import { getUser } from '../lib/functions';
 
-export const authMiddleware = async (
+export const auth_middleware = async (
     req: Request,
     res: Response<ApiResult<null>>,
     next: NextFunction
