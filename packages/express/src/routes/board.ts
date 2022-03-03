@@ -5,7 +5,8 @@ import { auth_middleware } from '../middleware/auth';
 import { SetBoardVisibilityController } from '../controllers/SetBoardVisibilityController';
 import { GetAllBoardsController } from '../controllers/GetAllBoardsController';
 import { GetBoardDetailsController } from '../controllers/GetBoardDetailsController';
-import { InviteMemberToBoardController } from '../controllers/InviteMemberToBoardController';
+import { AddMemberToBoardController } from '../controllers/AddMemberToBoardController';
+import { RemoveMemberFromBoardController } from "../controllers/RemoveMemberFromBoardController";
 
 const Router = router();
 
@@ -18,9 +19,14 @@ Router.get('/', getController(GetAllBoardsController))
         getController(SetBoardVisibilityController)
     )
     .put(
-        '/:boardId/invite',
+        '/:boardId/participants/add',
         auth_middleware,
-        getController(InviteMemberToBoardController)
+        getController(AddMemberToBoardController)
+    )
+    .put(
+        '/:boardId/participants/remove',
+        auth_middleware,
+        getController(RemoveMemberFromBoardController)
     );
 
 export { Router as boardRouter };

@@ -12,7 +12,7 @@ import { getUser } from '../lib/functions';
 import short from 'short-uuid';
 
 @injectable()
-export class InviteMemberToBoardController extends AbstractController {
+export class AddMemberToBoardController extends AbstractController {
     constructor(
         @inject('InviteMemberToBoardPresenter')
         private presenter: InviteMemberToBoardPresenterAdapter
