@@ -2,7 +2,7 @@ import { createContext, useContext } from 'react';
 import type { ToastContextData, ToastMessage, ToastType } from '@/lib/types';
 
 type AddToastAction = {
-    type: 'ADD_ERROR' | 'ADD_SUCCESS' | 'ADD_INFO';
+    type: 'ADD_ERROR' | 'ADD_SUCCESS' | 'ADD_INFO' | 'ADD_WARNING';
     duration?: number;
     key: string;
     message: string;
@@ -86,6 +86,27 @@ export function toastReducer(
             const newElement: ToastContextData = {
                 [key]: {
                     type: 'success',
+                    message: message,
+                    duration: action.duration,
+                    keep: action.keep,
+                    closeable: action.closeable,
+                },
+            };
+
+            if (data === null) {
+                return newElement;
+            }
+
+            return {
+                ...data,
+                ...newElement,
+            };
+        }
+        case 'ADD_WARNING': {
+            const { key, message } = action;
+            const newElement: ToastContextData = {
+                [key]: {
+                    type: 'warning',
                     message: message,
                     duration: action.duration,
                     keep: action.keep,

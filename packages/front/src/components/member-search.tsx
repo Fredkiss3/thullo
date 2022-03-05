@@ -46,6 +46,7 @@ export function MemberSearch({ show, boardId }: MemberSearchProps) {
                 const params = new URLSearchParams();
                 params.append('query', value);
                 params.append('boardId', boardId);
+                params.append('limit', '10');
 
                 setIsLoading(true);
                 ({ data, errors } = await jsonFetch<BoardMember[]>(

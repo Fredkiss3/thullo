@@ -18,7 +18,7 @@ export class RemoveMemberFromBoardController extends AbstractController {
         super();
     }
 
-    // HTTP GET /api/boards/:boardId/exclude
+    // HTTP PUT /api/boards/:boardId/participants/remove
     async handle(req: Request, res: Response): Promise<Response> {
         const useCase = new RemoveMemberFromBoardUseCase(
             await container.resolve('MemberRepository'),

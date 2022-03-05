@@ -38,7 +38,7 @@ export function BoardCard({ board, loading }: BoardCardProps) {
 
                 {board.participants.length > 3 && (
                     <li className={cls.boardcard__avatar_list__more}>
-                        +{board.participants.length - 3} Autres
+                        +{board.participants.length - 3} Others
                     </li>
                 )}
             </ul>

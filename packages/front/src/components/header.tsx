@@ -5,19 +5,81 @@ import { Icon } from './icon';
 import { LinkButton } from './linkbutton';
 import { Input } from './input';
 import {
-    useAuthenticatedUser,
+    useChangeBoardNameMutation,
     useLogoutMutation,
+    useSingleBoardQuery,
     useUserQuery,
-} from '../lib/queries';
+} from '@/lib/queries';
 import { DropdownItem, DropdownMenu } from './dropdown-menu';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { Button } from './button';
+import { useToastContext } from '@/context/toast.context';
+import { useOnClickOutside } from '@/lib/hooks';
 
 export interface HeaderProps {
     currentPageTitle?: string;
 }
 
 export function Header({ currentPageTitle }: HeaderProps) {
+    const { boardId } = useParams<{ boardId: string }>();
+    const { dispatch } = useToastContext();
+    const { data: board } = useSingleBoardQuery(boardId);
+    const { data: user } = useUserQuery();
+    const isBoardAdmin = user?.id === board?.admin.id;
+    const mutation = useChangeBoardNameMutation();
+
+    const [boardName, setBoardName] = React.useState<string>(
+        currentPageTitle ?? ''
+    );
+
+    const [isEditing, setIsEditing] = React.useState(false);
+    const ref = React.useRef<HTMLInputElement>(null);
+
+    const handleChangeName = React.useCallback(
+        (boardName: string) => {
+            setIsEditing(false);
+            let newName = boardName.trim();
+
+            if (
+                board &&
+                newName.length > 0 &&
+                newName !== board.name &&
+                isBoardAdmin
+            ) {
+                mutation.mutate({
+                    boardId: board.id,
+                    newName: boardName,
+                    oldName: board.name,
+                    onSuccess: () => {
+                        dispatch({
+                            type: 'ADD_SUCCESS',
+                            key: `board-set-name-${new Date().getTime()}`,
+                            message: 'Board name successfully changed.',
+                        });
+                    },
+                });
+            } else if (newName.length === 0) {
+                newName = board?.name ?? '';
+            }
+
+            console.log(`new board name: "${newName}"`);
+            setBoardName(newName);
+        },
+        [board, isBoardAdmin]
+    );
+
+    React.useEffect(() => {
+        if (ref.current && isEditing) {
+            ref.current.focus();
+        }
+    }, [isEditing]);
+
+    React.useEffect(() => {
+        if (board) {
+            setBoardName(board.name);
+        }
+    }, [board]);
+
     return (
         <header className={cls.header}>
             <div className={cls.header__left}>
@@ -27,9 +89,22 @@ export function Header({ currentPageTitle }: HeaderProps) {
 
                 {currentPageTitle && (
                     <>
-                        <h1 className={cls.header__left__title}>
-                            {currentPageTitle}
-                        </h1>
+                        {!isEditing || !isBoardAdmin ? (
+                            <h1
+                                className={cls.header__left__title}
+                                onClick={() => board && setIsEditing(true)}
+                            >
+                                {boardName}
+                            </h1>
+                        ) : (
+                            <Input
+                                ref={ref}
+                                onBlur={() => handleChangeName(boardName)}
+                                className={cls.header__left__title}
+                                value={boardName}
+                                onChange={(newValue) => setBoardName(newValue)}
+                            />
+                        )}
 
                         <div className={cls.header__left__divider} />
 
@@ -100,8 +175,15 @@ function HeaderAvatar() {
         ];
     }
 
+    const ref = React.useRef<HTMLButtonElement>(null);
+    const [showDropdown, setShowDropdown] = React.useState(false);
+
+    useOnClickOutside(ref, () => {
+        setShowDropdown(false);
+    });
+
     return (
-        <div className={cls.header__avatar}>
+        <Button className={cls.header__avatar} ref={ref} onClick={() => setShowDropdown(true)}>
             {user ? (
                 <img
                     src={user.avatarURL}
@@ -115,12 +197,12 @@ function HeaderAvatar() {
                 {user ? user.name : 'Guest'}
             </span>
             <Icon className={cls.header__avatar__icon} icon={'chevron-down'} />
-            {!isLoading && (
+            {!isLoading && showDropdown && (
                 <DropdownMenu
                     items={items}
                     className={cls.header__avatar__dropdown}
                 />
             )}
-        </div>
+        </Button>
     );
 }

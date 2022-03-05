@@ -78,6 +78,7 @@
         align-items: center;
         gap: 1rem;
         cursor: pointer;
+        padding: 0;
 
         &__image {
             width: 2.5rem;
@@ -115,13 +116,8 @@
         }
 
         &__dropdown {
-            display: none;
-        }
-
-        &:hover {
-            .header__avatar__dropdown {
-                display: block;
-            }
+            display: block;
+            top: calc(100% + 0.5rem) !important;
         }
     }
 }

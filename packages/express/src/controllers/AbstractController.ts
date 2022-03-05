@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { ApiResult } from "../../lib/types";
+import { ApiResult } from '../../lib/types';
 
 export abstract class AbstractController {
     abstract handle(
@@ -10,7 +10,7 @@ export abstract class AbstractController {
 
     getResult<T extends ApiResult<unknown>>(
         vm: T,
-        res: Response,
+        res: Response<T>,
         successCode: number = 200
     ) {
         if (vm.errors !== null) {

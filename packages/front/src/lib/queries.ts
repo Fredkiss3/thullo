@@ -99,25 +99,24 @@ export function useAuthenticatedUser(): {
     };
 }
 
-export function useSingleBoardQuery(id: string) {
-    const { dispatch } = useErrorsContext();
+export function useSingleBoardQuery(id?: string) {
     return useQuery<BoardDetails | null>(
         [SINGLE_BOARD_QUERY, id],
         async () => {
-            const { data, errors } = await jsonFetch<BoardDetails | null>(
-                `${import.meta.env.VITE_API_URL}/api/boards/${id}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${getCookie(USER_TOKEN)}`,
-                    },
-                }
-            );
+            let data: BoardDetails | null = null;
+            let errors: ApiErrors = null;
+            if (id) {
+                ({ data, errors } = await jsonFetch<BoardDetails | null>(
+                    `${import.meta.env.VITE_API_URL}/api/boards/${id}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${getCookie(USER_TOKEN)}`,
+                        },
+                    }
+                ));
+            }
 
             if (errors) {
-                dispatch({
-                    type: 'ADD_ERRORS',
-                    errors,
-                });
                 // indicate that the board is not found
                 throw new Error(JSON.stringify(errors));
             }
@@ -276,7 +275,7 @@ export function useSetBoardVisibilityMutation() {
             isPrivate: boolean;
             onSuccess: () => void;
         }) => {
-            const { data, errors } = await jsonFetch<BoardDetails | null>(
+            const { errors } = await jsonFetch<{ success: boolean }>(
                 `${
                     import.meta.env.VITE_API_URL
                 }/api/boards/${boardId}/set-visibility`,
@@ -326,10 +325,10 @@ export function useSetBoardVisibilityMutation() {
                 );
             },
             onSettled: (ctx) => {
-                    dispatch({
-                        type: 'REMOVE_TOAST',
-                        key: `board-set-visibility`,
-                    });
+                dispatch({
+                    type: 'REMOVE_TOAST',
+                    key: `board-set-visibility`,
+                });
             },
             onSuccess: (ctx) => {
                 ctx.onSuccess();
@@ -387,7 +386,7 @@ export function useInviteMemberMutation() {
             members: BoardMember[];
             onSuccess: () => void;
         }) => {
-            const { errors } = await jsonFetch<BoardDetails | null>(
+            const { errors } = await jsonFetch<{ success: boolean }>(
                 `${
                     import.meta.env.VITE_API_URL
                 }/api/boards/${boardId}/participants/add`,
@@ -501,7 +500,7 @@ export function useRemoveMemberMutation() {
             member: BoardMember;
             onSuccess: () => void;
         }) => {
-            const { errors } = await jsonFetch<BoardDetails | null>(
+            const { errors } = await jsonFetch<{ success: boolean }>(
                 `${
                     import.meta.env.VITE_API_URL
                 }/api/boards/${boardId}/participants/remove`,
@@ -594,6 +593,119 @@ export function useRemoveMemberMutation() {
                     {
                         ...data!,
                         participants: [...data!.participants, member],
+                    }
+                );
+            },
+        }
+    );
+}
+
+export function useChangeBoardNameMutation() {
+    const queryClient = useQueryClient();
+    const { dispatch } = useToastContext();
+
+    return useMutation(
+        async ({
+            newName,
+            oldName,
+            boardId,
+            onSuccess,
+        }: {
+            boardId: string;
+            newName: string;
+            oldName: string;
+            onSuccess: () => void;
+        }) => {
+            const { errors } = await jsonFetch<{ success: boolean }>(
+                `${
+                    import.meta.env.VITE_API_URL
+                }/api/boards/${boardId}/set-name`,
+                {
+                    method: 'PUT',
+                    body: JSON.stringify({
+                        name: newName,
+                    }),
+                    headers: {
+                        Authorization: `Bearer ${getCookie(USER_TOKEN)}`,
+                    },
+                }
+            );
+
+            if (errors) {
+                throw new Error(JSON.stringify(errors));
+            }
+
+            return { onSuccess, boardId, oldName };
+        },
+        {
+            onMutate: async ({ boardId, newName }) => {
+                dispatch({
+                    type: 'ADD_INFO',
+                    key: `board-set-name`,
+                    message: `Changing the board name...`,
+                    keep: true,
+                    closeable: false,
+                });
+
+                // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
+                await queryClient.cancelQueries([SINGLE_BOARD_QUERY, boardId]);
+
+                // Change optimistically the board in the cache
+                const data = queryClient.getQueryData<BoardDetails>([
+                    SINGLE_BOARD_QUERY,
+                    boardId,
+                ]);
+
+                queryClient.setQueryData<BoardDetails>(
+                    [SINGLE_BOARD_QUERY, boardId],
+                    {
+                        ...data!,
+                        name: newName,
+                    }
+                );
+            },
+            onSettled: (ctx) => {
+                dispatch({
+                    type: 'REMOVE_TOAST',
+                    key: `board-set-name`,
+                });
+            },
+            onSuccess: (ctx) => {
+                queryClient.invalidateQueries(BOARD_QUERY);
+                ctx.onSuccess();
+            },
+            onError: (err, { boardId, oldName }) => {
+                try {
+                    console.error(`Error: ${err}`);
+                    const errors = JSON.parse(
+                        (err as Error).message
+                    ) as ApiErrors;
+                    if (errors) {
+                        dispatch({
+                            type: 'ADD_TOASTS',
+                            toasts: formatAPIError(errors),
+                        });
+                    }
+                } catch (e) {
+                    dispatch({
+                        type: 'ADD_ERROR',
+                        key: `board-set-name-${new Date().getTime()}`,
+                        message: `Could not change the board name`,
+                    });
+                }
+
+                // return the board to its previous state
+                const data = queryClient.getQueryData<BoardDetails>([
+                    SINGLE_BOARD_QUERY,
+                    boardId,
+                ]);
+
+                // reset the board name to the old name
+                queryClient.setQueryData<BoardDetails>(
+                    [SINGLE_BOARD_QUERY, boardId],
+                    {
+                        ...data!,
+                        name: oldName,
                     }
                 );
             },

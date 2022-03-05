@@ -6,7 +6,8 @@ import { SetBoardVisibilityController } from '../controllers/SetBoardVisibilityC
 import { GetAllBoardsController } from '../controllers/GetAllBoardsController';
 import { GetBoardDetailsController } from '../controllers/GetBoardDetailsController';
 import { AddMemberToBoardController } from '../controllers/AddMemberToBoardController';
-import { RemoveMemberFromBoardController } from "../controllers/RemoveMemberFromBoardController";
+import { RemoveMemberFromBoardController } from '../controllers/RemoveMemberFromBoardController';
+import { ChangeBoardNameController } from '../controllers/ChangeBoardNameController';
 
 const Router = router();
 
@@ -27,6 +28,11 @@ Router.get('/', getController(GetAllBoardsController))
         '/:boardId/participants/remove',
         auth_middleware,
         getController(RemoveMemberFromBoardController)
+    )
+    .put(
+        '/:boardId/set-name',
+        auth_middleware,
+        getController(ChangeBoardNameController)
     );
 
 export { Router as boardRouter };

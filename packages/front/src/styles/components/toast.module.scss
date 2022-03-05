@@ -84,6 +84,14 @@
         color: #fff;
     }
 }
+.toast--warning {
+    background-color: var(--warning-color);
+    color: #fff;
+
+    .toast__icon_right {
+        color: #fff;
+    }
+}
 
 .toast_area {
     position: fixed;

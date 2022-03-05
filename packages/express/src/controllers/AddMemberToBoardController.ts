@@ -20,7 +20,7 @@ export class AddMemberToBoardController extends AbstractController {
         super();
     }
 
-    // HTTP GET /api/boards/:boardId/invite
+    // HTTP PUT /api/boards/:boardId/participants/add
     async handle(req: Request, res: Response): Promise<Response> {
         const useCase = new InviteMemberToBoardUseCase(
             await container.resolve('MemberRepository'),

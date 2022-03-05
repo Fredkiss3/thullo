@@ -7,13 +7,14 @@ export function Footer({}: FooterProps) {
     return (
         <footer className={cls.footer}>
             <p>
-                Created by&nbsp;
-                <a
-                    href={`https://github.com/Fredkiss3`}
-                    className={cls.footer__username}
-                >
-                    Fredkiss3
-                </a>, devchallenges.io
+                Created by&nbsp; Fredkiss3, for a{' '}
+                <a href="https://devchallenges.io/challenges/wP0LbGgEeKhpFHUpPpDh">
+                    <strong>devchallenges</strong>
+                </a>
+                , Check out the source code on &nbsp;
+                <a href="https://github.com/Fredkiss3/thullo">
+                    <strong>Github</strong>
+                </a>
             </p>
         </footer>
     );

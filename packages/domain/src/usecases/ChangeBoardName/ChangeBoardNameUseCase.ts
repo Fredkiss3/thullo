@@ -28,33 +28,40 @@ export class ChangeBoardNameUseCase {
     ): Promise<void> {
         let errors = this.validate(request);
 
-        const board = await this.boardAggregateRepository.getBoardAggregateById(
-            request.boardId
-        );
+        if (!errors) {
+            const board =
+                await this.boardAggregateRepository.getBoardAggregateById(
+                    request.boardId
+                );
 
-        const member = await this.memberRepository.getMemberById(
-            request.requesterId
-        );
+            const member = await this.memberRepository.getMemberById(
+                request.requesterId
+            );
 
-        if (board) {
-            if (member) {
-                try {
-                    board.setName(request.name, member.id);
-                    await this.boardAggregateRepository.saveAggregate(board);
-                } catch (e) {
+            if (board) {
+                if (member) {
+                    try {
+                        board.setName(request.name, member.id);
+                        await this.boardAggregateRepository.saveAggregate(
+                            board
+                        );
+                    } catch (e) {
+                        errors = {
+                            requesterId: [
+                                (e as OperationUnauthorizedError).message
+                            ]
+                        };
+                    }
+                } else {
                     errors = {
-                        requesterId: [(e as OperationUnauthorizedError).message]
+                        requesterId: ["Cet utilisateur n'existe pas"]
                     };
                 }
             } else {
                 errors = {
-                    requesterId: ["Cet utilisateur n'existe pas"]
+                    boardId: ["Ce tableau n'existe pas"]
                 };
             }
-        } else {
-            errors = {
-                boardId: ["Ce tableau n'existe pas"]
-            };
         }
 
         presenter.present(new ChangeBoardNameResponse(errors));

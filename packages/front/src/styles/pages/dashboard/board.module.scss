@@ -1,11 +1,10 @@
-
 .details_page {
     width: 100%;
     display: flex;
     flex-direction: column;
     padding-bottom: 3rem;
 
-    &__header {
+    .header_section {
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -24,8 +23,6 @@
                 position: relative;
             }
 
-
-
             &__participant_list {
                 display: flex;
                 align-items: center;
@@ -34,14 +31,38 @@
         }
     }
 
-    &__columns {
+    .column_section {
         background-color: var(--body-color);
-        padding: 2rem;
-        border-radius: var(--border-radius-xl);
-        //height: 100%;
-        // overflow-y: scroll;
+        padding: 2rem 2rem 0 2rem;
+        border-top-left-radius: var(--border-radius-xl);
+        border-top-right-radius: var(--border-radius-xl);
+        max-height: 68vh;
         flex-grow: 1;
+        //overflow-y: hidden;
         overflow-x: scroll;
+        display: flex;
+
+        &__list {
+            flex-grow: 1;
+            min-width: 300px;
+            max-width: 300px;
+            padding: .5rem 1rem;
+            max-height: 100%;
+            overflow-y: scroll;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+    }
+}
+
+.add_button {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+
+    &__icon {
+        height: 1.5rem;
     }
 }
 

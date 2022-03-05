@@ -9,6 +9,7 @@ export const ButtonVariants = [
     'black',
     'danger',
     'danger-hollow',
+    'primary-hollow',
 ] as const;
 
 export const ButtonSizes = ['small', 'medium', 'large'] as const;

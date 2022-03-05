@@ -24,6 +24,7 @@ import { BoardVisilityDropdown } from '@/components/board-visibility-toggler';
 
 // styles
 import cls from '@/styles/pages/dashboard/board.module.scss';
+import { List } from '@/components/list';
 
 export function DashboardDetails() {
     const { boardId } = useParams<{ boardId: string }>();
@@ -53,7 +54,7 @@ export function DashboardDetails() {
     const isParticipant =
         board?.participants.some(
             (participant) => participant.id === user?.id
-        ) ?? false;
+        ) || isBoardAdmin;
 
     return (
         <Layout
@@ -72,7 +73,10 @@ export function DashboardDetails() {
                         userIsBoardAdmin={isBoardAdmin}
                         userIsParticipant={isParticipant}
                     />
-                    <ColumnsSection {...board!} />
+                    <ColumnsSection
+                        {...board!}
+                        userIsParticipant={isParticipant}
+                    />
                 </>
             )}
         </Layout>
@@ -113,11 +117,13 @@ function HeaderSection({
         ? [admin, ...participants].filter((m) => m.id !== currentUser.id)
         : [admin, ...participants];
 
+    const { dispatch } = useToastContext();
+
     return (
-        <section className={cls.details_page__header}>
-            <div className={cls.details_page__header__left}>
+        <section className={cls.header_section}>
+            <div className={cls.header_section__left}>
                 <div
-                    className={cls.details_page__header__left__toggle_btn}
+                    className={cls.header_section__left__toggle_btn}
                     ref={toggleButtonRef}
                 >
                     <Button
@@ -145,9 +151,7 @@ function HeaderSection({
                         show={showVisibilityTogglerDropdown}
                     />
                 </div>
-                <ul
-                    className={cls.details_page__header__left__participant_list}
-                >
+                <ul className={cls.header_section__left__participant_list}>
                     {participantsFiltered.map((p) => {
                         return (
                             <AvatarButton
@@ -161,9 +165,7 @@ function HeaderSection({
 
                     {(userIsParticipant || userIsBoardAdmin) && (
                         <div
-                            className={
-                                cls.details_page__header__left__invite_btn
-                            }
+                            className={cls.header_section__left__invite_btn}
                             ref={inviteButtonRef}
                         >
                             <Button
@@ -182,12 +184,19 @@ function HeaderSection({
                     )}
                 </ul>
             </div>
-            <div className={cls.details_page__header__right}>
+            <div className={cls.header_section__right}>
                 <Button
                     variant="outline"
                     renderLeadingIcon={(cls) => (
                         <Icon icon="h-dots" className={cls} />
                     )}
+                    onClick={() => {
+                        dispatch({
+                            type: 'ADD_WARNING',
+                            key: `show-menu-not-implemented`,
+                            message: 'Not implemented yet.',
+                        });
+                    }}
                 >
                     Show Menu
                 </Button>
@@ -262,6 +271,48 @@ function AvatarButton({
     );
 }
 
-function ColumnsSection({ lists }: BoardDetails) {
-    return <section className={cls.details_page__columns} />;
+function ColumnsSection({
+    lists,
+    userIsParticipant,
+}: BoardDetails & { userIsParticipant: boolean }) {
+    const { dispatch } = useToastContext();
+    return (
+        <>
+            <section className={cls.column_section}>
+                {lists.map((list) => (
+                    <List
+                        key={list.id}
+                        list={list}
+                        className={cls.column_section__list}
+                    />
+                ))}
+
+                {userIsParticipant && (
+                    <div className={cls.column_section__list}>
+                        <Button
+                            className={cls.add_button}
+                            variant={`primary-hollow`}
+                            onClick={() => {
+                                dispatch({
+                                    type: 'ADD_WARNING',
+                                    key: `new-list-not-implemented`,
+                                    message: 'Not implemented yet.',
+                                });
+                            }}
+                        >
+                            <span>
+                                {lists.length === 0
+                                    ? 'Add a list'
+                                    : 'Add another list'}
+                            </span>
+                            <Icon
+                                icon="plus"
+                                className={cls.add_button__icon}
+                            />
+                        </Button>
+                    </div>
+                )}
+            </section>
+        </>
+    );
 }

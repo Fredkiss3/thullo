@@ -1,5 +1,6 @@
 import * as React from 'react';
 import cls from '../styles/components/input.module.scss';
+import { forwardRef } from 'react';
 
 export interface InputProps {
     trailingElement?: React.ReactNode;
@@ -12,30 +13,40 @@ export interface InputProps {
     onFocus?: () => void;
 }
 
-export function Input({
-    trailingElement,
-    type = 'text',
-    placeholder,
-    className,
-    onChange,
-    value,
-    onBlur,
-    onFocus,
-}: InputProps) {
-    return (
-        <div className={`${cls.input} ${className ?? ''}`}>
-            <input
+export const Input = forwardRef<HTMLInputElement, InputProps>(
+    (
+        {
+            trailingElement,
+            type = 'text',
+            placeholder,
+            className,
+            onChange,
+            value,
+            onBlur,
+            onFocus,
+        },
+        ref
+    ) => {
+        return (
+            <div
+                className={`${cls.input} ${className ?? ''}`}
                 onBlur={onBlur}
                 onFocus={onFocus}
-                value={value}
-                onChange={(event) => onChange?.(event.target.value)}
-                type={type}
-                placeholder={placeholder}
-                className={cls.input__field}
-            />
-            {trailingElement && (
-                <div className={cls.input__trailing}>{trailingElement}</div>
-            )}
-        </div>
-    );
-}
+            >
+                <input
+                    ref={ref}
+                    // onBlur={onBlur}
+                    // onFocus={onFocus}
+                    value={value}
+                    onChange={(event) => onChange?.(event.target.value)}
+                    type={type}
+                    placeholder={placeholder}
+                    className={cls.input__field}
+                />
+                {trailingElement && (
+                    <div className={cls.input__trailing}>{trailingElement}</div>
+                )}
+            </div>
+        );
+    }
+);

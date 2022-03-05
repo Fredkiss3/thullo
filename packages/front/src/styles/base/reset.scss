@@ -64,6 +64,7 @@ input {
 :root {
     // Variant Colors
     --primary-color: #2f80ed;
+    --primary-color-hollow: #DAE4FD;
     --primary-color-ring: rgba(47, 128, 237, 0.5);
     --secondary-color: #828282;
     --secondary-color-ring: rgba(130, 130, 130, 0.5);
@@ -72,7 +73,7 @@ input {
     --danger-color-hollow: rgba(235, 87, 87, 0.1);
     --success-color: #28b463;
     --success-color-ring: rgba(40, 180, 99, 0.5);
-    --warning-color: #ffc107;
+    --warning-color: #F5B041;
     --warning-color-ring: rgba(255, 193, 7, 0.5);
     --info-color: #dae4fd;
     --info-color-ring: #c6d5fc;

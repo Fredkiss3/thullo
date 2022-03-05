@@ -57,6 +57,20 @@
     --hover-bg-color: transparent;
 }
 
+.btn--primary-hollow {
+    --bg-color: var(--primary-color-hollow);
+    --fg-color: var(--primary-color);
+    --hover-bg-color: white;
+    --outline-color: var(--primary-color-ring);
+    --hover-fg-color: var(--primary-color);
+
+    &:hover,
+    &:focus,
+    &:active {
+        border: 1px solid  var(--primary-color) !important;
+    }
+}
+
 .btn--outline {
     border: 1px solid var(--secondary-color);
     color: var(--secondary-color);
