@@ -1,4 +1,6 @@
+// @ts-ignore
 import { Remarkable } from 'remarkable';
+// @ts-ignore
 import { linkify } from 'remarkable/linkify';
 
 import { USER_TOKEN } from './constants';
