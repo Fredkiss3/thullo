@@ -1,3 +1,5 @@
+@import '../base/responsive';
+
 .member_search {
     display: none;
     flex-direction: column;
@@ -5,6 +7,13 @@
     filter: drop-shadow(0 0 0.5rem rgba(0, 0, 0, 0.05));
     top: calc(100% + 0.5rem);
     padding: 1rem;
+    right: -100%;
+    left: auto !important;
+
+    @include phone {
+        left: 0 !important;
+        right: auto;
+    }
 
     align-items: center;
 

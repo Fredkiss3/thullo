@@ -25,11 +25,12 @@ import { BoardVisilityDropdown } from '@/components/board-visibility-toggler';
 // styles
 import cls from '@/styles/pages/dashboard/board.module.scss';
 import { List } from '@/components/list';
+import { Drawer } from '@/components/drawer';
 
 export function DashboardDetails() {
     const { boardId } = useParams<{ boardId: string }>();
-    const { data: user } = useUserQuery();
     const { data: board, isLoading } = useSingleBoardQuery(boardId!);
+    const { data: user } = useUserQuery();
     const { dispatch } = useToastContext();
 
     const navigate = useNavigate();
@@ -99,6 +100,7 @@ function HeaderSection({
     const [showVisibilityTogglerDropdown, setShowVisibilityTogglerDropdown] =
         React.useState(false);
     const [showInviteDropdown, setShowInviteDropdown] = React.useState(false);
+    const [showDrawer, setShowDrawer] = React.useState(false);
 
     const toggleButtonRef = React.useRef(null);
     const inviteButtonRef = React.useRef(null);
@@ -113,11 +115,15 @@ function HeaderSection({
         setShowInviteDropdown(false);
     });
 
-    const participantsFiltered = currentUser
-        ? [admin, ...participants].filter((m) => m.id !== currentUser.id)
-        : [admin, ...participants];
-
-    const { dispatch } = useToastContext();
+    const participantsFiltered = React.useMemo(
+        () =>
+            currentUser
+                ? [admin, ...participants].filter(
+                      (m) => m.id !== currentUser.id
+                  )
+                : [admin, ...participants],
+        [admin, participants, currentUser]
+    );
 
     return (
         <section className={cls.header_section}>
@@ -191,15 +197,16 @@ function HeaderSection({
                         <Icon icon="h-dots" className={cls} />
                     )}
                     onClick={() => {
-                        dispatch({
-                            type: 'ADD_WARNING',
-                            key: `show-menu-not-implemented`,
-                            message: 'Not implemented yet.',
-                        });
+                        setShowDrawer(true);
                     }}
                 >
                     Show Menu
                 </Button>
+
+                <Drawer
+                    open={showDrawer}
+                    onClose={() => setShowDrawer(false)}
+                />
             </div>
         </section>
     );

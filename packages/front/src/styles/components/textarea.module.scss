@@ -1,0 +1,34 @@
+.textarea {
+    font-size: var(--font-size-sm);
+    display: flex;
+    justify-content: space-between;
+    min-width: 250px;
+    border-radius: var(--border-radius-md);
+    padding: 0.2rem;
+    border: 1px solid var(--border-color);
+    background-color: var(--hollow-color);
+
+    &:focus-within {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        background-color: #ffffff;
+        border-color: var(--divider-color);
+    }
+
+    &__field {
+        border: none;
+        resize: none;
+        padding: 0.5rem;
+        width: 100%;
+        font-size: var(--font-size-sm);
+        font-family: sans-serif;
+        background-color: transparent;
+
+        &:focus {
+            outline: none;
+        }
+    }
+
+    &__trailing {
+        margin-left: 0.5rem;
+    }
+}

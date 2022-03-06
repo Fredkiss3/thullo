@@ -1,3 +1,6 @@
+import { Remarkable } from 'remarkable';
+import { linkify } from 'remarkable/linkify';
+
 import { USER_TOKEN } from './constants';
 import {
     ApiResult,
@@ -139,4 +142,17 @@ export function formatAPIError(errors: ApiErrors): {
 
 export function range(start: number, end: number): number[] {
     return Array.from({ length: end - start }, (_, i) => i + start);
+}
+
+export function renderMarkdown(markdown: string): string {
+    const html = new Remarkable('full', {
+        html: true,
+        breaks: true,
+        typographer: true,
+    })
+        .use(linkify)
+        .render(markdown)
+        .replace(/\n/g, '<br>');
+
+    return html;
 }

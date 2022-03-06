@@ -164,6 +164,7 @@ importers:
       '@types/react': ^17.0.0
       '@types/react-dom': ^17.0.0
       '@types/react-helmet': ^6.1.4
+      '@types/remarkable': ^2.0.3
       '@vitejs/plugin-react': ^1.0.0
       '@vitejs/plugin-react-refresh': ^1.3.6
       codeshift-transform-declared-arrow-to-func-dec: 1.0.0
@@ -175,6 +176,7 @@ importers:
       react-helmet: ^6.1.0
       react-query: ^3.34.2
       react-router-dom: ^6.1.0
+      remarkable: ^2.0.1
       remove: ^0.1.5
       sass: ^1.44.0
       typescript: ^4.5.2
@@ -189,6 +191,7 @@ importers:
       react-helmet: 6.1.0_react@17.0.2
       react-query: 3.34.2_react-dom@17.0.2+react@17.0.2
       react-router-dom: 6.1.0_react-dom@17.0.2+react@17.0.2
+      remarkable: 2.0.1
       remove: 0.1.5
       sass: 1.44.0
     devDependencies:
@@ -198,6 +201,7 @@ importers:
       '@types/react': 17.0.37
       '@types/react-dom': 17.0.11
       '@types/react-helmet': 6.1.4
+      '@types/remarkable': 2.0.3
       '@vitejs/plugin-react': 1.1.0
       codeshift-transform-declared-arrow-to-func-dec: 1.0.0
       cypress: 9.1.1
@@ -3614,6 +3618,10 @@ packages:
       '@types/node': 16.11.11
     dev: true
 
+  /@types/highlight.js/9.12.4:
+    resolution: {integrity: sha512-t2szdkwmg2JJyuCM20e8kR2X59WCE5Zkl4bzm1u1Oukjm79zpbiAv+QjnwLnuuV0WHEcX2NgUItu0pAMKuOPww==}
+    dev: true
+
   /@types/http-cache-semantics/4.0.1:
     resolution: {integrity: sha512-SZs7ekbP8CN0txVG2xVRH6EgKmEm31BOxA07vkFaETzZz1xh+cbt8BcI0slpymvwhx5dlFnQG2rTlPVQn+iRPQ==}
 
@@ -3739,6 +3747,13 @@ packages:
       '@types/prop-types': 15.7.4
       '@types/scheduler': 0.16.2
       csstype: 3.0.10
+    dev: true
+
+  /@types/remarkable/2.0.3:
+    resolution: {integrity: sha512-QQUBeYApuHCNl9Br6ZoI3PlKmwZ69JHrlJktJXnjxobia9liZgsI70fm8PnCqVFAcefYK+9PGzR5L/hzCslNYQ==}
+    dependencies:
+      '@types/highlight.js': 9.12.4
+      highlight.js: 9.18.5
     dev: true
 
   /@types/resolve/1.17.1:
@@ -4460,7 +4475,6 @@ packages:
     resolution: {integrity: sha512-o5Roy6tNG4SL/FOkCAN6RzjiakZS25RLYFrcMttJqbdd8BWrnA+fGz57iN5Pb06pvBGvl5gQ0B48dJlslXvoTg==}
     dependencies:
       sprintf-js: 1.0.3
-    dev: true
 
   /argparse/2.0.1:
     resolution: {integrity: sha512-8+9WqebbFzpX9OR+Wa6O29asIogeRMzcGtAINdpMHHyAg10f05aSFVBbcEqGf/PXw1EjAZ+q2/bEBg3DvurK3Q==}
@@ -4640,6 +4654,12 @@ packages:
     resolution: {integrity: sha512-Wm6ukoaOGJi/73p/cl2GvLjTI5JM1k/O14isD73YML8StrH/7/lRFgmg8nICZgD3bZZvjwCGxtMOD3wWNAu8cg==}
     engines: {node: '>= 4.5.0'}
     hasBin: true
+
+  /autolinker/3.15.0:
+    resolution: {integrity: sha512-N/5Dk5AZnqL9k6kkHdFIGLm/0/rRuSnJwqYYhLCJjU7ZtiaJwCBzNTvjzy1zzJADngv/wvtHYcrPHytPnASeFA==}
+    dependencies:
+      tslib: 2.3.1
+    dev: false
 
   /autoprefixer/10.4.0:
     resolution: {integrity: sha512-7FdJ1ONtwzV1G43GDD0kpVMn/qbiNqyOPMFTX5nRffI+7vgWoFEc6DcXOxHJxrWNDXrZh18eDsZjvZGUljSRGA==}
@@ -8822,6 +8842,12 @@ packages:
   /highlight.js/10.7.3:
     resolution: {integrity: sha512-tzcUFauisWKNHaRkN4Wjl/ZA07gENAjFl3J/c480dprkGTg5EQstgaNFqBfUqCq54kZRIEcreTsAgF/m2quD7A==}
     dev: false
+
+  /highlight.js/9.18.5:
+    resolution: {integrity: sha512-a5bFyofd/BHCX52/8i8uJkjr9DYwXIPnM/plwI6W7ezItLGqzt7X2G2nXuYSfsIJdkwwj/g9DG1LkcGJI/dDoA==}
+    deprecated: Support has ended for 9.x series. Upgrade to @latest
+    requiresBuild: true
+    dev: true
 
   /history/5.1.0:
     resolution: {integrity: sha512-zPuQgPacm2vH2xdORvGGz1wQMuHSIB56yNAy5FnLuwOwgSYyPKptJtcMm6Ev+hRGeS+GzhbmRacHzvlESbFwDg==}
@@ -13269,6 +13295,15 @@ packages:
       jsesc: 0.5.0
     dev: true
 
+  /remarkable/2.0.1:
+    resolution: {integrity: sha512-YJyMcOH5lrR+kZdmB0aJJ4+93bEojRZ1HGDn9Eagu6ibg7aVZhc3OWbbShRid+Q5eAfsEqWxpe+g5W5nYNfNiA==}
+    engines: {node: '>= 6.0.0'}
+    hasBin: true
+    dependencies:
+      argparse: 1.0.10
+      autolinker: 3.15.0
+    dev: false
+
   /remove-accents/0.4.2:
     resolution: {integrity: sha1-CkPTqq4egNuRngeuJUsoXZ4ce7U=}
     dev: false
@@ -13951,7 +13986,6 @@ packages:
 
   /sprintf-js/1.0.3:
     resolution: {integrity: sha1-BOaSb2YolTVPPdAVIDYzuFcpfiw=}
-    dev: true
 
   /sshpk/1.16.1:
     resolution: {integrity: sha512-HXXqVUq7+pcKeLqqZj6mHFUMvXtOJt1uoUx09pFW6011inTMxqI8BA8PM95myrIyyKwdnzjdFjLiE6KBPVtJIg==}

@@ -57,6 +57,14 @@
     --hover-bg-color: transparent;
 }
 
+.btn--success {
+    --bg-color: var(--success-color);
+    --fg-color: #fff;
+    --outline-color: var(--success-color-ring);
+    --hover-fg-color: var(--success-color);
+    --hover-bg-color: transparent;
+}
+
 .btn--primary-hollow {
     --bg-color: var(--primary-color-hollow);
     --fg-color: var(--primary-color);
@@ -67,7 +75,7 @@
     &:hover,
     &:focus,
     &:active {
-        border: 1px solid  var(--primary-color) !important;
+        border: 1px solid var(--primary-color) !important;
     }
 }
 

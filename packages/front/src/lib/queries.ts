@@ -712,3 +712,116 @@ export function useChangeBoardNameMutation() {
         }
     );
 }
+
+export function useChangeBoardDescriptionMutation() {
+    const queryClient = useQueryClient();
+    const { dispatch } = useToastContext();
+
+    return useMutation(
+        async ({
+            newDescription,
+            oldDescription,
+            boardId,
+            onSuccess,
+        }: {
+            boardId: string;
+            newDescription: string | null;
+            oldDescription: string | null;
+            onSuccess: () => void;
+        }) => {
+            const { errors } = await jsonFetch<{ success: boolean }>(
+                `${
+                    import.meta.env.VITE_API_URL
+                }/api/boards/${boardId}/set-description`,
+                {
+                    method: 'PUT',
+                    body: JSON.stringify({
+                        description: newDescription,
+                    }),
+                    headers: {
+                        Authorization: `Bearer ${getCookie(USER_TOKEN)}`,
+                    },
+                }
+            );
+
+            if (errors) {
+                throw new Error(JSON.stringify(errors));
+            }
+
+            return { onSuccess, boardId, oldDescription };
+        },
+        {
+            onMutate: async ({ boardId, newDescription }) => {
+                dispatch({
+                    type: 'ADD_INFO',
+                    key: `board-set-description`,
+                    message: `Changing the description of the board...`,
+                    keep: true,
+                    closeable: false,
+                });
+
+                // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
+                await queryClient.cancelQueries([SINGLE_BOARD_QUERY, boardId]);
+
+                // Change optimistically the board in the cache
+                const data = queryClient.getQueryData<BoardDetails>([
+                    SINGLE_BOARD_QUERY,
+                    boardId,
+                ]);
+
+                queryClient.setQueryData<BoardDetails>(
+                    [SINGLE_BOARD_QUERY, boardId],
+                    {
+                        ...data!,
+                        description: newDescription,
+                    }
+                );
+            },
+            onSettled: (ctx) => {
+                dispatch({
+                    type: 'REMOVE_TOAST',
+                    key: `board-set-description`,
+                });
+            },
+            onSuccess: (ctx) => {
+                queryClient.invalidateQueries(BOARD_QUERY);
+                ctx.onSuccess();
+            },
+            onError: (err, { boardId, oldDescription }) => {
+                try {
+                    console.error(`Error: ${err}`);
+                    const errors = JSON.parse(
+                        (err as Error).message
+                    ) as ApiErrors;
+                    if (errors) {
+                        dispatch({
+                            type: 'ADD_TOASTS',
+                            toasts: formatAPIError(errors),
+                        });
+                    }
+                } catch (e) {
+                    dispatch({
+                        type: 'ADD_ERROR',
+                        key: `board-set-descrition-${new Date().getTime()}`,
+                        message: `Could not change the description of the board`,
+                    });
+                }
+
+                // return the board to its previous state
+                const data = queryClient.getQueryData<BoardDetails>([
+                    SINGLE_BOARD_QUERY,
+                    boardId,
+                ]);
+
+                // reset the board description to the old description
+                queryClient.setQueryData<BoardDetails>(
+                    [SINGLE_BOARD_QUERY, boardId],
+                    {
+                        ...data!,
+                        description: oldDescription,
+                    }
+                );
+            },
+        }
+    );
+}

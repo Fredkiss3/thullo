@@ -62,7 +62,6 @@ export function Header({ currentPageTitle }: HeaderProps) {
                 newName = board?.name ?? '';
             }
 
-            console.log(`new board name: "${newName}"`);
             setBoardName(newName);
         },
         [board, isBoardAdmin]
@@ -183,7 +182,11 @@ function HeaderAvatar() {
     });
 
     return (
-        <Button className={cls.header__avatar} ref={ref} onClick={() => setShowDropdown(true)}>
+        <Button
+            className={cls.header__avatar}
+            ref={ref}
+            onClick={() => setShowDropdown(true)}
+        >
             {user ? (
                 <img
                     src={user.avatarURL}
