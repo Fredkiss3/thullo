@@ -148,70 +148,66 @@ export function Drawer({ open, onClose }: DrawerMenuProps) {
                     </div>
 
                     <div className={cls.drawer__section__description}>
-                        {board.description ? (
-                            isEditingDescription ? (
-                                <form
+                        {isEditingDescription ? (
+                            <form
+                                className={
+                                    cls.drawer__section__description__form
+                                }
+                                onSubmit={(e) => {
+                                    e.preventDefault();
+                                    changeDescription(description);
+                                }}
+                            >
+                                <TextArea
                                     className={
-                                        cls.drawer__section__description__form
+                                        cls.drawer__section__description__form__textarea
                                     }
-                                    onSubmit={(e) => {
-                                        e.preventDefault();
-                                        changeDescription(description);
-                                    }}
-                                >
-                                    <TextArea
-                                        className={
-                                            cls.drawer__section__description__form__textarea
-                                        }
-                                        value={description ?? ''}
-                                        rows={20}
-                                        placeholder="Add a description (markdown supported)"
-                                        onChange={setDescriptionState}
-                                    />
+                                    value={description ?? ''}
+                                    rows={20}
+                                    placeholder="Add a description (markdown supported)"
+                                    onChange={setDescriptionState}
+                                />
 
-                                    <div
+                                <div
+                                    className={
+                                        cls.drawer__section__description__form__actions
+                                    }
+                                >
+                                    <Button
+                                        variant="success"
+                                        type="submit"
                                         className={
-                                            cls.drawer__section__description__form__actions
+                                            cls.drawer__section__description__form__actions__btn
                                         }
                                     >
-                                        <Button
-                                            variant="success"
-                                            type="submit"
-                                            className={
-                                                cls.drawer__section__description__form__actions__btn
-                                            }
-                                        >
-                                            Save
-                                        </Button>
+                                        Save
+                                    </Button>
 
-                                        <Button
-                                            type="button"
-                                            onClick={() => {
-                                                setIsEditingDescription(false);
-                                                setDescriptionState(
-                                                    board.description ?? ''
-                                                );
-                                            }}
-                                            className={
-                                                cls.drawer__section__description__form__actions__btn
-                                            }
-                                        >
-                                            Cancel
-                                        </Button>
-                                    </div>
-                                </form>
-                            ) : (
-                                <article
-                                    className={
-                                        cls.drawer__section__description__text
-                                    }
-                                    dangerouslySetInnerHTML={{
-                                        __html: renderMarkdown(
-                                            board.description
-                                        ),
-                                    }}
-                                />
-                            )
+                                    <Button
+                                        type="button"
+                                        onClick={() => {
+                                            setIsEditingDescription(false);
+                                            setDescriptionState(
+                                                board.description ?? ''
+                                            );
+                                        }}
+                                        className={
+                                            cls.drawer__section__description__form__actions__btn
+                                        }
+                                    >
+                                        Cancel
+                                    </Button>
+                                </div>
+                            </form>
+                        ) : board.description ? (
+                            <article
+                                className={
+                                    cls.drawer__section__description__text
+                                }
+                                dangerouslySetInnerHTML={{
+                                    __html: renderMarkdown(board.description),
+                                }}
+                            />
                         ) : (
                             <p
                                 className={
