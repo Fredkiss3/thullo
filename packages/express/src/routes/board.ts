@@ -1,3 +1,4 @@
+import { UpdateBoardDescriptionController } from './../controllers/UpdateBoardDescriptionController';
 import router from 'express-promise-router';
 import { getController } from '../lib/functions';
 import { AddBoardController } from '../controllers/AddBoardController';
@@ -33,6 +34,11 @@ Router.get('/', getController(GetAllBoardsController))
         '/:boardId/set-name',
         auth_middleware,
         getController(ChangeBoardNameController)
+    )
+    .put(
+        '/:boardId/set-description',
+        auth_middleware,
+        getController(UpdateBoardDescriptionController)
     );
 
 export { Router as boardRouter };
