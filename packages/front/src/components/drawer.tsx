@@ -27,16 +27,10 @@ export function Drawer({ open, onClose }: DrawerMenuProps) {
     const { data: board, isLoading } = useSingleBoardQuery(boardId);
     const { data: user } = useUserQuery();
     const { dispatch } = useToastContext();
-
-    if (!board || isLoading || !user || !boardId) {
-        return <></>;
-    }
-
-    const isBoardAdmin = user?.id === board?.admin.id;
     const removeMemberMutation = useRemoveMemberMutation();
     const removeMember = React.useCallback((member: BoardMember) => {
         removeMemberMutation.mutate({
-            boardId,
+            boardId: boardId!,
             member,
             onSuccess: () => {
                 dispatch({
@@ -55,9 +49,9 @@ export function Drawer({ open, onClose }: DrawerMenuProps) {
             let newDescription = (description ?? '').trim();
 
             setDescriptionMutation.mutate({
-                boardId,
+                boardId: boardId!,
                 newDescription,
-                oldDescription: board.description,
+                oldDescription: board!.description,
                 onSuccess: () => {
                     dispatch({
                         type: 'ADD_SUCCESS',
@@ -71,10 +65,17 @@ export function Drawer({ open, onClose }: DrawerMenuProps) {
     );
 
     const [description, setDescriptionState] = React.useState(
-        board.description ?? ''
+        board?.description ?? ''
     );
+
     const [isEditingDescription, setIsEditingDescription] =
         React.useState(false);
+
+    if (!board || isLoading || !boardId) {
+        return <></>;
+    }
+
+    const isBoardAdmin = user?.id === board?.admin.id;
 
     return (
         <>
