@@ -65,6 +65,7 @@ export function PhotoSearch({ show, onSelect }: PhotoSeachProps) {
 
     return (
         <Dropdown
+            testId="photo-search"
             align="right"
             className={`${cls.photo_search} ${
                 show && cls['photo_search--open']
@@ -82,6 +83,7 @@ export function PhotoSearch({ show, onSelect }: PhotoSeachProps) {
                 value={search}
                 className={cls.photo_search__input}
                 onChange={handleSearch}
+                testId="photo-search-input"
                 placeholder="Keywords..."
                 trailingElement={
                     <Button
@@ -110,6 +112,7 @@ export function PhotoSearch({ show, onSelect }: PhotoSeachProps) {
                 ) : (
                     photos.map((photo) => (
                         <li
+                            data-test-id="photo-search-item"
                             key={photo.id}
                             className={cls.photo_search__list__item}
                             title={`Photo by ${photo.authorName}`}

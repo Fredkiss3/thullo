@@ -3,6 +3,7 @@ import cls from '../styles/components/input.module.scss';
 import { forwardRef } from 'react';
 
 export interface InputProps {
+    testId?: string;
     trailingElement?: React.ReactNode;
     type?: 'text' | 'password' | 'email' | 'number' | 'tel' | 'url' | 'search';
     placeholder?: string;
@@ -24,6 +25,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             value,
             onBlur,
             onFocus,
+            testId,
         },
         ref
     ) => {
@@ -34,6 +36,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
                 onFocus={onFocus}
             >
                 <input
+                    data-test-id={testId}
                     ref={ref}
                     // onBlur={onBlur}
                     // onFocus={onFocus}

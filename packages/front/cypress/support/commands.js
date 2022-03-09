@@ -10,7 +10,32 @@
 //
 //
 // -- This is a parent command --
-// Cypress.Commands.add('login', (email, password) => { ... })
+Cypress.Commands.add('login', (email, password) => {
+    cy.request('POST', 'http://localhost:3031/api/test/create-user').then(
+        (response) => {
+            // set cookie for the user
+            cy.log('Set Token cookie :', {
+                token: response.body.data.token,
+            });
+            cy.setCookie('token', response.body.data.token);
+        }
+    );
+});
+
+Cypress.Commands.add('logout', (email, password) => {
+    cy.getCookie('token').then((cookie) => {
+        cy.request({
+            url: 'http://localhost:3031/api/test/delete-user',
+            method: 'DELETE',
+            headers: {
+                Authorization: `Bearer ${cookie.value}`,
+            },
+        }).then((response) => {
+            // DELETE cookie for the user
+            cy.setCookie('token', '');
+        });
+    });
+});
 //
 //
 // -- This is a child command --

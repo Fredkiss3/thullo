@@ -92,6 +92,7 @@ export function Header({ currentPageTitle }: HeaderProps) {
                             <h1
                                 className={cls.header__left__title}
                                 onClick={() => board && setIsEditing(true)}
+                                data-test-id="page-title"
                             >
                                 {boardName}
                             </h1>

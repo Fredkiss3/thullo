@@ -78,7 +78,11 @@ export const AddBoardForm = React.forwardRef<
     });
 
     return (
-        <form className={cls.addboard_form} onSubmit={handleSubmit}>
+        <form
+            className={cls.addboard_form}
+            onSubmit={handleSubmit}
+            data-test-id="addboard-form"
+        >
             {cover ? (
                 <div className={cls.addboard_form__cover}>
                     <img
@@ -108,6 +112,7 @@ export const AddBoardForm = React.forwardRef<
                 ariaLabel="close modal"
                 variant="primary"
                 square
+                testId="addboard-form-close-button"
                 isStatic
                 renderLeadingIcon={(cls) => (
                     <Icon icon="x-icon" className={cls} />
@@ -116,6 +121,7 @@ export const AddBoardForm = React.forwardRef<
 
             {/* The input for the board name */}
             <Input
+                testId="addboard-form-board-title"
                 placeholder="Add board title"
                 value={boardName}
                 onChange={(value) => setBoardName(value)}
@@ -128,6 +134,7 @@ export const AddBoardForm = React.forwardRef<
                     ref={coverButtonRef}
                 >
                     <Button
+                        testId="addboard-form-cover-button"
                         isStatic={isCoverDropdownOpen}
                         variant={isCoverDropdownOpen ? 'black' : 'hollow'}
                         className={

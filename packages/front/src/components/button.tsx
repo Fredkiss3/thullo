@@ -16,6 +16,7 @@ export const ButtonVariants = [
 export const ButtonSizes = ['small', 'medium', 'large'] as const;
 
 export interface ButtonProps {
+    testId?: string;
     variant?: typeof ButtonVariants[number];
     disabled?: boolean;
     renderLeadingIcon?: (classNames: string) => JSX.Element;
@@ -47,11 +48,13 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             ariaLabel,
             square = false,
             block = false,
+            testId,
         },
         ref
     ) => {
         return (
             <button
+                data-test-id={testId}
                 ref={ref}
                 type={type}
                 disabled={disabled}

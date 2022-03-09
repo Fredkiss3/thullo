@@ -58,7 +58,7 @@ function App() {
                         />
                         <Route path="*" element={<Error404Page />} />
                     </Routes>
-                    <ReactQueryDevtools initialIsOpen />
+                    <ReactQueryDevtools initialIsOpen={false} />
                     <ToastArea />
                 </QueryClientProvider>
             </ToastContext.Provider>

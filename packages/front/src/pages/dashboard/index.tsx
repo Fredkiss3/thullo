@@ -41,7 +41,10 @@ export function DashboardIndex() {
                         <AddBoardModal />
                     </section>
 
-                    <section className={cls.card_section}>
+                    <section
+                        className={cls.card_section}
+                        data-test-id="user-board-list"
+                    >
                         {isLoading ? (
                             <>
                                 <BoardCard loading />
@@ -72,7 +75,10 @@ export function DashboardIndex() {
                 <h2>Public Boards</h2>
             </section>
 
-            <section className={cls.card_section}>
+            <section
+                className={cls.card_section}
+                data-test-id="public-board-list"
+            >
                 {isLoading ? (
                     <>
                         <BoardCard loading />

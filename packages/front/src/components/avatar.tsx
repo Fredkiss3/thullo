@@ -14,7 +14,10 @@ export interface AvatarProps {
 
 export function Avatar({ photoURL, className, name, username }: AvatarProps) {
     return (
-        <div className={`${cls.avatar} ${className ?? ''}`}>
+        <div
+            className={`${cls.avatar} ${className ?? ''}`}
+            data-test-id="avatar"
+        >
             {photoURL ? (
                 <img
                     title={`${name} @${username}`}

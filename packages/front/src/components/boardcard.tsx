@@ -18,13 +18,22 @@ export interface BoardCardProps {
 
 export function BoardCard({ board, loading }: BoardCardProps) {
     return !loading && board ? (
-        <Link className={cls.boardcard} to={board.id!}>
+        <Link
+            className={cls.boardcard}
+            to={board.id!}
+            data-test-id="board-card"
+        >
             <img
                 className={cls.boardcard__cover}
                 src={board.cover.url}
                 alt="Image de couverture du tableau"
             />
-            <h3 className={cls.boardcard__title}>{board.name}</h3>
+            <h3
+                className={cls.boardcard__title}
+                data-test-id="board-card-title"
+            >
+                {board.name}
+            </h3>
             <ul className={cls.boardcard__avatar_list}>
                 {board.participants.slice(0, 3).map((p, index) => (
                     <li key={index}>
