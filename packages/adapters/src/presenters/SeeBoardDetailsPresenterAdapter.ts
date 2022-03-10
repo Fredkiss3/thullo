@@ -87,15 +87,17 @@ export class SeeBoardDetailsPresenterAdapter
                       login: admin!.login
                   },
                   lists: Object.entries(board.cardsByLists).map(
-                      ([id, cards]) => ({
-                          id,
-                          name: board.listsByIds[id].name,
-                          cards: cards.map(({ id, title, cover }) => ({
-                              id,
-                              title,
-                              coverURL: cover?.smallURL ?? null
-                          }))
-                      })
+                      ([id, cards]) => {
+                          return {
+                              id: short().fromUUID(id),
+                              name: board.listsByIds[id].name,
+                              cards: cards.map(({ id, title, cover }) => ({
+                                  id,
+                                  title,
+                                  coverURL: cover?.smallURL ?? null
+                              }))
+                          };
+                      }
                   )
               };
     }

@@ -18,6 +18,7 @@ export class ListEntity extends BaseEntity<List> {
         listEntity.name = list.name;
         listEntity.position = list.position;
         listEntity.boardId = list.boardId;
+        listEntity.uuid = list.id;
         return listEntity;
     }
 

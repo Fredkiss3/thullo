@@ -1,7 +1,4 @@
-import {
-    RemoveMemberFromBoardPresenter,
-    RemoveMemberFromBoardUseCase,
-} from '@thullo/domain';
+import { RemoveMemberFromBoardUseCase } from '@thullo/domain';
 import { RemoveMemberFromBoardPresenterAdapter } from '@thullo/adapters';
 import type { Request, Response } from 'express';
 import { container, inject, injectable } from 'tsyringe';

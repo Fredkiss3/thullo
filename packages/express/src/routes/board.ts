@@ -9,6 +9,7 @@ import { GetBoardDetailsController } from '../controllers/GetBoardDetailsControl
 import { AddMemberToBoardController } from '../controllers/AddMemberToBoardController';
 import { RemoveMemberFromBoardController } from '../controllers/RemoveMemberFromBoardController';
 import { ChangeBoardNameController } from '../controllers/ChangeBoardNameController';
+import { AddListToBoardController } from '../controllers/AddListToBoardController';
 
 const Router = router();
 
@@ -39,6 +40,11 @@ Router.get('/', getController(GetAllBoardsController))
         '/:boardId/set-description',
         auth_middleware,
         getController(UpdateBoardDescriptionController)
+    )
+    .post(
+        '/:boardId/lists',
+        auth_middleware,
+        getController(AddListToBoardController)
     );
 
 export { Router as boardRouter };

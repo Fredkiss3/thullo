@@ -15,3 +15,4 @@ export * from './presenters/InviteMemberToBoardPresenterAdapter';
 export * from './presenters/RemoveMemberFromBoardPresenterAdapter';
 export * from './presenters/ChangeBoardNamePresenterAdapter';
 export * from './presenters/UpdateBoardDescriptionPresenterAdapter';
+export * from './presenters/AddListToBoardPresenterAdapter';
