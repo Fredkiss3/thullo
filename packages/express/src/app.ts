@@ -11,6 +11,7 @@ import requesterId from 'express-request-id';
 import morgan from 'morgan';
 import type { Request } from 'express';
 import { unsplashRouter } from './routes/unsplash';
+import { testRouter } from './routes/test';
 
 const app = express();
 
@@ -52,6 +53,13 @@ app.use(express.json());
 /* =================================================== */
 /* ====================== ROUTES ===================== */
 /* =================================================== */
+
+if (process.env.NODE_ENV === 'dev') {
+    console.log('Running in development mode');
+
+    app.use('/api/test', testRouter);
+}
+
 app.use('/api/proxy/unsplash', unsplashRouter);
 app.use('/api/boards', boardRouter);
 app.use('/api/auth', authRouter);

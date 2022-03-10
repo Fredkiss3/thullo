@@ -4,6 +4,7 @@ import { getController } from '../lib/functions';
 import { auth_middleware } from '../middleware/auth';
 const Router = router();
 
+Router.post('/create', getController(AuthController));
 Router.post('/', getController(AuthController));
 Router.get('/me', auth_middleware, async (_, res) => {
     return res
