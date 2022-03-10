@@ -246,15 +246,28 @@ export function useAddBoardMutation() {
                 ]);
             },
             onSuccess: (ctx) => {
-                queryClient.invalidateQueries(BOARD_QUERY);
                 ctx.onSuccess();
             },
+            onSettled: (ctx) => {
+                queryClient.invalidateQueries(BOARD_QUERY);
+            },
             onError: (err, _) => {
-                const errors = JSON.parse((err as Error).message) as ApiErrors;
-                if (errors) {
+                try {
+                    console.log(`Error: ${err}`);
+                    const errors = JSON.parse(
+                        (err as Error).message
+                    ) as ApiErrors;
+                    if (errors) {
+                        dispatch({
+                            type: 'ADD_TOASTS',
+                            toasts: formatAPIError(errors),
+                        });
+                    }
+                } catch (e) {
                     dispatch({
-                        type: 'ADD_TOASTS',
-                        toasts: formatAPIError(errors),
+                        type: 'ADD_ERROR',
+                        key: `add-board-${new Date().getTime()}`,
+                        message: `Could not add a board`,
                     });
                 }
             },
@@ -821,6 +834,111 @@ export function useChangeBoardDescriptionMutation() {
                         description: oldDescription,
                     }
                 );
+            },
+        }
+    );
+}
+
+export function useAddListMutation() {
+    const queryClient = useQueryClient();
+    const { dispatch } = useToastContext();
+
+    return useMutation(
+        async ({
+            name,
+            boardId,
+            onSuccess,
+        }: {
+            boardId: string;
+            name: string;
+            onSuccess: () => void;
+        }) => {
+            const { errors } = await jsonFetch<{ success: boolean }>(
+                `${import.meta.env.VITE_API_URL}/api/boards/${boardId}/lists`,
+                {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        name,
+                    }),
+                    headers: {
+                        Authorization: `Bearer ${getCookie(USER_TOKEN)}`,
+                    },
+                }
+            );
+
+            if (errors) {
+                throw new Error(JSON.stringify(errors));
+            }
+
+            return { onSuccess, boardId, name };
+        },
+        {
+            onMutate: async ({ boardId, name }) => {
+                dispatch({
+                    type: 'ADD_INFO',
+                    key: `board-add-list`,
+                    message: `Add a new list to the board...`,
+                    keep: true,
+                    closeable: false,
+                });
+
+                // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
+                await queryClient.cancelQueries([SINGLE_BOARD_QUERY, boardId]);
+
+                // Change optimistically the board in the cache
+                const data = queryClient.getQueryData<BoardDetails>([
+                    SINGLE_BOARD_QUERY,
+                    boardId,
+                ]);
+
+                queryClient.setQueryData<BoardDetails>(
+                    [SINGLE_BOARD_QUERY, boardId],
+                    {
+                        ...data!,
+                        lists: [
+                            ...(data!.lists || []),
+                            {
+                                name,
+                                cards: [],
+                            },
+                        ],
+                    }
+                );
+            },
+            onSettled: (ctx) => {
+                ctx &&
+                    queryClient.invalidateQueries([
+                        SINGLE_BOARD_QUERY,
+                        ctx!.boardId,
+                    ]);
+
+                dispatch({
+                    type: 'REMOVE_TOAST',
+                    key: `board-add-list`,
+                });
+            },
+            onSuccess: (ctx) => {
+                ctx.onSuccess();
+            },
+            onError: (err) => {
+                try {
+                    console.error(`Error: ${err}`);
+                    const errors = JSON.parse(
+                        (err as Error).message
+                    ) as ApiErrors;
+                    if (errors) {
+                        dispatch({
+                            type: 'ADD_TOASTS',
+                            toasts: formatAPIError(errors),
+                        });
+                    }
+                } catch (e) {
+                    dispatch({
+                        type: 'ADD_ERROR',
+                        key: `board-add-list-${new Date().getTime()}`,
+                        message: `Could not add a new list to the board.`,
+                    });
+                }
             },
         }
     );

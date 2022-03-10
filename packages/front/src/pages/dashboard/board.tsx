@@ -3,6 +3,7 @@ import * as React from 'react';
 // Functions & Other
 import { useNavigate, useParams } from 'react-router-dom';
 import {
+    useAddListMutation,
     useRemoveMemberMutation,
     useSingleBoardQuery,
     useUserQuery,
@@ -26,6 +27,7 @@ import { BoardVisilityDropdown } from '@/components/board-visibility-toggler';
 import cls from '@/styles/pages/dashboard/board.module.scss';
 import { List } from '@/components/list';
 import { Drawer } from '@/components/drawer';
+import { Input } from '@/components/input';
 
 export function DashboardDetails() {
     const { boardId } = useParams<{ boardId: string }>();
@@ -281,8 +283,9 @@ function AvatarButton({
 function ColumnsSection({
     lists,
     userIsParticipant,
+    id,
 }: BoardDetails & { userIsParticipant: boolean }) {
-    const { dispatch } = useToastContext();
+    const [isAddingList, setIsAddingList] = React.useState(false);
     return (
         <>
             <section className={cls.column_section}>
@@ -296,30 +299,101 @@ function ColumnsSection({
 
                 {userIsParticipant && (
                     <div className={cls.column_section__list}>
-                        <Button
-                            className={cls.add_button}
-                            variant={`primary-hollow`}
-                            onClick={() => {
-                                dispatch({
-                                    type: 'ADD_WARNING',
-                                    key: `new-list-not-implemented`,
-                                    message: 'Not implemented yet.',
-                                });
-                            }}
-                        >
-                            <span>
-                                {lists.length === 0
-                                    ? 'Add a list'
-                                    : 'Add another list'}
-                            </span>
-                            <Icon
-                                icon="plus"
-                                className={cls.add_button__icon}
+                        {!isAddingList ? (
+                            <Button
+                                testId="add-list-btn"
+                                className={cls.add_button}
+                                onClick={() => setIsAddingList(true)}
+                                variant={`primary-hollow`}
+                            >
+                                <span>
+                                    {lists.length === 0
+                                        ? 'Add a list'
+                                        : 'Add another list'}
+                                </span>
+                                <Icon
+                                    icon="plus"
+                                    className={cls.add_button__icon}
+                                />
+                            </Button>
+                        ) : (
+                            <AddListForm
+                                boardId={id}
+                                onCancel={() => setIsAddingList(false)}
                             />
-                        </Button>
+                        )}
                     </div>
                 )}
             </section>
+        </>
+    );
+}
+
+function AddListForm({
+    boardId,
+    onCancel,
+}: {
+    boardId: string;
+    onCancel: () => void;
+}) {
+    const { dispatch } = useToastContext();
+    const [listName, setListName] = React.useState('');
+    const mutation = useAddListMutation();
+
+    const addList = React.useCallback(() => {
+        mutation.mutate({
+            boardId,
+            name: listName,
+            onSuccess: () => {
+                dispatch({
+                    type: 'ADD_SUCCESS',
+                    key: `board-add-list-${new Date().getTime()}`,
+                    message: 'List successfully added to the board.',
+                });
+            },
+        });
+
+        setListName('');
+        onCancel();
+    }, [listName]);
+
+    return (
+        <>
+            <form
+                data-test-id="add-list-form"
+                className={cls.column_section__list__add_form}
+                onSubmit={(e) => {
+                    e.preventDefault();
+                    addList();
+                }}
+            >
+                <Input
+                    placeholder="New List name"
+                    value={listName}
+                    className={cls.column_section__list__add_form__input}
+                    onChange={(newName) => setListName(newName)}
+                />
+                <div className={cls.column_section__list__add_form__buttons}>
+                    <Button
+                        type="submit"
+                        variant="primary"
+                        disabled={listName.length === 0}
+                    >
+                        Add List
+                    </Button>
+
+                    <Button
+                        square
+                        className={
+                            cls.column_section__list__add_form__cancel_btn
+                        }
+                        onClick={onCancel}
+                        renderTrailingIcon={(cls) => (
+                            <Icon icon="x-icon" className={cls} />
+                        )}
+                    />
+                </div>
+            </form>
         </>
     );
 }

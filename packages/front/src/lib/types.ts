@@ -59,7 +59,7 @@ export type Card = {
 };
 
 export type List = {
-    id: string;
+    id?: string;
     name: string;
     cards: Card[];
 };

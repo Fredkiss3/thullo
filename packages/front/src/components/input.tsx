@@ -12,6 +12,7 @@ export interface InputProps {
     value?: string;
     onBlur?: () => void;
     onFocus?: () => void;
+    disabled?: boolean;
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
@@ -26,6 +27,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             onBlur,
             onFocus,
             testId,
+            disabled,
         },
         ref
     ) => {
@@ -38,6 +40,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
                 <input
                     data-test-id={testId}
                     ref={ref}
+                    disabled={disabled}
                     // onBlur={onBlur}
                     // onFocus={onFocus}
                     value={value}

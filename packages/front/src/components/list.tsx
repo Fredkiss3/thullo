@@ -7,5 +7,9 @@ export interface ListProps {
 }
 
 export function List({ list: { cards, name }, className }: ListProps) {
-    return <div className={className}></div>;
+    return (
+        <div className={className}>
+            <span>{name}</span>
+        </div>
+    );
 }
