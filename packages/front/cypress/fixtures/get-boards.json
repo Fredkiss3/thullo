@@ -1,0 +1,22 @@
+{
+    "data": [
+        {
+            "id": "6KGGyMhUSDf9K21MAWMfDr",
+            "name": "Cypress Test Board",
+            "cover": {
+                "url": "https://res.cloudinary.com/csdevtech/image/upload/c_fill,f_auto,q_auto,w_500/v1646954005/rki91h7q8f4.jpg",
+                "authorName": "Windows",
+                "authorUserName": "windows"
+            },
+            "participants": [
+                {
+                    "id": "aEKA4P8yRH4VhJyPnc1XHR",
+                    "name": "CyPress Test User",
+                    "login": "cypress-test-user",
+                    "avatarURL": "https://placekitten.com/g/200/200"
+                }
+            ]
+        }
+    ],
+    "errors": null
+}

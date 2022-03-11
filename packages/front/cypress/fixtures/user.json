@@ -1,0 +1,12 @@
+{
+    "data": {
+        "user": {
+            "id": "aEKA4P8yRH4VhJyPnc1XHR",
+            "avatarURL": "https://placekitten.com/g/200/200",
+            "login": "cypress-test-user",
+            "name": "CyPress Test User",
+            "email": "test@cypress.io"
+        }
+    },
+    "errors": null
+}

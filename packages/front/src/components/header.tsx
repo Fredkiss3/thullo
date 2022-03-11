@@ -99,6 +99,7 @@ export function Header({ currentPageTitle }: HeaderProps) {
                         ) : (
                             <Input
                                 ref={ref}
+                                testId="page-title-input"
                                 onBlur={() => handleChangeName(boardName)}
                                 className={cls.header__left__title}
                                 value={boardName}
@@ -106,7 +107,10 @@ export function Header({ currentPageTitle }: HeaderProps) {
                             />
                         )}
 
-                        <div className={cls.header__left__divider} />
+                        <div
+                            className={cls.header__left__divider}
+                            data-test-id="page-header-divider"
+                        />
 
                         <div className={cls.header__left__button}>
                             <LinkButton
