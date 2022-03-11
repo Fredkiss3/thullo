@@ -9,6 +9,7 @@ on:
     paths:
       - "packages/express/**"
       - "packages/adapters/**"
+      - "Dockerfile"
       - .github/workflows/express.yml
     branches:
       - develop
