@@ -4,7 +4,6 @@ WORKDIR /webapp
 
 RUN apk add --update curl && rm -rf /var/cache/apk/*
 RUN curl -f https://get.pnpm.io/v6.16.js | node - add --global pnpm@6
-ENV NODE_ENV production
 
 COPY ./* ./
 COPY ./packages/adapters ./packages/adapters
