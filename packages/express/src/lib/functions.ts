@@ -36,7 +36,7 @@ export async function getUser(req: Request): Promise<Member | null> {
                 member.id = short().fromUUID(member.id);
             }
         } catch (error) {
-            // do nothing
+            console.error('An error occured while verifying the token', error);
         }
     }
     return member;

@@ -1,3 +1,4 @@
+import { AddCardController } from './../controllers/AddCardController';
 import { UpdateBoardDescriptionController } from './../controllers/UpdateBoardDescriptionController';
 import router from 'express-promise-router';
 import { getController } from '../lib/functions';
@@ -45,6 +46,11 @@ Router.get('/', getController(GetAllBoardsController))
         '/:boardId/lists',
         auth_middleware,
         getController(AddListToBoardController)
+    )
+    .post(
+        '/:boardId/lists/:listId/cards',
+        auth_middleware,
+        getController(AddCardController)
     );
 
 export { Router as boardRouter };

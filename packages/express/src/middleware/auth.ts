@@ -37,9 +37,7 @@ export const auth_middleware = async (
             return res.status(401).json({
                 data: null,
                 errors: {
-                    token: [
-                        'Vous devez être connecté pour avoir accès à cette ressource',
-                    ],
+                    token: ['You must be connected to access this resource'],
                 },
             });
         }
