@@ -25,6 +25,7 @@ export class CardEntity extends BaseEntity<Card> {
 
     static fromDomain(card: Card): CardEntity {
         const cardEntity = new CardEntity();
+        cardEntity.uuid = card.id;
         cardEntity.title = card.title;
         cardEntity.description = card.description;
         cardEntity.parentListId = card.parentListId;
