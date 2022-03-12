@@ -71,7 +71,7 @@ export class BoardAggregate {
         return id;
     }
 
-    addCardToList(title: string, listId: ListId): CardId {
+    addCardToList(title: string, listId: ListId): Card {
         const list = this._data.lists.find(({ id }) => id === listId);
 
         if (list === undefined) {
@@ -96,7 +96,7 @@ export class BoardAggregate {
 
         this.orderCardsByLists();
 
-        return card.id;
+        return card;
     }
 
     setVisibility(isPrivate: boolean, initiatorId: MemberId): void {

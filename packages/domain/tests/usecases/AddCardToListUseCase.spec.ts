@@ -98,6 +98,7 @@ describe('AddCardToList Use case', () => {
 
         expect(cards).toHaveLength(1);
         expect(cards[0].title).toBe('New Card');
+        expect(presenter.response!.card).toBe(cards[0]);
     });
 
     it('Should show error if board does not exists', async () => {
@@ -116,9 +117,8 @@ describe('AddCardToList Use case', () => {
         // Then
         expect(presenter.response).not.toBe(null);
         expect(presenter.response?.errors).not.toBe(null);
-        expect(presenter.response?.errors?.boardId).toContainEqual(
-            "Ce tableau n'existe pas"
-        );
+        expect(presenter.response?.errors?.boardId).toHaveLength(1);
+        expect(presenter.response!.card).toBeNull();
     });
 
     it('Should show error if list does not exists', async () => {
@@ -138,6 +138,7 @@ describe('AddCardToList Use case', () => {
         expect(presenter.response).not.toBe(null);
         expect(presenter.response?.errors).not.toBe(null);
         expect(presenter.response?.errors?.listId).toHaveLength(1);
+        expect(presenter.response!.card).toBeNull();
     });
 
     it('Should show error if requester is not a participant of the board', async () => {
@@ -156,9 +157,8 @@ describe('AddCardToList Use case', () => {
         // Then
         expect(presenter.response).not.toBe(null);
         expect(presenter.response?.errors).not.toBe(null);
-        expect(presenter.response?.errors?.requesterId).toContainEqual(
-            "Vous n'êtes pas membre de ce tableau"
-        );
+        expect(presenter.response?.errors?.requesterId).toHaveLength(1);
+        expect(presenter.response!.card).toBeNull();
     });
 
     describe('Invalid Requests', () => {
@@ -213,6 +213,7 @@ describe('AddCardToList Use case', () => {
 
                 // Then
                 expect(presenter.response?.errors).not.toBe(null);
+                expect(presenter.response!.card).toBeNull();
             }
         );
     });

@@ -1,3 +1,4 @@
+import { Card } from './../../entities/Card/Card';
 import { AddCardToListRequest } from './AddCardToListRequest';
 import { AddCardToListPresenter } from './AddCardToListPresenter';
 import { AddCardToListResponse } from './AddCardToListResponse';
@@ -25,35 +26,44 @@ export class AddCardToListUseCase {
         presenter: AddCardToListPresenter
     ): Promise<void> {
         let errors = this.validate(request);
+        let cardAdded: Card | null = null;
 
-        const board = await this.boardAggregateRepository.getBoardAggregateById(
-            request.boardId
-        );
+        if (!errors) {
+            const board =
+                await this.boardAggregateRepository.getBoardAggregateById(
+                    request.boardId
+                );
 
-        if (board) {
-            if (!board.isParticipant(request.requesterId)) {
-                errors = {
-                    requesterId: ["Vous n'êtes pas membre de ce tableau"]
-                };
-            } else {
-                try {
-                    board.addCardToList(request.title, request.listId);
-                    await this.boardAggregateRepository.saveAggregate(board);
-                } catch (e) {
-                    if (e instanceof ListNotFoundError) {
-                        errors = {
-                            listId: [e.message]
-                        };
+            if (board) {
+                if (!board.isParticipant(request.requesterId)) {
+                    errors = {
+                        requesterId: ["Vous n'êtes pas membre de ce tableau"]
+                    };
+                } else {
+                    try {
+                        cardAdded = board.addCardToList(
+                            request.title,
+                            request.listId
+                        );
+                        await this.boardAggregateRepository.saveAggregate(
+                            board
+                        );
+                    } catch (e) {
+                        if (e instanceof ListNotFoundError) {
+                            errors = {
+                                listId: [e.message]
+                            };
+                        }
                     }
                 }
+            } else {
+                errors = {
+                    boardId: ["Ce tableau n'existe pas"]
+                };
             }
-        } else {
-            errors = {
-                boardId: ["Ce tableau n'existe pas"]
-            };
         }
 
-        presenter.present(new AddCardToListResponse(errors));
+        presenter.present(new AddCardToListResponse(cardAdded, errors));
     }
 
     validate(request: AddCardToListRequest): FieldErrors {
