@@ -32,10 +32,9 @@ interface BoardAggregateData {
             title: string;
             coverURL: string | null;
 
-            // TODO: add more fields
-            // labels: [];
-            // comments: [];
-            // attachments: [];
+            labels: string[];
+            commentCount: number;
+            attachmentCount: number;
         }>;
     }>;
 }
@@ -91,11 +90,23 @@ export class SeeBoardDetailsPresenterAdapter
                           return {
                               id: short().fromUUID(id),
                               name: board.listsByIds[id].name,
-                              cards: cards.map(({ id, title, cover }) => ({
-                                  id,
-                                  title,
-                                  coverURL: cover?.smallURL ?? null
-                              }))
+                              cards: cards.map(
+                                  ({
+                                      id,
+                                      title,
+                                      cover,
+                                      comments,
+                                      attachments,
+                                      labels
+                                  }) => ({
+                                      id: short().fromUUID(id),
+                                      title,
+                                      coverURL: cover?.smallURL ?? null,
+                                      labels: labels.map(({ name }) => name),
+                                      commentCount: comments.length,
+                                      attachmentCount: attachments.length
+                                  })
+                              )
                           };
                       }
                   )

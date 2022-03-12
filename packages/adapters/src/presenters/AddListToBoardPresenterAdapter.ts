@@ -5,6 +5,7 @@ import {
 } from '@thullo/domain';
 import { container, injectable } from 'tsyringe';
 import { FieldErrors } from '@thullo/domain';
+import short from 'short-uuid';
 
 interface ListData {
     id: string;
@@ -32,7 +33,7 @@ export class AddListToBoardPresenterAdapter implements AddListToBoardPresenter {
         return list === null
             ? null
             : {
-                  id: list.id,
+                  id: short().fromUUID(list.id),
                   name: list.name,
                   position: list.position
               };
