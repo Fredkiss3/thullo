@@ -1,0 +1,54 @@
+.add_card_form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+    border-radius: var(--border-radius-lg);
+    border: 1px solid var(--border-color);
+    background-color: #fff;
+    gap: 1rem;
+    flex-wrap: wrap;
+    padding: 1rem;
+
+    &__input {
+        position: relative;
+
+        &__field {
+            z-index: 10;
+            border-radius: var(--border-radius-sm);
+            flex-grow: 1;
+            width: 100%;
+            min-height: 20px;
+            font-size: var(--font-size-md);
+
+            &:focus {
+                outline: none;
+            }
+        }
+
+        &__placeholder {
+            z-index: 1;
+            position: absolute;
+            top: 0;
+            left: 0;
+            font-size: var(--font-size-md);
+            color: var(--secondary-color);
+        }
+    }
+
+    &__buttons {
+        display: flex;
+        justify-content: flex-start;
+        gap: 0.5rem;
+
+        &__btn {
+            font-size: var(--font-size-xs);
+            padding: 0.25rem 0.5rem;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        &__cancel_btn {
+            color: var(--secondary-color);
+        }
+    }
+}

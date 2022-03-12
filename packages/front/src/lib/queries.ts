@@ -19,6 +19,8 @@ import type {
     Board,
     BoardDetails,
     BoardMember,
+    Card,
+    List,
     User,
 } from './types';
 import { useErrorsContext } from '@/context/error.context';
@@ -853,7 +855,7 @@ export function useAddListMutation() {
             name: string;
             onSuccess: () => void;
         }) => {
-            const { errors } = await jsonFetch<{ success: boolean }>(
+            const { data, errors } = await jsonFetch<Omit<List, 'cards'>>(
                 `${import.meta.env.VITE_API_URL}/api/boards/${boardId}/lists`,
                 {
                     method: 'POST',
@@ -870,7 +872,7 @@ export function useAddListMutation() {
                 throw new Error(JSON.stringify(errors));
             }
 
-            return { onSuccess, boardId, name };
+            return { onSuccess, boardId, name, list: data };
         },
         {
             onMutate: async ({ boardId, name }) => {
@@ -905,22 +907,38 @@ export function useAddListMutation() {
                     }
                 );
             },
-            onSettled: (ctx) => {
-                ctx &&
-                    queryClient.invalidateQueries([
-                        SINGLE_BOARD_QUERY,
-                        ctx!.boardId,
-                    ]);
-
+            onSettled: () => {
                 dispatch({
                     type: 'REMOVE_TOAST',
                     key: `board-add-list`,
                 });
             },
             onSuccess: (ctx) => {
+                // Change optimistically the board in the cache
+                const data = queryClient.getQueryData<BoardDetails>([
+                    SINGLE_BOARD_QUERY,
+                    ctx.boardId,
+                ]);
+
+                const newData = [
+                    ...data!.lists.filter((list) => list.id !== undefined),
+                    {
+                        id: ctx.list.id,
+                        name: ctx.name,
+                        cards: [],
+                    },
+                ];
+
+                queryClient.setQueryData<BoardDetails>(
+                    [SINGLE_BOARD_QUERY, ctx.boardId],
+                    {
+                        ...data!,
+                        lists: newData,
+                    }
+                );
                 ctx.onSuccess();
             },
-            onError: (err) => {
+            onError: (err, { boardId }) => {
                 try {
                     console.error(`Error: ${err}`);
                     const errors = JSON.parse(
@@ -938,6 +956,188 @@ export function useAddListMutation() {
                         key: `board-add-list-${new Date().getTime()}`,
                         message: `Could not add a new list to the board.`,
                     });
+
+                    // revert the optimistic update
+                    const data = queryClient.getQueryData<BoardDetails>([
+                        SINGLE_BOARD_QUERY,
+                        boardId,
+                    ]);
+
+                    queryClient.setQueryData<BoardDetails>(
+                        [SINGLE_BOARD_QUERY, boardId],
+                        {
+                            ...data!,
+                            lists: data!.lists.filter(
+                                (list) => list.id !== undefined
+                            ),
+                        }
+                    );
+                }
+            },
+        }
+    );
+}
+
+export function useAddCardMutation() {
+    const queryClient = useQueryClient();
+    const { dispatch } = useToastContext();
+
+    return useMutation(
+        async ({
+            title,
+            boardId,
+            listId,
+            onSuccess,
+        }: {
+            boardId: string;
+            listId: string;
+            title: string;
+            onSuccess: () => void;
+        }) => {
+            const { data, errors } = await jsonFetch<Card>(
+                `${
+                    import.meta.env.VITE_API_URL
+                }/api/boards/${boardId}/lists/${listId}/cards`,
+                {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        title,
+                    }),
+                    headers: {
+                        Authorization: `Bearer ${getCookie(USER_TOKEN)}`,
+                    },
+                }
+            );
+
+            if (errors) {
+                throw new Error(JSON.stringify(errors));
+            }
+
+            return { onSuccess, boardId, listId, card: data };
+        },
+        {
+            onMutate: async ({ boardId, title, listId }) => {
+                dispatch({
+                    type: 'ADD_INFO',
+                    key: `board-add-card`,
+                    message: `Add a new card to the list...`,
+                    keep: true,
+                    closeable: false,
+                });
+
+                // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
+                await queryClient.cancelQueries([SINGLE_BOARD_QUERY, boardId]);
+
+                // Change optimistically the board in the cache
+                const data = queryClient.getQueryData<BoardDetails>([
+                    SINGLE_BOARD_QUERY,
+                    boardId,
+                ]);
+
+                const newLists: List[] = data!.lists.map((list) => {
+                    if (list.id === listId) {
+                        return {
+                            ...list,
+                            cards: [
+                                ...(list.cards || []),
+                                {
+                                    title,
+                                },
+                            ],
+                        };
+                    }
+                    return list;
+                });
+
+                queryClient.setQueryData<BoardDetails>(
+                    [SINGLE_BOARD_QUERY, boardId],
+                    {
+                        ...data!,
+                        lists: newLists,
+                    }
+                );
+            },
+            onSettled: () => {
+                dispatch({
+                    type: 'REMOVE_TOAST',
+                    key: `board-add-card`,
+                });
+            },
+            onSuccess: (ctx) => {
+                // Change optimistically the board in the cache
+                const data = queryClient.getQueryData<BoardDetails>([
+                    SINGLE_BOARD_QUERY,
+                    ctx.boardId,
+                ]);
+
+                const newLists: List[] = data!.lists.map((list) => {
+                    if (list.id === ctx.listId) {
+                        return {
+                            ...list,
+                            cards: [
+                                ...list.cards.filter(
+                                    (card) => card.id !== undefined
+                                ),
+                                ctx.card,
+                            ],
+                        };
+                    }
+                    return list;
+                });
+
+                queryClient.setQueryData<BoardDetails>(
+                    [SINGLE_BOARD_QUERY, ctx.boardId],
+                    {
+                        ...data!,
+                        lists: newLists,
+                    }
+                );
+                ctx.onSuccess();
+            },
+            onError: (err, { boardId, listId }) => {
+                try {
+                    console.error(`Error: ${err}`);
+                    const errors = JSON.parse(
+                        (err as Error).message
+                    ) as ApiErrors;
+                    if (errors) {
+                        dispatch({
+                            type: 'ADD_TOASTS',
+                            toasts: formatAPIError(errors),
+                        });
+                    }
+                } catch (e) {
+                    dispatch({
+                        type: 'ADD_ERROR',
+                        key: `board-add-card-${new Date().getTime()}`,
+                        message: `Could not add a new card to the selected list.`,
+                    });
+                } finally {
+                    // Revert optimistic update
+                    const data = queryClient.getQueryData<BoardDetails>([
+                        SINGLE_BOARD_QUERY,
+                        boardId,
+                    ]);
+
+                    const newLists: List[] = data!.lists.map((list) => {
+                        if (list.id === listId) {
+                            return {
+                                ...list,
+                                cards: list.cards.filter(
+                                    (card) => card.id !== undefined
+                                ),
+                            };
+                        }
+                        return list;
+                    });
+
+                    queryClient.setQueryData<BoardDetails>(
+                        [SINGLE_BOARD_QUERY, boardId],
+                        {
+                            ...data!,
+                            lists: newLists,
+                        }
+                    );
                 }
             },
         }

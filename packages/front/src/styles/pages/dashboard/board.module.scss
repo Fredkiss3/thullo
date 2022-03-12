@@ -33,9 +33,6 @@
                 flex-wrap: wrap;
             }
         }
-
-        &__right {
-        }
     }
 
     .column_section {
@@ -61,10 +58,6 @@
             gap: 1rem;
 
             &__add_form {
-                background-color: #fff;
-                padding: 1rem;
-                border: 1px solid var(--border-color);
-                border-radius: var(--border-radius-md);
                 display: flex;
                 align-items: center;
                 gap: 0.5rem;
@@ -81,7 +74,7 @@
                 }
 
                 &__cancel_btn {
-                    color: var(--black-color);
+                    color: var(--secondary-color);
                 }
             }
         }

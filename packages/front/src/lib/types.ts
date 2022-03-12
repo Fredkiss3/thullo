@@ -48,9 +48,10 @@ export type Board = {
 };
 
 export type Card = {
-    id: string;
+    id?: string;
     title: string;
-    coverURL: string | null;
+    coverURL?: string | null;
+    position?: number;
 
     // TODO: add more fields
     // labels: [];
