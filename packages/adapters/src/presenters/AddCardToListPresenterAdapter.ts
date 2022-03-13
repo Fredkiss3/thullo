@@ -12,7 +12,7 @@ interface CardData {
     title: string;
     position: number;
     coverURL: string | null;
-    labels: string[];
+    labels: { name: string; color: string }[];
     attachmentCount: number;
     commentCount: number;
 }
@@ -41,7 +41,10 @@ export class AddCardToListPresenterAdapter implements AddCardToListPresenter {
                   title: card.title,
                   position: card.position,
                   coverURL: null,
-                  labels: card.labels.map(({ name }) => name),
+                  labels: card.labels.map(({ name, color }) => ({
+                      name,
+                      color
+                  })),
                   attachmentCount: card.attachments.length,
                   commentCount: card.comments.length
               };

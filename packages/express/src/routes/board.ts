@@ -1,9 +1,12 @@
+import router from 'express-promise-router';
+
+import { auth_middleware } from '../middleware/auth';
+import { getController } from '../lib/functions';
+
+import { MoveCardController } from './../controllers/MoveCardController';
 import { AddCardController } from './../controllers/AddCardController';
 import { UpdateBoardDescriptionController } from './../controllers/UpdateBoardDescriptionController';
-import router from 'express-promise-router';
-import { getController } from '../lib/functions';
 import { AddBoardController } from '../controllers/AddBoardController';
-import { auth_middleware } from '../middleware/auth';
 import { SetBoardVisibilityController } from '../controllers/SetBoardVisibilityController';
 import { GetAllBoardsController } from '../controllers/GetAllBoardsController';
 import { GetBoardDetailsController } from '../controllers/GetBoardDetailsController';
@@ -41,6 +44,11 @@ Router.get('/', getController(GetAllBoardsController))
         '/:boardId/set-description',
         auth_middleware,
         getController(UpdateBoardDescriptionController)
+    )
+    .put(
+        '/:boardId/move-card',
+        auth_middleware,
+        getController(MoveCardController)
     )
     .post(
         '/:boardId/lists',

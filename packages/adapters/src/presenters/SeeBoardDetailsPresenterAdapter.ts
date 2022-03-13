@@ -31,8 +31,9 @@ interface BoardAggregateData {
             id: string;
             title: string;
             coverURL: string | null;
+            position: number;
 
-            labels: string[];
+            labels: { name: string; color: string }[];
             commentCount: number;
             attachmentCount: number;
         }>;
@@ -97,12 +98,17 @@ export class SeeBoardDetailsPresenterAdapter
                                       cover,
                                       comments,
                                       attachments,
-                                      labels
+                                      labels,
+                                      position
                                   }) => ({
                                       id: short().fromUUID(id),
                                       title,
                                       coverURL: cover?.smallURL ?? null,
-                                      labels: labels.map(({ name }) => name),
+                                      position,
+                                      labels: labels.map(({ name, color }) => ({
+                                          name,
+                                          color
+                                      })),
                                       commentCount: comments.length,
                                       attachmentCount: attachments.length
                                   })

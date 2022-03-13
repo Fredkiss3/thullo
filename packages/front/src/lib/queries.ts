@@ -1042,6 +1042,10 @@ export function useAddCardMutation() {
                                 ...(list.cards || []),
                                 {
                                     title,
+                                    position: list.cards?.length || 0,
+                                    labels: [],
+                                    commentCount: 0,
+                                    attachmentCount: 0,
                                 },
                             ],
                         };
@@ -1137,6 +1141,168 @@ export function useAddCardMutation() {
                             ...data!,
                             lists: newLists,
                         }
+                    );
+                }
+            },
+        }
+    );
+}
+
+export function useMoveCardMutation() {
+    const queryClient = useQueryClient();
+    const { dispatch } = useToastContext();
+
+    return useMutation(
+        async ({
+            boardId,
+            srcListId,
+            destListId,
+            cardId,
+            position,
+            oldPosition,
+            onSuccess,
+        }: {
+            boardId: string;
+            destListId: string;
+            srcListId: string;
+            cardId: string;
+            position: number;
+            oldPosition: number;
+            onSuccess: () => void;
+        }) => {
+            const { data, errors } = await jsonFetch<{ success: boolean }>(
+                `${
+                    import.meta.env.VITE_API_URL
+                }/api/boards/${boardId}/move-card`,
+                {
+                    method: 'PUT',
+                    body: JSON.stringify({
+                        listId: destListId,
+                        cardId,
+                        position,
+                    }),
+                    headers: {
+                        Authorization: `Bearer ${getCookie(USER_TOKEN)}`,
+                    },
+                }
+            );
+
+            if (errors) {
+                throw new Error(JSON.stringify(errors));
+            }
+
+            return {
+                onSuccess,
+                boardId,
+                srcListId,
+                destListId,
+                cardId,
+                oldPosition,
+            };
+        },
+        {
+            onMutate: async ({
+                boardId,
+                srcListId,
+                position,
+                oldPosition,
+                destListId,
+            }) => {
+                dispatch({
+                    type: 'ADD_INFO',
+                    key: `board-move-card`,
+                    message: `Moving card...`,
+                    keep: true,
+                    closeable: false,
+                });
+
+                // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
+                await queryClient.cancelQueries([SINGLE_BOARD_QUERY, boardId]);
+
+                // Change optimistically the board in the cache
+                const data = queryClient.getQueryData<BoardDetails>([
+                    SINGLE_BOARD_QUERY,
+                    boardId,
+                ]);
+
+                const srcList = data!.lists.find(
+                    (list) => list.id === srcListId
+                );
+                const destList = data!.lists.find(
+                    (list) => list.id === destListId
+                );
+
+                // remove card from src list
+                const cardToMove = srcList!.cards!.splice(oldPosition, 1)[0];
+
+                // insert card in dest list at position
+                destList!.cards.splice(position, 0, {
+                    ...cardToMove,
+                    position,
+                });
+
+                queryClient.setQueryData<BoardDetails>(
+                    [SINGLE_BOARD_QUERY, boardId],
+                    data!
+                );
+            },
+            onSettled: () => {
+                dispatch({
+                    type: 'REMOVE_TOAST',
+                    key: `board-move-card`,
+                });
+            },
+            onSuccess: (ctx) => {
+                ctx.onSuccess();
+            },
+            onError: (
+                err,
+                { boardId, srcListId, destListId, position, oldPosition }
+            ) => {
+                try {
+                    console.error(`Error: ${err}`);
+                    const errors = JSON.parse(
+                        (err as Error).message
+                    ) as ApiErrors;
+                    if (errors) {
+                        dispatch({
+                            type: 'ADD_TOASTS',
+                            toasts: formatAPIError(errors),
+                        });
+                    }
+                } catch (e) {
+                    dispatch({
+                        type: 'ADD_ERROR',
+                        key: `board-move-card-${new Date().getTime()}`,
+                        message: `Could not move the selected card.`,
+                    });
+                } finally {
+                    // Revert optimistic update
+                    const data = queryClient.getQueryData<BoardDetails>([
+                        SINGLE_BOARD_QUERY,
+                        boardId,
+                    ])!;
+
+                    const srcList = data!.lists.find(
+                        (list) => list.id === srcListId
+                    );
+
+                    const destList = data!.lists.find(
+                        (list) => list.id === destListId
+                    );
+
+                    // remove card from dest list
+                    const cardToMove = destList!.cards.splice(position, 1)[0];
+
+                    // insert card in src list at position
+                    srcList!.cards.splice(oldPosition, 0, {
+                        ...cardToMove,
+                        position: oldPosition,
+                    });
+
+                    queryClient.setQueryData<BoardDetails>(
+                        [SINGLE_BOARD_QUERY, boardId],
+                        data!
                     );
                 }
             },

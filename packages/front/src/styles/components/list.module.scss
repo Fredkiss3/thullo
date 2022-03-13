@@ -27,6 +27,13 @@
             width: 100%;
             display: flex;
         }
+
+        &__placeholder {
+            border-radius: var(--border-radius-lg);
+            background-color: var(--primary-color-hollow);
+            border: 2px dashed var(--primary-color);
+            width: 100%;
+        }
     }
 }
 

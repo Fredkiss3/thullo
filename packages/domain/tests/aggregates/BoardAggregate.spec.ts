@@ -195,6 +195,19 @@ describe('Board aggregate test', () => {
             expect(list).toHaveLength(1);
         });
 
+        it('reorder correclty cards when added to a list', () => {
+            const card1 = aggregate.addCardToList('New Card', InProgressListID);
+            const card2 = aggregate.addCardToList(
+                'New Card 2',
+                InProgressListID
+            );
+            const list = aggregate.cardsByLists[InProgressListID];
+            expect(list).toHaveLength(2);
+
+            expect(card1.position).toBe(0);
+            expect(card2.position).toBe(1);
+        });
+
         it('cannot add a card to a nonexistant list', () => {
             const test = () => aggregate.addCardToList('New Card', 'id');
             expect(test).toThrow(ListNotFoundError);
@@ -274,21 +287,6 @@ describe('Board aggregate test', () => {
             ).toThrow(OperationUnauthorizedError);
 
             expect(aggregate.participants).toHaveLength(1);
-        });
-
-        it('cannot remove an admin from the board', () => {
-            // // Given
-            // aggregate.addMemberToBoard(members[0]);
-            // aggregate.grantPrivileges(members[0], members[2].id);
-            //
-            // // When
-            // expect(() =>
-            //     aggregate.removeMemberFromBoard(members[0], members[2].id)
-            // ).toThrow(OperationUnauthorizedError);
-            //
-            // // Then
-            // expect(aggregate.participants).toHaveLength(2);
-            expect(true).toBe(true);
         });
 
         it('cannot remove a member not in board', () => {

@@ -4,9 +4,24 @@
     border-radius: var(--border-radius-lg);
     padding: 1rem;
     width: 100%;
-    transition: all 0.3s ease;
+    transition: all 0.1s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: 1rem;
 
     &:hover {
         background-color: rgba(0, 0, 0, 0.01);
+    }
+
+    &__button {
+        padding: 0.4rem;
+        &__icon {
+            height: 1.1rem;
+        }
+    }
+    &__title {
+        max-width: 100%;
+        overflow-wrap: break-word;
     }
 }

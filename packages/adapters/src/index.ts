@@ -17,3 +17,4 @@ export * from './presenters/ChangeBoardNamePresenterAdapter';
 export * from './presenters/UpdateBoardDescriptionPresenterAdapter';
 export * from './presenters/AddListToBoardPresenterAdapter';
 export * from './presenters/AddCardToListPresenterAdapter';
+export * from './presenters/MoveCardPresenterAdapter';

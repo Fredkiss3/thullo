@@ -51,12 +51,11 @@ export type Card = {
     id?: string;
     title: string;
     coverURL?: string | null;
-    position?: number;
+    position: number;
 
-    // TODO: add more fields
-    // labels: [];
-    // comments: [];
-    // attachments: [];
+    labels: { name: string; color: string }[];
+    commentCount: number;
+    attachmentCount: number;
 };
 
 export type List = {

@@ -1,9 +1,12 @@
 import * as React from 'react';
 
+import { DragDropContext } from 'react-beautiful-dnd';
+
 // Functions & Other
 import { useNavigate, useParams } from 'react-router-dom';
 import {
     useAddListMutation,
+    useMoveCardMutation,
     useRemoveMemberMutation,
     useSingleBoardQuery,
     useUserQuery,
@@ -286,11 +289,93 @@ function ColumnsSection({
     id,
 }: BoardDetails & { userIsParticipant: boolean }) {
     const [isAddingList, setIsAddingList] = React.useState(false);
+    const mutation = useMoveCardMutation();
+    const { dispatch } = useToastContext();
+    const [dragDestination, setDragDestination] = React.useState<{
+        listId: string;
+        position: number;
+    } | null>(null);
+
+    const moveCard = React.useCallback(
+        (
+            cardId: string,
+            srcListId: string,
+            destListId: string,
+            position: number,
+            oldPosition: number
+        ) => {
+            mutation.mutate({
+                boardId: id,
+                cardId,
+                srcListId,
+                destListId,
+                position,
+                oldPosition,
+                onSuccess: () => {
+                    dispatch({
+                        type: 'ADD_SUCCESS',
+                        key: `card-move-${new Date().getTime()}`,
+                        message: 'Card successfully moved.',
+                    });
+                },
+            });
+        },
+        []
+    );
+
     return (
-        <>
+        <DragDropContext
+            onDragUpdate={(initial) => {
+                const { destination } = initial;
+
+                if (destination) {
+                    const { index, droppableId } = destination;
+
+                    setDragDestination((oldDestination) => {
+                        const newDestination = {
+                            listId: droppableId,
+                            position: index,
+                        };
+
+                        if (!oldDestination) {
+                            return newDestination;
+                        } else {
+                            return {
+                                ...oldDestination,
+                                ...newDestination,
+                            };
+                        }
+                    });
+                }
+            }}
+            onDragEnd={(result) => {
+                setDragDestination(null);
+                if (result.destination) {
+                    const srcPosition = result.source.index;
+                    const destPosition = result.destination.index;
+                    const srcListId = result.source.droppableId;
+                    const destListId = result.destination.droppableId;
+
+                    if (
+                        srcListId !== destListId ||
+                        srcPosition !== destPosition
+                    ) {
+                        moveCard(
+                            result.draggableId,
+                            srcListId,
+                            destListId,
+                            destPosition,
+                            srcPosition
+                        );
+                    }
+                }
+            }}
+        >
             <section className={cls.column_section}>
                 {lists.map((list, index) => (
                     <List
+                        dragDestination={dragDestination}
+                        isUserParticipant={userIsParticipant}
                         boardId={id}
                         key={list.id ?? index}
                         list={list}
@@ -326,7 +411,7 @@ function ColumnsSection({
                     </div>
                 )}
             </section>
-        </>
+        </DragDropContext>
     );
 }
 

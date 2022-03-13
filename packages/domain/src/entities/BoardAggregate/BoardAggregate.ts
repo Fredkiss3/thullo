@@ -82,7 +82,7 @@ export class BoardAggregate {
 
         const card: Card = {
             id: uuidv4(),
-            position: 0,
+            position: this._cardsByListIds[listId].length,
             parentListId: listId,
             title,
             attachments: [],
@@ -204,7 +204,7 @@ export class BoardAggregate {
 
         // No position higher than the number of cards in the list
         if (
-            destinationPosition > list.length ||
+            destinationPosition > list.length + 1 ||
             (cardToMove.parentListId === destinationListId &&
                 destinationPosition > list.length - 1)
         ) {
