@@ -8,6 +8,7 @@
     align-items: center;
     position: relative;
     animation: translate-in 0.3s 0.1s both;
+    max-width: max-content;
 
     @keyframes translate-in {
         from {
@@ -102,4 +103,5 @@
     flex-direction: column;
     gap: 0.5rem;
     padding: 0.5rem;
+    align-items: flex-end;
 }

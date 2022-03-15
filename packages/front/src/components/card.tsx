@@ -9,13 +9,14 @@ import { Draggable } from 'react-beautiful-dnd';
 export interface CardProps {
     card: CardType;
     boardId: string;
+    index: number;
 }
 
-export function Card({ card: { id, title, position }, boardId }: CardProps) {
+export function Card({ card: { id, title }, boardId, index }: CardProps) {
     return (
         <>
             {id ? (
-                <Draggable draggableId={id} index={position}>
+                <Draggable draggableId={id} index={index}>
                     {(provided, snapshot) => {
                         return (
                             <Link
@@ -30,7 +31,7 @@ export function Card({ card: { id, title, position }, boardId }: CardProps) {
                                         provided.draggableProps.style
                                             ?.transform ?? ''
                                     } ${
-                                        snapshot.isDragging
+                                        snapshot.isDragging && !snapshot.isDropAnimating
                                             ? 'rotate(2.81deg)'
                                             : ''
                                     }`,

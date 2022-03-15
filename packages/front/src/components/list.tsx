@@ -63,12 +63,6 @@ export function List({
                     {(provided, snapshot) => {
                         // insert a placeholder at the dragDestination position
 
-                        console.log({
-                            positions: cards
-                                .sort((a, b) => a.position - b.position)
-                                .map((card) => card.position),
-                        });
-
                         return (
                             <ul
                                 ref={provided.innerRef}
@@ -76,12 +70,15 @@ export function List({
                                 className={cls.list__cards}
                             >
                                 {cards
-                                    .sort((a, b) => a.position - b.position)
+                                    // .sort((a, b) => a.position - b.position)
                                     .map((card, index) => (
                                         <li key={card.id}>
                                             <Card
                                                 boardId={boardId}
-                                                card={card}
+                                                card={{
+                                                    ...card,
+                                                }}
+                                                index={index}
                                             />
                                         </li>
                                     ))}

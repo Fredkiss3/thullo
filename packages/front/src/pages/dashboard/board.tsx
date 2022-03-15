@@ -302,7 +302,7 @@ function ColumnsSection({
             srcListId: string,
             destListId: string,
             position: number,
-            oldPosition: number
+            oldPosition: number,
         ) => {
             mutation.mutate({
                 boardId: id,
