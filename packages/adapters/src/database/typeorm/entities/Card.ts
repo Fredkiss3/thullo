@@ -23,13 +23,13 @@ export class CardEntity extends BaseEntity<Card> {
     })
     cover?: UnsplashMetadataEntity;
 
-    static fromDomain(card: Card): CardEntity {
+    static fromDomain(card: Card, position: number): CardEntity {
         const cardEntity = new CardEntity();
         cardEntity.uuid = card.id;
         cardEntity.title = card.title;
         cardEntity.description = card.description;
         cardEntity.parentListId = card.parentListId;
-        cardEntity.position = card.position;
+        cardEntity.position = position;
         cardEntity.cover = card.cover
             ? UnsplashMetadataEntity.fromDomain(card.cover)
             : undefined;
@@ -42,7 +42,6 @@ export class CardEntity extends BaseEntity<Card> {
             title: this.title!,
             description: this.description!,
             parentListId: this.parentListId!,
-            position: this.position!,
             cover: this.cover ? this.cover.toDomain() : null,
             // TODO: implement the rest of the properties
             attachments: [],

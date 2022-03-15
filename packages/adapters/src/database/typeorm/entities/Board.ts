@@ -70,7 +70,11 @@ export class BoardEntity extends BaseEntity<Board> {
             .withName(this.name!)
             .withDescription(this.description!)
             .withIsPrivate(this.private!)
-            .withCards(this.cards.map(card => card.toDomain()))
+            .withCards(
+                this.cards!
+                    .sort((a, b) => a.position! - b.position!)
+                    .map(card => card.toDomain())
+            )
             .withLists(this.lists.map(list => list.toDomain()))
             .withParticipants(
                 this.participants.map(participant => participant.toDomain())

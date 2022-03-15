@@ -31,7 +31,7 @@ interface BoardAggregateData {
             id: string;
             title: string;
             coverURL: string | null;
-            position: number;
+            // position: number;
 
             labels: { name: string; color: string }[];
             commentCount: number;
@@ -86,8 +86,13 @@ export class SeeBoardDetailsPresenterAdapter
                       avatarURL: admin!.avatarURL,
                       login: admin!.login
                   },
-                  lists: Object.entries(board.cardsByLists).map(
-                      ([id, cards]) => {
+                  lists: Object.entries(board.cardsByLists)
+                      .sort(([idA], [idB]) => {
+                          const a = board.listsByIds[idA];
+                          const b = board.listsByIds[idB];
+                          return a.position - b.position;
+                      })
+                      .map(([id, cards]) => {
                           return {
                               id: short().fromUUID(id),
                               name: board.listsByIds[id].name,
@@ -98,13 +103,11 @@ export class SeeBoardDetailsPresenterAdapter
                                       cover,
                                       comments,
                                       attachments,
-                                      labels,
-                                      position
+                                      labels
                                   }) => ({
                                       id: short().fromUUID(id),
                                       title,
                                       coverURL: cover?.smallURL ?? null,
-                                      position,
                                       labels: labels.map(({ name, color }) => ({
                                           name,
                                           color
@@ -114,8 +117,7 @@ export class SeeBoardDetailsPresenterAdapter
                                   })
                               )
                           };
-                      }
-                  )
+                      })
               };
     }
 }

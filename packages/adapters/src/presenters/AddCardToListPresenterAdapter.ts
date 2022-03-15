@@ -10,7 +10,6 @@ import short from 'short-uuid';
 interface CardData {
     id: string;
     title: string;
-    position: number;
     coverURL: string | null;
     labels: { name: string; color: string }[];
     attachmentCount: number;
@@ -39,7 +38,6 @@ export class AddCardToListPresenterAdapter implements AddCardToListPresenter {
             : {
                   id: short().fromUUID(card.id),
                   title: card.title,
-                  position: card.position,
                   coverURL: null,
                   labels: card.labels.map(({ name, color }) => ({
                       name,

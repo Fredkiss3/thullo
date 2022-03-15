@@ -1,6 +1,6 @@
 import { BoardId, Member, MemberId, MemberRepository } from '@thullo/domain';
 import { container } from 'tsyringe';
-import { EntityRepository, MongoRepository } from 'typeorm';
+import { EntityRepository, MongoRepository } from "typeorm";
 import { TypeORMBoardRepository } from '.';
 import { MemberEntity } from '../entities/Member';
 
@@ -13,6 +13,7 @@ export class TypeORMMemberRepository
         const entity = await this.findOne({ email });
         return entity ? entity.toDomain() : null;
     }
+
     async getMemberById(uuid: MemberId): Promise<Member | null> {
         const entity = await this.findOne({ uuid });
         return entity ? entity.toDomain() : null;

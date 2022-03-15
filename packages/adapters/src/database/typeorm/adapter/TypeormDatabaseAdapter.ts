@@ -8,7 +8,9 @@ import { MemberEntity } from '../entities/Member';
 export class TypeormDatabaseAdapter implements Database {
     private _connection: Connection | null = null;
 
-    constructor(private uri: string) {}
+    constructor(private uri: string) {
+        this.connect();
+    }
 
     async connect(): Promise<void> {
         if (this._connection) {
