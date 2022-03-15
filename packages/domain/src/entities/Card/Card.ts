@@ -1,4 +1,4 @@
-import { UnsplashPhoto } from './../../lib/types';
+import { UnsplashPhoto } from "../../lib/types";
 import { Attachment } from '../Attachment';
 import { ListId } from '../List';
 import { Label } from '../Label';
@@ -9,7 +9,6 @@ export type CardId = string;
 export interface Card {
     id: CardId;
     parentListId: ListId;
-    position: number;
     cover: UnsplashPhoto | null;
     description: string;
     title: string;

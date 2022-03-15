@@ -17,6 +17,7 @@ type ListsById = Record<ListId, List>;
 
 interface BoardAggregateData {
     lists: List[];
+    // the cards are sorted by listId and position
     cards: Card[];
     participants: Participation[];
 }
@@ -29,30 +30,33 @@ interface BoardData {
 }
 
 export class BoardAggregate {
-    private _cardsByListIds: CardsByLists;
+    private _cardsByListIds: CardsByLists = {};
+    private _listsById: ListsById = {};
+    private _participants: Participation[] = [];
 
-    constructor(private _board: BoardData, private _data: BoardAggregateData) {
-        this._cardsByListIds = {};
-        this.orderCardsByLists();
-    }
+    constructor(private _board: BoardData, data: BoardAggregateData) {
+        this._participants = data.participants;
 
-    private orderCardsByLists(): void {
-        // Order the cards by list ids and position
-        for (const list of this._data.lists) {
-            this._cardsByListIds[list.id] = this._data.cards
-                .filter(({ parentListId }) => parentListId === list.id)
-                .sort((a, b) => a.position - b.position);
+        // initialize lists
+        for (const list of data.lists) {
+            this._cardsByListIds[list.id] = data.cards.filter(
+                ({ parentListId }) => parentListId === list.id
+            );
+        }
+
+        for (const list of data.lists) {
+            this._listsById[list.id] = list;
         }
     }
 
     addMemberToBoard(member: Member): void {
         if (
-            this._data.participants.find(
+            this._participants.find(
                 ({ member: { id } }) => id === member.id
             ) === undefined
         ) {
-            this._data.participants = [
-                ...this._data.participants,
+            this._participants = [
+                ...this._participants,
                 { isAdmin: false, member }
             ];
         }
@@ -61,18 +65,20 @@ export class BoardAggregate {
     addList(name: string): ListId {
         const id = uuidv4();
 
-        this._data.lists.push({
+        this._listsById[id] = {
             id,
+            name,
             boardId: this._board.id,
-            position: this._data.lists.length,
-            name
-        });
+            position: Object.keys(this._listsById).length
+        };
+
+        this._cardsByListIds[id] = [];
 
         return id;
     }
 
     addCardToList(title: string, listId: ListId): Card {
-        const list = this._data.lists.find(({ id }) => id === listId);
+        const list = this._listsById[listId];
 
         if (list === undefined) {
             throw new ListNotFoundError(
@@ -82,7 +88,6 @@ export class BoardAggregate {
 
         const card: Card = {
             id: uuidv4(),
-            position: this._cardsByListIds[listId].length,
             parentListId: listId,
             title,
             attachments: [],
@@ -92,9 +97,7 @@ export class BoardAggregate {
             comments: []
         };
 
-        this._data.cards.push(card);
-
-        this.orderCardsByLists();
+        this._cardsByListIds[listId].push(card);
 
         return card;
     }
@@ -128,7 +131,7 @@ export class BoardAggregate {
 
     private checkAdminOrThrowError(memberId: MemberId, message: string): void {
         if (
-            this._data.participants.find(
+            this._participants.find(
                 ({ member: { id }, isAdmin }) => id === memberId && isAdmin
             ) === undefined
         ) {
@@ -143,7 +146,7 @@ export class BoardAggregate {
                 " tableau car vous n'êtes pas un admin sur ce tableau"
         );
 
-        const memberFound = this._data.participants.find(
+        const memberFound = this._participants.find(
             ({ member: { id } }) => id === member.id
         );
 
@@ -161,16 +164,14 @@ export class BoardAggregate {
                 'Vous ne pouvez pas vous retirer vous-même du tableau'
             );
         } else {
-            this._data.participants = this._data.participants.filter(
+            this._participants = this._participants.filter(
                 ({ member: { id } }) => id !== member.id
             );
         }
     }
 
     /**
-     * move a card to another list and
-     * change change the positions of cards which where
-     * present in the old list
+     * move a card to another list
      */
     moveCard(
         cardId: CardId,
@@ -182,12 +183,23 @@ export class BoardAggregate {
 
         if (list === undefined) {
             throw new ListNotFoundError(
-                "cette liste n'existe pas dans le tableau"
+                "La liste de destination n'existe pas dans le tableau"
             );
         }
 
         // the card should exist
-        const cardToMove = this._data.cards.find(({ id }) => id === cardId);
+        let cardToMove: Card | undefined = undefined;
+
+        for (const listId in this._cardsByListIds) {
+            const card = this._cardsByListIds[listId].find(
+                ({ id }) => id === cardId
+            );
+
+            if (card !== undefined) {
+                cardToMove = card;
+                break;
+            }
+        }
 
         if (cardToMove === undefined) {
             throw new CardNotFoundError(
@@ -202,49 +214,28 @@ export class BoardAggregate {
             );
         }
 
-        // No position higher than the number of cards in the list
-        if (
-            destinationPosition > list.length + 1 ||
-            (cardToMove.parentListId === destinationListId &&
-                destinationPosition > list.length - 1)
-        ) {
-            throw new InvalidPositionError(
-                'La position de la carte doit être inférieure à la taille de la liste'
-            );
-        }
+        // remove the card from the old list
+        this._cardsByListIds[cardToMove.parentListId] = this._cardsByListIds[
+            cardToMove.parentListId
+        ].filter(({ id }) => id !== cardId);
 
-        // update positions in the old list by moving all cards that were
-        // below the card to move up
-        for (const card of this._cardsByListIds[cardToMove.parentListId]) {
-            if (card.position > cardToMove.position) {
-                card.position--;
-            }
-        }
+        // add the card to the new list
+        this._cardsByListIds[destinationListId].splice(
+            destinationPosition,
+            0,
+            cardToMove
+        );
 
-        // update positions in the new list by moving all cards that should be
-        // below the card to move down
-        for (const card of this._cardsByListIds[destinationListId]) {
-            if (card.position >= destinationPosition) {
-                card.position++;
-            }
-        }
-
-        // move the card to the other list
-        // and update the position accordingly
+        // change the parent list of the card
         cardToMove.parentListId = destinationListId;
-        cardToMove.position = destinationPosition;
-
-        this.orderCardsByLists();
     }
 
     isParticipant(memberId: MemberId) {
-        return this._data.participants.some(
-            ({ member: { id } }) => id === memberId
-        );
+        return this._participants.some(({ member: { id } }) => id === memberId);
     }
 
     isAdmin(memberId: MemberId) {
-        const member = this._data.participants.find(
+        const member = this._participants.find(
             ({ member: { id } }) => id === memberId
         );
 
@@ -253,18 +244,16 @@ export class BoardAggregate {
 
     // getters & setters
     get participants(): Readonly<Participation>[] {
-        return this._data.participants;
+        return this._participants;
     }
 
     get listsByIds(): Readonly<ListsById> {
-        return this._data.lists.reduce((acc, l) => {
-            return {
-                ...acc,
-                [l.id]: l
-            };
-        }, {} as Record<ListId, List>);
+        return this._listsById;
     }
 
+    /**
+     * get the list of cards sorted by position and grouped by list
+     */
     get cardsByLists(): Readonly<CardsByLists> {
         return this._cardsByListIds;
     }

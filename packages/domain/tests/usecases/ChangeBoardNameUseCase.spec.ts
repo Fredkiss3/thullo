@@ -5,7 +5,7 @@ import {
     ChangeBoardNameResponse,
     Member,
     BoardAggregate
-} from '@thullo/domain';
+} from '../../src';
 import { v4 as uuidv4 } from 'uuid';
 import { BoardAggregateRepositoryBuilder } from '../builder/BoardAggregateRepositoryBuilder';
 import { MemberRepositoryBuilder } from '../builder/MemberRepositoryBuilder';

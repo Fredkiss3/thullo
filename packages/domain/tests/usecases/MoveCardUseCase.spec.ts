@@ -8,7 +8,7 @@ import {
     BoardAggregate,
     BoardAggregateRepository,
     Card
-} from '@thullo/domain';
+} from '../../src';
 import { v4 as uuidv4 } from 'uuid';
 import { BoardAggregateRepositoryBuilder } from '../builder/BoardAggregateRepositoryBuilder';
 
@@ -27,7 +27,6 @@ const doneListID = uuidv4();
 const firstCard: Card = {
     id: uuidv4(),
     title: 'Todo',
-    position: 0,
     parentListId: todoListID,
     comments: [],
     attachments: [],

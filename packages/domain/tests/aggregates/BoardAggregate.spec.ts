@@ -10,7 +10,7 @@ import {
     Member,
     MemberNotInBoardError,
     OperationUnauthorizedError
-} from '@thullo/domain';
+} from '../../src';
 import { v4 as uuidv4 } from 'uuid';
 
 const BOARD_ID = uuidv4();
@@ -78,7 +78,6 @@ describe('Board aggregate test', () => {
                 id: firstCardID,
                 parentListId: todoListID,
                 title: "Add What you'd like to work on below",
-                position: 1,
                 cover: null,
                 labels: [
                     {
@@ -97,7 +96,6 @@ describe('Board aggregate test', () => {
                 parentListId: todoListID,
                 cover: null,
                 title: 'Github Jobs challenge',
-                position: 0,
                 labels: [
                     {
                         id: uuidv4(),
@@ -121,7 +119,6 @@ describe('Board aggregate test', () => {
                 cover: null,
                 parentListId: DoneListID,
                 title: 'A task well done',
-                position: 0,
                 labels: [
                     {
                         id: uuidv4(),
@@ -174,7 +171,13 @@ describe('Board aggregate test', () => {
 
         it('should cards ordered by positions', () => {
             const list = aggregate.cardsByLists[todoListID];
-            expect(list[0].position).toBeLessThan(list[1].position);
+            expect(list).toHaveLength(2);
+            expect(list[0].id).toBe(firstCardID);
+            expect(list[1].id).toBe(secondCardID);
+
+            const list2 = aggregate.cardsByLists[DoneListID];
+            expect(list2).toHaveLength(1);
+            expect(list2[0].id).toBe(thirdCardID);
         });
 
         it('should show lists organised by ids', () => {
@@ -204,8 +207,8 @@ describe('Board aggregate test', () => {
             const list = aggregate.cardsByLists[InProgressListID];
             expect(list).toHaveLength(2);
 
-            expect(card1.position).toBe(0);
-            expect(card2.position).toBe(1);
+            expect(list[0]).toBe(card1);
+            expect(list[1]).toBe(card2);
         });
 
         it('cannot add a card to a nonexistant list', () => {
@@ -320,20 +323,18 @@ describe('Board aggregate test', () => {
                     {
                         id: firstCardID,
                         parentListId: todoListID,
-                        title: "Add What you'd like to work on below",
-                        position: 0
+                        title: "Add What you'd like to work on below"
                     },
                     {
                         id: secondCardID,
                         parentListId: todoListID,
-                        title: 'Github Jobs challenge',
-                        position: 1
+                        title: 'Github Jobs challenge'
                     }
                 ])
                 .build();
 
             // When
-            boardAggregate.moveCard(secondCardID, InProgressListID, 0);
+            boardAggregate.moveCard(firstCardID, InProgressListID, 0);
 
             // Then
             const todoList = boardAggregate.cardsByLists[todoListID];
@@ -341,13 +342,15 @@ describe('Board aggregate test', () => {
             // The first list should have only one card left
             expect(todoList).toHaveLength(1);
 
+            // The second card should be in the first position
+            expect(todoList[0].id).toBe(secondCardID);
+
             const inProgressList =
                 boardAggregate.cardsByLists[InProgressListID];
 
             // The second list should have one card and the second card should be in the first position
             expect(inProgressList).toHaveLength(1);
-            expect(inProgressList[0].id).toBe(secondCardID);
-            expect(inProgressList[0].position).toBe(0);
+            expect(inProgressList[0].id).toBe(firstCardID);
         });
 
         it('should reorder the old list when a card is moved', () => {
@@ -370,14 +373,12 @@ describe('Board aggregate test', () => {
                     {
                         id: secondCardID,
                         parentListId: todoListID,
-                        title: "Add What you'd like to work on below",
-                        position: 0
+                        title: "Add What you'd like to work on below"
                     },
                     {
                         id: firstCardID,
                         parentListId: todoListID,
-                        title: 'Github Jobs challenge',
-                        position: 1
+                        title: 'Github Jobs challenge'
                     }
                 ])
                 .build();
@@ -388,7 +389,6 @@ describe('Board aggregate test', () => {
             // the cards of the lists should be reordered by position
             const todoList = boardAggregate.cardsByLists[todoListID];
             expect(todoList[0].id).toBe(firstCardID);
-            expect(todoList[0].position).toBe(0);
         });
 
         it('should reorder the new list when a card is moved', () => {
@@ -411,20 +411,17 @@ describe('Board aggregate test', () => {
                     {
                         id: firstCardID,
                         parentListId: todoListID,
-                        title: "Add What you'd like to work on below",
-                        position: 1
+                        title: "Add What you'd like to work on below"
                     },
                     {
                         id: secondCardID,
                         parentListId: todoListID,
-                        title: 'Github Jobs challenge',
-                        position: 0
+                        title: 'Github Jobs challenge'
                     },
                     {
                         id: thirdCardID,
                         parentListId: DoneListID,
-                        title: 'A task well done',
-                        position: 0
+                        title: 'A task well done'
                     }
                 ])
                 .build();
@@ -437,14 +434,11 @@ describe('Board aggregate test', () => {
             expect(todoList).toHaveLength(3);
 
             // Each card should have its position updated
-            expect(todoList[0].id).toBe(secondCardID);
-            expect(todoList[0].position).toBe(0);
+            expect(todoList[0].id).toBe(firstCardID);
 
             expect(todoList[1].id).toBe(thirdCardID);
-            expect(todoList[1].position).toBe(1);
 
-            expect(todoList[2].id).toBe(firstCardID);
-            expect(todoList[2].position).toBe(2);
+            expect(todoList[2].id).toBe(secondCardID);
         });
 
         it('should just reorder the list if the card is moved to the same list', () => {
@@ -462,14 +456,12 @@ describe('Board aggregate test', () => {
                     {
                         id: firstCardID,
                         parentListId: todoListID,
-                        title: "Add What you'd like to work on below",
-                        position: 0
+                        title: "Add What you'd like to work on below"
                     },
                     {
                         id: secondCardID,
                         parentListId: todoListID,
-                        title: 'Github Jobs challenge',
-                        position: 1
+                        title: 'Github Jobs challenge'
                     }
                 ])
                 .build();
@@ -481,7 +473,6 @@ describe('Board aggregate test', () => {
             // Then
             expect(todoList).toHaveLength(2);
             expect(todoList[0].id).toBe(secondCardID);
-            expect(todoList[0].position).toBe(0);
         });
 
         it('should not be able to set the new position to a number less than Zero', async () => {
@@ -504,8 +495,7 @@ describe('Board aggregate test', () => {
                     {
                         id: firstCardID,
                         parentListId: todoListID,
-                        title: "Add What you'd like to work on below",
-                        position: 0
+                        title: "Add What you'd like to work on below"
                     }
                 ])
                 .build();
@@ -520,7 +510,7 @@ describe('Board aggregate test', () => {
             expect(todoList).toHaveLength(1);
         });
 
-        it('should not be able to set the new position to a number greater than the length of the destination list', async () => {
+        it('should still move the card to the destination list even if the destination position is way bigger than the length of the list', async () => {
             // Given
             const boardAggregate: BoardAggregate = new BoardAggregateBuilder()
                 .withBoardId(BOARD_ID)
@@ -540,53 +530,30 @@ describe('Board aggregate test', () => {
                     {
                         id: firstCardID,
                         parentListId: todoListID,
-                        title: "Add What you'd like to work on below",
-                        position: 0
+                        title: "Add What you'd like to work on below"
                     },
                     {
                         id: thirdCardID,
                         parentListId: InProgressListID,
-                        title: 'Github Jobs challenge',
-                        position: 0
+                        title: 'Github Jobs challenge'
                     }
                 ])
                 .build();
 
             // When
-            expect(() =>
-                boardAggregate.moveCard(firstCardID, InProgressListID, 2)
-            ).toThrow(InvalidPositionError);
+            boardAggregate.moveCard(firstCardID, InProgressListID, 2);
 
             // Then
             const todoList = boardAggregate.cardsByLists[todoListID];
-            expect(todoList).toHaveLength(1);
-        });
+            expect(todoList).toHaveLength(0);
 
-        it('should not be able to set the new position to the length of the destination list if the card is moved to the same list', async () => {
-            // Given
-            const boardAggregate: BoardAggregate = new BoardAggregateBuilder()
-                .withBoardId(BOARD_ID)
-                .withLists([
-                    {
-                        id: todoListID,
-                        name: 'Todo',
-                        position: 0
-                    }
-                ])
-                .withCards([
-                    {
-                        id: firstCardID,
-                        parentListId: todoListID,
-                        title: "Add What you'd like to work on below",
-                        position: 0
-                    }
-                ])
-                .build();
+            const inProgressList =
+                boardAggregate.cardsByLists[InProgressListID];
+            expect(inProgressList).toHaveLength(2);
 
-            // When
-            expect(() =>
-                boardAggregate.moveCard(firstCardID, todoListID, 1)
-            ).toThrow(InvalidPositionError);
+            // the cards should be in the right order
+            expect(inProgressList[0].id).toBe(thirdCardID);
+            expect(inProgressList[1].id).toBe(firstCardID);
         });
 
         it('cannot move to an inexistant list', () => {
