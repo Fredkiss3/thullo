@@ -51,7 +51,6 @@ export type Card = {
     id?: string;
     title: string;
     coverURL?: string | null;
-    position: number;
 
     labels: { name: string; color: string }[];
     commentCount: number;
@@ -91,3 +90,10 @@ export type AddBoardRequest = {
     coverPhotoUrl: string;
     private: boolean;
 };
+
+// drag and drop
+export type DraggableDestination = {
+    listId: string;
+    position: number;
+    isLast: boolean;
+}

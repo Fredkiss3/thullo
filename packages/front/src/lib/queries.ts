@@ -42,10 +42,7 @@ export function useUserQuery() {
             );
 
             if (errors) {
-                dispatch({
-                    type: 'ADD_ERRORS',
-                    errors,
-                });
+                throw JSON.stringify(errors);
             }
 
             return data ? data.user : null;
@@ -1170,7 +1167,7 @@ export function useMoveCardMutation() {
             oldPosition: number;
             onSuccess: () => void;
         }) => {
-            const { data, errors } = await jsonFetch<{ success: boolean }>(
+            const { errors } = await jsonFetch<{ success: boolean }>(
                 `${
                     import.meta.env.VITE_API_URL
                 }/api/boards/${boardId}/move-card`,
@@ -1238,7 +1235,6 @@ export function useMoveCardMutation() {
                 // insert card in dest list at position
                 destList!.cards.splice(position, 0, {
                     ...cardToMove,
-                    position,
                 });
 
                 queryClient.setQueryData<BoardDetails>(
@@ -1297,7 +1293,6 @@ export function useMoveCardMutation() {
                     // insert card in src list at position
                     srcList!.cards.splice(oldPosition, 0, {
                         ...cardToMove,
-                        position: oldPosition,
                     });
 
                     queryClient.setQueryData<BoardDetails>(

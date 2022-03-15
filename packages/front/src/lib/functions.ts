@@ -5,12 +5,12 @@ import { linkify } from 'remarkable/linkify';
 
 import { USER_TOKEN } from './constants';
 import {
+    ApiErrors,
     ApiResult,
     Board,
     CategorizedBoards,
-    User,
-    ApiErrors,
     ToastType,
+    User,
 } from './types';
 
 export function parseQueryStringFromURL(url: string): {
@@ -147,7 +147,7 @@ export function range(start: number, end: number): number[] {
 }
 
 export function renderMarkdown(markdown: string): string {
-    const html = new Remarkable('full', {
+    return new Remarkable('full', {
         html: true,
         breaks: true,
         typographer: true,
@@ -155,6 +155,27 @@ export function renderMarkdown(markdown: string): string {
         .use(linkify)
         .render(markdown)
         .replace(/\n/g, '<br>');
+}
 
-    return html;
+export function clsx(
+    ...args: (string | undefined | Record<string, boolean>)[]
+): string {
+    const classes: string[] = [];
+
+    for (const arg of args) {
+        switch (typeof arg) {
+            case 'string':
+                classes.push(arg);
+                break;
+            case 'object':
+                for (const key in arg) {
+                    if (arg[key]) {
+                        classes.push(key);
+                    }
+                }
+                break;
+        }
+    }
+
+    return classes.join(' ');
 }

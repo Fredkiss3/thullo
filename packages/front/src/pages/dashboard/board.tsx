@@ -13,7 +13,12 @@ import {
 } from '@/lib/queries';
 import { useToastContext } from '@/context/toast.context';
 import { useOnClickOutside } from '@/lib/hooks';
-import type { BoardDetails, BoardMember, User } from '@/lib/types';
+import type {
+    BoardDetails,
+    BoardMember,
+    DraggableDestination,
+    User,
+} from '@/lib/types';
 
 // Components
 import { Loader } from '@/components/loader';
@@ -291,10 +296,8 @@ function ColumnsSection({
     const [isAddingList, setIsAddingList] = React.useState(false);
     const mutation = useMoveCardMutation();
     const { dispatch } = useToastContext();
-    const [dragDestination, setDragDestination] = React.useState<{
-        listId: string;
-        position: number;
-    } | null>(null);
+    const [dragDestination, setDragDestination] =
+        React.useState<DraggableDestination | null>(null);
 
     const moveCard = React.useCallback(
         (
@@ -302,7 +305,7 @@ function ColumnsSection({
             srcListId: string,
             destListId: string,
             position: number,
-            oldPosition: number,
+            oldPosition: number
         ) => {
             mutation.mutate({
                 boardId: id,
@@ -326,25 +329,33 @@ function ColumnsSection({
     return (
         <DragDropContext
             onDragUpdate={(initial) => {
-                const { destination } = initial;
+                const { source, destination } = initial;
 
                 if (destination) {
                     const { index, droppableId } = destination;
 
                     setDragDestination((oldDestination) => {
+                        const list = lists.find(
+                            (list) => list.id === droppableId
+                        )!;
+
                         const newDestination = {
                             listId: droppableId,
                             position: index,
+                            isLast:
+                                index >= list.cards.length &&
+                                source.droppableId !== destination.droppableId,
                         };
 
-                        if (!oldDestination) {
-                            return newDestination;
-                        } else {
-                            return {
-                                ...oldDestination,
-                                ...newDestination,
-                            };
-                        }
+                        console.log({
+                            ...oldDestination,
+                            ...newDestination,
+                        });
+
+                        return {
+                            ...oldDestination,
+                            ...newDestination,
+                        };
                     });
                 }
             }}
