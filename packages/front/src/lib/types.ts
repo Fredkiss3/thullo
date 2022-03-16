@@ -92,8 +92,9 @@ export type AddBoardRequest = {
 };
 
 // drag and drop
-export type DraggableDestination = {
-    listId: string;
-    position: number;
-    isLast: boolean;
-}
+export type DraggablePlaceholder = {
+    clientHeight: number;
+    clientWidth: number;
+    clientY: number;
+    clientX: number;
+} | null;

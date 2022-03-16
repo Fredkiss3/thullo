@@ -1,6 +1,12 @@
 import * as React from 'react';
 
-import { DragDropContext } from 'react-beautiful-dnd';
+import {
+    DragDropContext,
+    DragStart,
+    DragUpdate,
+    DropResult,
+    ResponderProvided,
+} from 'react-beautiful-dnd';
 
 // Functions & Other
 import { useNavigate, useParams } from 'react-router-dom';
@@ -13,10 +19,11 @@ import {
 } from '@/lib/queries';
 import { useToastContext } from '@/context/toast.context';
 import { useOnClickOutside } from '@/lib/hooks';
+
 import type {
     BoardDetails,
     BoardMember,
-    DraggableDestination,
+    DraggablePlaceholder,
     User,
 } from '@/lib/types';
 
@@ -288,6 +295,11 @@ function AvatarButton({
     );
 }
 
+const getDraggedDom = (draggableId: string) => {
+    const domQuery = `[data-rbd-drag-handle-draggable-id='${draggableId}']`;
+    return document.querySelector<HTMLAnchorElement>(domQuery);
+};
+
 function ColumnsSection({
     lists,
     userIsParticipant,
@@ -296,8 +308,6 @@ function ColumnsSection({
     const [isAddingList, setIsAddingList] = React.useState(false);
     const mutation = useMoveCardMutation();
     const { dispatch } = useToastContext();
-    const [dragDestination, setDragDestination] =
-        React.useState<DraggableDestination | null>(null);
 
     const moveCard = React.useCallback(
         (
@@ -326,66 +336,129 @@ function ColumnsSection({
         []
     );
 
+    const [placeholderProps, setPlaceholderProps] =
+        React.useState<DraggablePlaceholder>(null);
+
+    const handleDragStart = (event: DragStart) => {
+        const draggedDOM = getDraggedDom(event.draggableId);
+
+        if (!draggedDOM) {
+            return;
+        }
+
+        const { clientHeight, clientWidth } = draggedDOM;
+
+        if (draggedDOM.parentNode) {
+            const sourceIndex = event.source.index;
+            var clientY =
+                parseFloat(
+                    window.getComputedStyle(
+                        draggedDOM.parentNode as HTMLElement
+                    ).paddingTop
+                ) +
+                [...draggedDOM.parentNode.children]
+                    .slice(0, sourceIndex)
+                    .reduce((total, curr) => {
+                        const style = window.getComputedStyle(curr);
+                        const marginBottom = parseFloat(style.marginBottom);
+                        return total + curr.clientHeight + marginBottom;
+                    }, 0);
+
+            setPlaceholderProps({
+                clientHeight,
+                clientWidth,
+                clientY,
+                clientX: parseFloat(
+                    window.getComputedStyle(
+                        draggedDOM.parentNode as HTMLElement
+                    ).paddingLeft
+                ),
+            });
+        }
+    };
+
+    const handleDragUpdate = (event: DragUpdate) => {
+        if (!event.destination) {
+            return;
+        }
+
+        const draggedDOM = getDraggedDom(event.draggableId);
+
+        if (!draggedDOM || !draggedDOM.parentNode) {
+            return;
+        }
+
+        const { clientHeight, clientWidth } = draggedDOM;
+        const destinationIndex = event.destination.index;
+        const sourceIndex = event.source.index;
+
+        const childrenArray = [...draggedDOM.parentNode.children];
+        const movedItem = childrenArray[sourceIndex];
+        childrenArray.splice(sourceIndex, 1);
+
+        const updatedArray = [
+            ...childrenArray.slice(0, destinationIndex),
+            movedItem,
+            ...childrenArray.slice(destinationIndex + 1),
+        ];
+
+        var clientY =
+            parseFloat(
+                window.getComputedStyle(draggedDOM.parentNode as HTMLElement)
+                    .paddingTop
+            ) +
+            updatedArray.slice(0, destinationIndex).reduce((total, curr) => {
+                const style = window.getComputedStyle(curr);
+                const marginBottom = parseFloat(style.marginBottom);
+                return total + curr.clientHeight + marginBottom;
+            }, 0);
+
+        setPlaceholderProps({
+            clientHeight,
+            clientWidth,
+            clientY,
+            clientX: parseFloat(
+                window.getComputedStyle(draggedDOM.parentNode as HTMLElement)
+                    .paddingLeft
+            ),
+        });
+    };
+
+    const handleDragEnd = (result: DropResult) => {
+        setPlaceholderProps(null);
+        const { source, destination, draggableId } = result;
+
+        if (!destination) {
+            return;
+        }
+
+        const srcPosition = source.index;
+        const destPosition = destination.index;
+        const srcListId = source.droppableId;
+        const destListId = destination.droppableId;
+
+        // don't move the card if it's already in the same list and position
+        if (srcListId !== destListId || srcPosition !== destPosition) {
+            moveCard(
+                draggableId,
+                srcListId,
+                destListId,
+                destPosition,
+                srcPosition
+            );
+        }
+    };
+
     return (
         <DragDropContext
-            onDragUpdate={(initial) => {
-                const { source, destination } = initial;
-
-                if (destination) {
-                    const { index, droppableId } = destination;
-
-                    setDragDestination((oldDestination) => {
-                        const list = lists.find(
-                            (list) => list.id === droppableId
-                        )!;
-
-                        const newDestination = {
-                            listId: droppableId,
-                            position: index,
-                            isLast:
-                                index >= list.cards.length &&
-                                source.droppableId !== destination.droppableId,
-                        };
-
-                        console.log({
-                            ...oldDestination,
-                            ...newDestination,
-                        });
-
-                        return {
-                            ...oldDestination,
-                            ...newDestination,
-                        };
-                    });
-                }
-            }}
-            onDragEnd={(result) => {
-                setDragDestination(null);
-                if (result.destination) {
-                    const srcPosition = result.source.index;
-                    const destPosition = result.destination.index;
-                    const srcListId = result.source.droppableId;
-                    const destListId = result.destination.droppableId;
-
-                    if (
-                        srcListId !== destListId ||
-                        srcPosition !== destPosition
-                    ) {
-                        moveCard(
-                            result.draggableId,
-                            srcListId,
-                            destListId,
-                            destPosition,
-                            srcPosition
-                        );
-                    }
-                }
-            }}
+            onDragUpdate={handleDragUpdate}
+            onDragEnd={handleDragEnd}
+            onDragStart={handleDragStart}
         >
             <section className={cls.column_section}>
                 {lists.map((list, index) => (
                     <List
-                        dragDestination={dragDestination}
+                        placeholderProps={placeholderProps}
                         isUserParticipant={userIsParticipant}
                         boardId={id}
                         key={list.id ?? index}

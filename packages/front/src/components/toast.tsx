@@ -8,6 +8,7 @@ import { Icon } from '@/components/icon';
 
 // Styles
 import cls from '@/styles/components/toast.module.scss';
+import { clsx } from '@/lib/functions';
 
 export interface ToastProps {
     onClose: () => void;
@@ -46,9 +47,9 @@ export function Toast({
 
     return (
         <div
-            className={`${cls.toast} ${cls[`toast--${type}`] ?? ''} ${
-                removed && cls[`toast--removed`]
-            }`}
+            className={clsx(cls.toast, cls[`toast--${type}`], {
+                [cls[`toast--removed`]]: removed,
+            })}
             // Remove toast after animation ends
             onAnimationEnd={removeToast}
         >

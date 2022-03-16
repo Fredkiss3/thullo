@@ -1,8 +1,4 @@
-import {
-    List as ListType,
-    Card as CardType,
-    DraggableDestination,
-} from '@/lib/types';
+import { List as ListType, DraggablePlaceholder } from '@/lib/types';
 import cls from '@/styles/components/list.module.scss';
 import { Icon } from '@/components/icon';
 import { Button } from '@/components/button';
@@ -18,17 +14,7 @@ export interface ListProps {
     boardId: string;
     className?: string;
     isUserParticipant: boolean;
-    dragDestination: DraggableDestination | null;
-}
-
-type CardOrPlaceholder =
-    | CardType
-    | {
-          id: 'placeholder';
-      };
-
-function isCard(el: CardOrPlaceholder): el is CardType {
-    return el.id !== 'placeholder';
+    placeholderProps?: DraggablePlaceholder;
 }
 
 export function List({
@@ -36,7 +22,7 @@ export function List({
     className,
     boardId,
     isUserParticipant,
-    dragDestination,
+    placeholderProps,
 }: ListProps) {
     const { dispatch } = useToastContext();
     const [isAddingCard, setIsAddingCard] = useState(false);
@@ -121,8 +107,25 @@ export function List({
                                     )
                                 )}
 
-                                {droppableSnapshot.isDraggingOver &&
-                                    droppableProvided.placeholder}
+                                {droppableProvided.placeholder}
+
+                                {placeholderProps &&
+                                    droppableSnapshot.isDraggingOver && (
+                                        <div
+                                            className={
+                                                cls.list__cards__placeholder
+                                            }
+                                            style={{
+                                                // Add the margin to the placeholder
+                                                top:
+                                                    placeholderProps.clientY +
+                                                    8,
+                                                left: placeholderProps.clientX,
+                                                height: placeholderProps.clientHeight,
+                                                width: placeholderProps.clientWidth,
+                                            }}
+                                        />
+                                    )}
 
                                 {!droppableSnapshot.isDraggingOver &&
                                     isUserParticipant &&

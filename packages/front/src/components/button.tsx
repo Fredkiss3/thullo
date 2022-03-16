@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { forwardRef } from 'react';
 import cls from '@/styles/components/button.module.scss';
+import { clsx } from '@/lib/functions';
 
 export const ButtonVariants = [
     'primary',
@@ -37,18 +38,18 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         {
             children,
             variant,
-            disabled,
             renderLeadingIcon,
             renderTrailingIcon,
             onClick,
             className,
             size,
-            isStatic = false,
             type = 'button',
             ariaLabel,
+            testId,
+            isStatic = false,
+            disabled = false,
             square = false,
             block = false,
-            testId,
         },
         ref
     ) => {
@@ -60,16 +61,18 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
                 disabled={disabled}
                 onClick={onClick}
                 aria-label={ariaLabel}
-                className={`
-                    ${cls.btn} 
-                    ${cls[`btn--${variant}`]} 
-                    ${cls[`btn--${size}`]}
-                    ${disabled && cls['btn--disabled']}
-                    ${className ?? ''}
-                    ${isStatic && cls['btn--static']}
-                    ${square && cls['btn--square']}
-                    ${block && cls['btn--block']}
-            `}
+                className={clsx(
+                    cls.btn,
+                    cls[`btn--${variant}`],
+                    cls[`btn--${size}`],
+                    className,
+                    {
+                        [cls['btn--disabled']]: disabled,
+                        [cls['btn--static']]: isStatic,
+                        [cls['btn--square']]: square,
+                        [cls['btn--block']]: block,
+                    }
+                )}
             >
                 {renderLeadingIcon && renderLeadingIcon(cls.btn__leading_icon)}
                 {children}

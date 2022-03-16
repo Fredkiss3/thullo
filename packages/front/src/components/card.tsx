@@ -1,5 +1,5 @@
 import * as React from 'react';
-import cls from '@/styles/components/card.module.scss';
+import { clsx } from '@/lib/functions';
 import { Card as CardType } from '@/lib/types';
 import { Link } from 'react-router-dom';
 import { Button } from './button';
@@ -9,7 +9,8 @@ import type {
     DraggableProvidedDraggableProps,
     DraggableProvidedDragHandleProps,
 } from 'react-beautiful-dnd';
-import { clsx } from "@/lib/functions";
+
+import cls from '@/styles/components/card.module.scss';
 
 export interface CardProps {
     card: CardType;
@@ -28,7 +29,7 @@ export const Card = React.forwardRef<HTMLAnchorElement, CardProps>(
             style,
             draggableProps,
             dragHandleProps,
-            isDragging= false,
+            isDragging = false,
         },
         ref
     ) => {
@@ -54,10 +55,7 @@ export const Card = React.forwardRef<HTMLAnchorElement, CardProps>(
                         className={cls.card__button}
                         variant="primary"
                         renderTrailingIcon={(clsx) => (
-                            <Icon
-                                icon="plus"
-                                className={`${clsx} ${cls.card__button__icon}`}
-                            />
+                            <Icon icon="plus" className={clsx} />
                         )}
                     />
                 </Tag>

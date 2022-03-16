@@ -3,13 +3,13 @@
     display: flex;
     align-items: center;
     border-radius: var(--border-radius-md);
-    padding: 0.5rem 1rem;
     text-decoration: none;
-    gap: 0.5rem;
+    gap: 0.25rem;
     cursor: pointer;
     justify-content: center;
     flex-shrink: 0;
-    font-size: var(--font-size-md);
+    font-size: var(--font-size-sm);
+    padding: 0.5rem .75rem;
 
     --bg-color: transparent;
     --fg-color: var(--text-color);
@@ -40,11 +40,11 @@
 
     /* Button Elements */
     &__leading_icon {
-        height: 1.5rem;
+        height: 0.875rem;
     }
 
     &__trailing_icon {
-        height: 1.5rem;
+        height: 0.875rem;
     }
 }
 
@@ -134,7 +134,15 @@
 }
 
 .btn--square {
-    padding: 0.5rem;
+    padding: 0.40rem;
+
+    .btn__trailing_icon {
+        height: 1.1rem;
+    }
+
+    .btn__leading_icon {
+        height: 1.1rem;
+    }
 }
 
 /* Button Sizes */

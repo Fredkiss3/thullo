@@ -22,6 +22,7 @@
         max-height: 100%;
         padding: 0.5rem;
         padding-bottom: 10rem;
+        position: relative;
 
         & > * {
             width: 100%;
@@ -36,8 +37,8 @@
         &__placeholder {
             border-radius: var(--border-radius-lg);
             background-color: var(--primary-color-hollow);
-            border: 2px dashed var(--primary-color);
-            width: 100%;
+            border: 1px dashed var(--primary-color);
+            position: absolute;
         }
     }
 }

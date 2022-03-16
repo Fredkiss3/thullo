@@ -2,7 +2,8 @@
   "name": "@thullo/root",
   "version": "1.0.0",
   "scripts": {
-    "test": "jest --testPathIgnorePatterns=/scripts/templates/usecases/"
+    "test": "jest --testPathIgnorePatterns=/scripts/templates/usecases/",
+    "develop": "pnpm run --parallel dev"
   },
   "devDependencies": {
     "@types/jest": "^27.0.2",

@@ -15,7 +15,7 @@ import {
 import { BoardMember } from '@/lib/types';
 import { useToastContext } from '@/context/toast.context';
 import { TextArea } from './textarea';
-import { renderMarkdown } from '@/lib/functions';
+import { clsx, renderMarkdown } from '@/lib/functions';
 
 export interface DrawerMenuProps {
     open: boolean;
@@ -81,9 +81,10 @@ export function Drawer({ open, onClose }: DrawerMenuProps) {
         <>
             {/* Menu */}
             <nav
-                className={`${cls.drawer}
-                    ${open ? cls['drawer--open'] : cls['drawer--closed']}`}
-                // Close drawer after animation ends
+                className={clsx(cls.drawer, {
+                    [cls['drawer--open']]: open,
+                    [cls['drawer--closed']]: !open,
+                })}
             >
                 <header className={cls.drawer__header}>
                     <h2 className={cls.drawer__header__title}>Menu</h2>
@@ -136,10 +137,7 @@ export function Drawer({ open, onClose }: DrawerMenuProps) {
                                 onClick={() => setIsEditingDescription(true)}
                                 renderLeadingIcon={(clsx) => {
                                     return (
-                                        <Icon
-                                            icon="pencil"
-                                            className={`${clsx} ${cls.drawer__section__header__edit_btn__icon}`}
-                                        />
+                                        <Icon icon="pencil" className={clsx} />
                                     );
                                 }}
                             >
