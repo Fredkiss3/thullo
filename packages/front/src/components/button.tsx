@@ -31,6 +31,7 @@ export interface ButtonProps {
     ariaLabel?: string;
     square?: boolean;
     block?: boolean;
+    style?: React.CSSProperties;
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
@@ -43,9 +44,10 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             onClick,
             className,
             size,
-            type = 'button',
             ariaLabel,
             testId,
+            style,
+            type = 'button',
             isStatic = false,
             disabled = false,
             square = false,
@@ -55,6 +57,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     ) => {
         return (
             <button
+               style={style}
                 data-test-id={testId}
                 ref={ref}
                 type={type}

@@ -17,6 +17,7 @@ import { Error404Page } from './pages/404';
 import { DashboardIndex } from './pages/dashboard';
 import { DashboardDetails } from './pages/dashboard/board';
 import { ToastArea } from '@/components/toast-area';
+import { TestDndkit } from "@/pages/test-dndkit";
 
 const queryClient = new QueryClient({
     // do not refetch on window focus
@@ -48,6 +49,7 @@ function App() {
                 <QueryClientProvider client={queryClient}>
                     <Routes>
                         <Route path="/" element={<HomePage />} />
+                        <Route path="/dndkit" element={<TestDndkit />} />
                         <Route path="/login" element={<LoginPage />} />
                         <Route path="/callback" element={<CallBackPage />} />
                         <Route path="/profile" element={<ProfilePage />} />
