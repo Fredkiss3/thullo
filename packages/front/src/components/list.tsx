@@ -152,7 +152,6 @@ function SortableCard({ card, index, listId, ...props }: SortableCardProps) {
     });
 
     const style = {
-        // Outputs `translate3d(x, y, 0)`
         transform: CSS.Translate.toString(transform),
         transition,
     };
