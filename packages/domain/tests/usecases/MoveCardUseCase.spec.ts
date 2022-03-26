@@ -232,56 +232,6 @@ describe('MoveCard Use case', () => {
         expect(presenter.response!.errors!.cardId).toHaveLength(1);
     });
 
-    it('should show errors if the destination position is greater than the destination list size', async () => {
-        // Given
-        const aggregate: BoardAggregate = new BoardAggregateBuilder()
-            .withBoardId(BOARD_ID)
-            .withLists([
-                {
-                    id: todoListID,
-                    name: 'Todo',
-                    position: 0
-                },
-                {
-                    id: doneListID,
-                    name: 'Done',
-                    position: 1
-                }
-            ])
-            .withCards([firstCard])
-            .withParticipants([
-                {
-                    isAdmin: true,
-                    member: admin
-                }
-            ])
-            .build();
-
-        const boardAggregateRepository: BoardAggregateRepository =
-            new BoardAggregateRepositoryBuilder()
-                .withGetBoardAggregateById(async () => {
-                    return aggregate;
-                })
-                .build();
-
-        const useCase = new MoveCardUseCase(boardAggregateRepository);
-
-        // When
-        await useCase.execute(
-            {
-                ...request,
-                destinationListId: doneListID,
-                destinationPosition: 1
-            },
-            presenter
-        );
-
-        // Then
-        expect(presenter.response).not.toBe(null);
-        expect(presenter.response!.errors).not.toBeNull();
-        expect(presenter.response!.errors!.destinationPosition).toHaveLength(1);
-    });
-
     describe('Invalid Requests', () => {
         const dataset: { label: string; request: MoveCardRequest }[] = [
             {
