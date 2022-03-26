@@ -57,11 +57,30 @@ export type Card = {
     attachmentCount: number;
 };
 
+export type DraggableCardData = {
+    card: Card;
+    index: number;
+    listId: string;
+};
+
+export type DragHistory = {
+    cardId: string;
+    srcListId: string;
+    oldPosition: number;
+
+    destListId?: string;
+    newPosition?: number;
+};
+
+export type CardWithId = Omit<Card, 'id'> & { id: string };
+
 export type List = {
     id?: string;
     name: string;
     cards: Card[];
 };
+
+export type ListWithId = Omit<List, 'id'> & { id: string };
 
 export type BoardDetails = {
     id: string;

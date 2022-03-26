@@ -10,34 +10,39 @@
     align-items: start;
     gap: 1rem;
     border: 1px solid transparent;
-    position: relative;
+    cursor: grab;
 
     &:hover {
         border: 1px solid var(--primary-color-hollow);
     }
 
-    &:focus-visible,
-    &--dragging {
+    &:focus {
+        outline: none;
+    }
+
+    &:focus:not(&--dragging) {
         outline: none;
         border: 1px solid var(--primary-color);
         box-shadow: 0 0 0 0.25rem var(--primary-color-hollow);
     }
 
-    &--dragging-over {
-        //border: 1px dashed var(--primary-color);
-        background-color: lightgray;
+    &--dragging {
+        box-shadow: none;
+        border-radius: var(--border-radius-lg);
+        background-color: var(--primary-color-hollow);
+        border: 1px dashed var(--primary-color);
 
-        //&:before {
-        //    content: '';
-        //    position: absolute;
-        //    z-index: 4000;
-        //    height: 100%;
-        //    width: 100%;
-        //    border-radius: var(--border-radius-lg);
-        //    background-color: var(--primary-color-hollow);
-        //    border: 2px dashed var(--primary-color);
-        //    width: 100%;
-        //}
+        & * {
+            visibility: hidden !important;
+        }
+    }
+
+    &--overlay {
+        outline: none;
+        cursor: grabbing;
+        transform: rotate(2.81deg);
+        border: 1px solid var(--primary-color) !important;
+        box-shadow: 0 0 0 0.25rem var(--primary-color-hollow);
     }
 
     &__button {

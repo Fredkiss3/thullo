@@ -5,20 +5,16 @@ import { Link } from 'react-router-dom';
 import { Button } from './button';
 import { Icon } from './icon';
 
-import type {
-    DraggableProvidedDraggableProps,
-    DraggableProvidedDragHandleProps,
-} from 'react-beautiful-dnd';
-
 import cls from '@/styles/components/card.module.scss';
 
 export interface CardProps {
     card: CardType;
     boardId: string;
     style?: React.CSSProperties;
-    draggableProps?: DraggableProvidedDraggableProps;
-    dragHandleProps?: DraggableProvidedDragHandleProps;
     isDragging?: boolean;
+    isOverlay?: boolean;
+    isPlaceholder?: boolean;
+    otherProps?: any;
 }
 
 export const Card = React.forwardRef<HTMLAnchorElement, CardProps>(
@@ -27,9 +23,9 @@ export const Card = React.forwardRef<HTMLAnchorElement, CardProps>(
             card: { id, title },
             boardId,
             style,
-            draggableProps,
-            dragHandleProps,
+            otherProps,
             isDragging = false,
+            isOverlay = false,
         },
         ref
     ) => {
@@ -37,12 +33,12 @@ export const Card = React.forwardRef<HTMLAnchorElement, CardProps>(
         return (
             <>
                 <Tag
+                    {...otherProps}
                     ref={ref}
-                    {...draggableProps}
-                    {...dragHandleProps}
                     style={style}
                     className={clsx(cls.card, {
                         [cls[`card--dragging`]]: isDragging,
+                        [cls[`card--overlay`]]: isOverlay,
                     })}
                     to={`/dashboard/${boardId}/card/${id}`}
                 >
@@ -51,7 +47,7 @@ export const Card = React.forwardRef<HTMLAnchorElement, CardProps>(
                     <Button
                         square
                         isStatic
-                        disabled={!id}
+                        disabled={!id || isDragging}
                         className={cls.card__button}
                         variant="primary"
                         renderTrailingIcon={(clsx) => (

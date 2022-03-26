@@ -4,29 +4,17 @@ import { Remarkable } from 'remarkable';
 import { linkify } from 'remarkable/linkify';
 
 import { USER_TOKEN } from './constants';
-import {
+
+import type { Collision } from '@dnd-kit/core';
+import type {
     ApiErrors,
     ApiResult,
     Board,
     CategorizedBoards,
     ToastType,
     User,
+    ListWithId,
 } from './types';
-
-export function parseQueryStringFromURL(url: string): {
-    [key: string]: string;
-} {
-    const queryString = url.split('?')[1];
-    const params = queryString?.split('&') ?? [];
-    const query: { [key: string]: string } = {};
-
-    for (const param of params) {
-        const [key, value] = param.split('=');
-        query[key] = value;
-    }
-
-    return query;
-}
 
 export function getHostWithScheme(url: string): string {
     const urlObject = new URL(url);
@@ -69,6 +57,16 @@ export async function jsonFetch<T>(
         });
 }
 
+/**
+ * Set a cookie with the given name and value for the given number of days.
+ *
+ * @example
+ *      setCookie('name', 'value', 1);
+ *      // => "name=value; expires=86400"
+ * @param name
+ * @param value
+ * @param days
+ */
 export function setCookie(name: string, value: string, days: number = 7): void {
     const date = new Date();
     date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
@@ -76,6 +74,14 @@ export function setCookie(name: string, value: string, days: number = 7): void {
     document.cookie = `${name}=${value};${expires};path=/`;
 }
 
+/**
+ * Get the value of a cookie with the given name.
+ * @example
+ *      getCookie('name');
+ *      // => "value"
+ * @param name
+ * @returns
+ */
 export function getCookie(name: string): string | null {
     const value = `; ${document.cookie}`;
     const parts = value.split(`; ${name}=`);
@@ -86,11 +92,23 @@ export function getCookie(name: string): string | null {
     return null;
 }
 
+/**
+ *  Remove a cookie with the given name.
+ * @param name
+ */
 export function deleteCookie(name: string): void {
     // Delete the cookie by setting the expiration date in the past
     document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
 }
 
+/**
+ * Get the initials of a user name.
+ * @example
+ *      getInitials('John Doe');
+ *      // => "JD"
+ * @param name
+ * @returns
+ */
 export function getInitials(name: string): string {
     const words = name.split(' ');
     const initials = words.map((word) => word[0]).join('');
@@ -126,7 +144,7 @@ export function debounce(callback: Function, delay: number = 500) {
 }
 
 /**
- * Chnage APIErrors Format to toast format
+ * Change APIErrors Format to toast format
  */
 export function formatAPIError(errors: ApiErrors): {
     key: string;
@@ -142,10 +160,25 @@ export function formatAPIError(errors: ApiErrors): {
           }));
 }
 
+/**
+ * Generate an array of numbers from start to the end
+ *
+ * @example
+ *      range(1, 5);
+ *      // => [1, 2, 3, 4]
+ * @param start
+ * @param end
+ * @returns
+ */
 export function range(start: number, end: number): number[] {
     return Array.from({ length: end - start }, (_, i) => i + start);
 }
 
+/**
+ * Render markdown to html
+ * @param markdown
+ * @returns
+ */
 export function renderMarkdown(markdown: string): string {
     return new Remarkable('full', {
         html: true,
@@ -157,6 +190,19 @@ export function renderMarkdown(markdown: string): string {
         .replace(/\n/g, '<br>');
 }
 
+/**
+ * Concatenate the specified classNames automatically with spaces.
+ *  - If the className is undefined, it is ignored.
+ *  - If the className is passed as a record of {class: condition }, it returns the class only if the condition is true.
+ *
+ * @example
+ *      clsx('class1', 'class2', { class: true }) // 'class1 class2 class'
+ *      clsx('class1', 'class2', { class: false }) // 'class1 class2'
+ *      clsx('class1', undefined) // 'class1'
+ *
+ * @param args
+ * @returns
+ */
 export function clsx(
     ...args: (string | undefined | Record<string, boolean>)[]
 ): string {
@@ -178,4 +224,116 @@ export function clsx(
     }
 
     return classes.join(' ');
+}
+
+/**
+ * transform array of elements with id property to a record of id : element
+ *
+ * @example
+ *   const elements = [{id: 1}, {id: 2}];
+ *   const record = arrayToRecord(elements); // record = {1: {id: 1}, 2: {id: 2}}
+ */
+export function arrayToRecord<T extends { id?: string }>(
+    array: T[]
+): Record<string, T> {
+    return array.reduce((acc, cur, index) => {
+        const id = cur['id'];
+        if (id) {
+            acc[id] = cur;
+        } else {
+            acc[index] = cur;
+        }
+        return acc;
+    }, {} as Record<string, T>);
+}
+
+export type MoveCardArgs = {
+    srcList: ListWithId;
+    destList: ListWithId;
+    srcIndex: number;
+    destIndex: number;
+};
+
+/**
+ * Move card from one list to another
+ *
+ * @example
+ *      const list1 = {id: 1, cards: [{id: 1}, {id: 2}]};
+ *      const list2 = {id: 2, cards: [{id: 3}, {id: 4}]};
+ *
+ *      moveCardBetweenLists({
+ *          srcList: list1,
+ *          destList: list2,
+ *          srcIndex: 0,
+ *          destIndex: 0})
+ *
+ *      // list1 = {id: 1, cards: [{id: 2}]}
+ *      // list2 = {id: 2, cards: [{id: 1}, {id: 3}, {id: 4}]}
+ *
+ * @param
+ * @returns
+ */
+export function moveCardBetweenLists({
+    srcList,
+    destList,
+    srcIndex,
+    destIndex,
+}: MoveCardArgs): { srcList: ListWithId; destList: ListWithId } {
+    // remove card from src list
+    const cardToMove = srcList!.cards!.splice(srcIndex, 1)[0];
+
+    // insert card in dest list at position
+    destList!.cards.splice(destIndex, 0, {
+        ...cardToMove,
+    });
+
+    return { srcList, destList };
+}
+
+/**
+ * Deepcopy an object
+ * @param obj
+ */
+export function deepCopy<T>(obj: T): T {
+    return JSON.parse(JSON.stringify(obj));
+}
+
+/**
+ * get the max element of an array
+ * @param array
+ */
+export function getMax<T>(array: T[], key: keyof T): T {
+    return array.reduce((acc, cur) => {
+        return acc[key] > cur[key] ? acc : cur;
+    });
+}
+
+/**
+ * to find the nearest collision, We have to go through each element in order:
+ *     - if the element is a droppable, continue
+ *     - if the element is the same as the active element, continue
+ *     - else we stop and return the element
+ */
+export function getNextCollision(
+    collisions: Collision[] | null,
+    overId: string,
+    activeId: string,
+    droppableIds: Record<string, any>
+): Collision | null {
+    let collisionFound: Collision | null = null;
+
+    if (collisions !== null) {
+        for (const collision of collisions) {
+            if (
+                collision.id !== overId &&
+                collision.id !== activeId &&
+                !(overId in droppableIds)
+            ) {
+                collisionFound = collision;
+                break;
+            }
+        }
+    }
+
+    return collisionFound;
 }

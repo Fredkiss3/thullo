@@ -1,18 +1,8 @@
 import * as React from 'react';
 
-import {
-    DragDropContext,
-    DragStart,
-    DragUpdate,
-    DropResult,
-    ResponderProvided,
-} from 'react-beautiful-dnd';
-
 // Functions & Other
 import { useNavigate, useParams } from 'react-router-dom';
 import {
-    useAddListMutation,
-    useMoveCardMutation,
     useRemoveMemberMutation,
     useSingleBoardQuery,
     useUserQuery,
@@ -20,12 +10,7 @@ import {
 import { useToastContext } from '@/context/toast.context';
 import { useOnClickOutside } from '@/lib/hooks';
 
-import type {
-    BoardDetails,
-    BoardMember,
-    DraggablePlaceholder,
-    User,
-} from '@/lib/types';
+import type { BoardDetails, BoardMember, User } from '@/lib/types';
 
 // Components
 import { Loader } from '@/components/loader';
@@ -37,12 +22,11 @@ import { Avatar } from '@/components/avatar';
 import { MemberSearch } from '@/components/member-search';
 import { Dropdown } from '@/components/dropdown';
 import { BoardVisilityDropdown } from '@/components/board-visibility-toggler';
+import { Drawer } from '@/components/drawer';
+import { ColumnsSection } from '@/components/column-section';
 
 // styles
 import cls from '@/styles/pages/dashboard/board.module.scss';
-import { List } from '@/components/list';
-import { Drawer } from '@/components/drawer';
-import { Input } from '@/components/input';
 
 export function DashboardDetails() {
     const { boardId } = useParams<{ boardId: string }>();
@@ -292,285 +276,5 @@ function AvatarButton({
                 </Dropdown>
             )}
         </div>
-    );
-}
-
-const getDraggedDom = (draggableId: string) => {
-    const domQuery = `[data-rbd-drag-handle-draggable-id='${draggableId}']`;
-    return document.querySelector<HTMLAnchorElement>(domQuery);
-};
-
-function ColumnsSection({
-    lists,
-    userIsParticipant,
-    id,
-}: BoardDetails & { userIsParticipant: boolean }) {
-    const [isAddingList, setIsAddingList] = React.useState(false);
-    const mutation = useMoveCardMutation();
-    const { dispatch } = useToastContext();
-
-    const moveCard = React.useCallback(
-        (
-            cardId: string,
-            srcListId: string,
-            destListId: string,
-            position: number,
-            oldPosition: number
-        ) => {
-            mutation.mutate({
-                boardId: id,
-                cardId,
-                srcListId,
-                destListId,
-                position,
-                oldPosition,
-                onSuccess: () => {
-                    dispatch({
-                        type: 'ADD_SUCCESS',
-                        key: `card-move-${new Date().getTime()}`,
-                        message: 'Card successfully moved.',
-                    });
-                },
-            });
-        },
-        []
-    );
-
-    const [placeholderProps, setPlaceholderProps] =
-        React.useState<DraggablePlaceholder>(null);
-
-    const handleDragStart = (event: DragStart) => {
-        const draggedDOM = getDraggedDom(event.draggableId);
-
-        if (!draggedDOM) {
-            return;
-        }
-
-        const { clientHeight, clientWidth } = draggedDOM;
-
-        if (draggedDOM.parentNode) {
-            const sourceIndex = event.source.index;
-            var clientY =
-                parseFloat(
-                    window.getComputedStyle(
-                        draggedDOM.parentNode as HTMLElement
-                    ).paddingTop
-                ) +
-                [...draggedDOM.parentNode.children]
-                    .slice(0, sourceIndex)
-                    .reduce((total, curr) => {
-                        const style = window.getComputedStyle(curr);
-                        const marginBottom = parseFloat(style.marginBottom);
-                        return total + curr.clientHeight + marginBottom;
-                    }, 0);
-
-            setPlaceholderProps({
-                clientHeight,
-                clientWidth,
-                clientY,
-                clientX: parseFloat(
-                    window.getComputedStyle(
-                        draggedDOM.parentNode as HTMLElement
-                    ).paddingLeft
-                ),
-            });
-        }
-    };
-
-    const handleDragUpdate = (event: DragUpdate) => {
-        if (!event.destination) {
-            return;
-        }
-
-        const draggedDOM = getDraggedDom(event.draggableId);
-
-        if (!draggedDOM || !draggedDOM.parentNode) {
-            return;
-        }
-
-        const { clientHeight, clientWidth } = draggedDOM;
-        const destinationIndex = event.destination.index;
-        const sourceIndex = event.source.index;
-
-        const childrenArray = [...draggedDOM.parentNode.children];
-        const movedItem = childrenArray[sourceIndex];
-        childrenArray.splice(sourceIndex, 1);
-
-        const updatedArray = [
-            ...childrenArray.slice(0, destinationIndex),
-            movedItem,
-            ...childrenArray.slice(destinationIndex + 1),
-        ];
-
-        var clientY =
-            parseFloat(
-                window.getComputedStyle(draggedDOM.parentNode as HTMLElement)
-                    .paddingTop
-            ) +
-            updatedArray.slice(0, destinationIndex).reduce((total, curr) => {
-                const style = window.getComputedStyle(curr);
-                const marginBottom = parseFloat(style.marginBottom);
-                return total + curr.clientHeight + marginBottom;
-            }, 0);
-
-        setPlaceholderProps({
-            clientHeight,
-            clientWidth,
-            clientY,
-            clientX: parseFloat(
-                window.getComputedStyle(draggedDOM.parentNode as HTMLElement)
-                    .paddingLeft
-            ),
-        });
-    };
-
-    const handleDragEnd = (result: DropResult) => {
-        setPlaceholderProps(null);
-        const { source, destination, draggableId } = result;
-
-        if (!destination) {
-            return;
-        }
-
-        const srcPosition = source.index;
-        const destPosition = destination.index;
-        const srcListId = source.droppableId;
-        const destListId = destination.droppableId;
-
-        // don't move the card if it's already in the same list and position
-        if (srcListId !== destListId || srcPosition !== destPosition) {
-            moveCard(
-                draggableId,
-                srcListId,
-                destListId,
-                destPosition,
-                srcPosition
-            );
-        }
-    };
-
-    return (
-        <DragDropContext
-            onDragUpdate={handleDragUpdate}
-            onDragEnd={handleDragEnd}
-            onDragStart={handleDragStart}
-        >
-            <section className={cls.column_section}>
-                {lists.map((list, index) => (
-                    <List
-                        placeholderProps={placeholderProps}
-                        isUserParticipant={userIsParticipant}
-                        boardId={id}
-                        key={list.id ?? index}
-                        list={list}
-                        className={cls.column_section__list}
-                    />
-                ))}
-
-                {userIsParticipant && (
-                    <div className={cls.column_section__list}>
-                        {!isAddingList ? (
-                            <Button
-                                testId="add-list-btn"
-                                className={cls.add_button}
-                                onClick={() => setIsAddingList(true)}
-                                variant={`primary-hollow`}
-                            >
-                                <span>
-                                    {lists.length === 0
-                                        ? 'Add a list'
-                                        : 'Add another list'}
-                                </span>
-                                <Icon
-                                    icon="plus"
-                                    className={cls.add_button__icon}
-                                />
-                            </Button>
-                        ) : (
-                            <AddListForm
-                                boardId={id}
-                                onCancel={() => setIsAddingList(false)}
-                            />
-                        )}
-                    </div>
-                )}
-            </section>
-        </DragDropContext>
-    );
-}
-
-function AddListForm({
-    boardId,
-    onCancel,
-}: {
-    boardId: string;
-    onCancel: () => void;
-}) {
-    const { dispatch } = useToastContext();
-    const mutation = useAddListMutation();
-    const [listName, setListName] = React.useState('');
-    const ref = React.useRef<HTMLInputElement>(null);
-
-    const addList = React.useCallback(() => {
-        mutation.mutate({
-            boardId,
-            name: listName,
-            onSuccess: () => {
-                dispatch({
-                    type: 'ADD_SUCCESS',
-                    key: `board-add-list-${new Date().getTime()}`,
-                    message: 'List successfully added to the board.',
-                });
-            },
-        });
-
-        setListName('');
-        onCancel();
-    }, [listName]);
-
-    React.useEffect(() => {
-        if (ref.current) {
-            ref.current.focus();
-        }
-    }, []);
-
-    return (
-        <>
-            <form
-                data-test-id="add-list-form"
-                className={cls.column_section__list__add_form}
-                onSubmit={(e) => {
-                    e.preventDefault();
-                    addList();
-                }}
-            >
-                <Input
-                    ref={ref}
-                    placeholder="New List name"
-                    value={listName}
-                    className={cls.column_section__list__add_form__input}
-                    onChange={(newName) => setListName(newName)}
-                />
-                <div className={cls.column_section__list__add_form__buttons}>
-                    <Button
-                        type="submit"
-                        variant="success"
-                        disabled={listName.length === 0}
-                    >
-                        Add List
-                    </Button>
-
-                    <Button
-                        square
-                        className={
-                            cls.column_section__list__add_form__cancel_btn
-                        }
-                        onClick={onCancel}
-                    >
-                        Cancel
-                    </Button>
-                </div>
-            </form>
-        </>
     );
 }

@@ -1198,13 +1198,7 @@ export function useMoveCardMutation() {
             };
         },
         {
-            onMutate: async ({
-                boardId,
-                srcListId,
-                position,
-                oldPosition,
-                destListId,
-            }) => {
+            onMutate: async () => {
                 dispatch({
                     type: 'ADD_INFO',
                     key: `board-move-card`,
@@ -1212,37 +1206,16 @@ export function useMoveCardMutation() {
                     keep: true,
                     closeable: false,
                 });
-
-                // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
-                await queryClient.cancelQueries([SINGLE_BOARD_QUERY, boardId]);
-
-                // Change optimistically the board in the cache
-                const data = queryClient.getQueryData<BoardDetails>([
-                    SINGLE_BOARD_QUERY,
-                    boardId,
-                ]);
-
-                const srcList = data!.lists.find(
-                    (list) => list.id === srcListId
-                );
-                const destList = data!.lists.find(
-                    (list) => list.id === destListId
-                );
-
-                // remove card from src list
-                const cardToMove = srcList!.cards!.splice(oldPosition, 1)[0];
-
-                // insert card in dest list at position
-                destList!.cards.splice(position, 0, {
-                    ...cardToMove,
-                });
-
-                queryClient.setQueryData<BoardDetails>(
-                    [SINGLE_BOARD_QUERY, boardId],
-                    data!
-                );
             },
-            onSettled: () => {
+            onSettled: (ctx) => {
+                // Invalidate the board cache
+                if (ctx) {
+                    queryClient.invalidateQueries([
+                        SINGLE_BOARD_QUERY,
+                        ctx.boardId,
+                    ]);
+                }
+
                 dispatch({
                     type: 'REMOVE_TOAST',
                     key: `board-move-card`,
@@ -1251,10 +1224,7 @@ export function useMoveCardMutation() {
             onSuccess: (ctx) => {
                 ctx.onSuccess();
             },
-            onError: (
-                err,
-                { boardId, srcListId, destListId, position, oldPosition }
-            ) => {
+            onError: (err) => {
                 try {
                     console.error(`Error: ${err}`);
                     const errors = JSON.parse(
@@ -1272,33 +1242,6 @@ export function useMoveCardMutation() {
                         key: `board-move-card-${new Date().getTime()}`,
                         message: `Could not move the selected card.`,
                     });
-                } finally {
-                    // Revert optimistic update
-                    const data = queryClient.getQueryData<BoardDetails>([
-                        SINGLE_BOARD_QUERY,
-                        boardId,
-                    ])!;
-
-                    const srcList = data!.lists.find(
-                        (list) => list.id === srcListId
-                    );
-
-                    const destList = data!.lists.find(
-                        (list) => list.id === destListId
-                    );
-
-                    // remove card from dest list
-                    const cardToMove = destList!.cards.splice(position, 1)[0];
-
-                    // insert card in src list at position
-                    srcList!.cards.splice(oldPosition, 0, {
-                        ...cardToMove,
-                    });
-
-                    queryClient.setQueryData<BoardDetails>(
-                        [SINGLE_BOARD_QUERY, boardId],
-                        data!
-                    );
                 }
             },
         }
