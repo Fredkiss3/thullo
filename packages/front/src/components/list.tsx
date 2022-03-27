@@ -72,6 +72,7 @@ export function CardSection({
 
     const { setNodeRef } = useDroppable({
         id: list.id,
+        disabled: !isUserParticipant,
     });
 
     const cardsWithId: CardWithId[] = list.cards.filter(
@@ -89,6 +90,7 @@ export function CardSection({
             >
                 {cardsWithId.map((card, index) => (
                     <SortableCard
+                        disabled={!isUserParticipant}
                         listId={list.id}
                         index={index}
                         key={card.id}
@@ -132,9 +134,10 @@ interface SortableCardProps extends CardProps {
     card: CardWithId;
     listId: string;
     index: number;
+    disabled?: boolean;
 }
 
-function SortableCard({ card, index, listId, ...props }: SortableCardProps) {
+function SortableCard({ card, index, listId, disabled, ...props }: SortableCardProps) {
     const {
         attributes,
         listeners,
@@ -144,6 +147,7 @@ function SortableCard({ card, index, listId, ...props }: SortableCardProps) {
         isDragging,
     } = useSortable({
         id: card.id,
+        disabled,
         data: {
             card,
             index,

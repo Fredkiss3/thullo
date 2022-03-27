@@ -9,7 +9,7 @@ import { Avatar } from './avatar';
 import { Skeleton } from './skeleton';
 
 // Styles
-import cls from '../styles/components/boardcard.module.scss';
+import cls from '@/styles/components/boardcard.module.scss';
 
 export interface BoardCardProps {
     board?: Board;
