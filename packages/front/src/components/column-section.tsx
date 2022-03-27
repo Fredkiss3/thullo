@@ -14,8 +14,6 @@ import {
 import {
     closestCenter,
     DndContext,
-    DragCancelEvent,
-    DragEndEvent,
     DragOverEvent,
     DragOverlay,
     DragStartEvent,
@@ -88,11 +86,9 @@ export function ColumnsSection({
         React.useState<Record<string, ListType> | null>(null);
 
     // Effect
-    // React.useEffect(() => {
-    //     // 1 - run it the first time
-    //     // 2 - run it when the list is updated
-    //     setListsToReorder(arrayToRecord(lists));
-    // }, [lists]);
+    React.useEffect(() => {
+        setListsToReorder(arrayToRecord(lists));
+    }, [lists]);
 
     return (
         <DndContext
