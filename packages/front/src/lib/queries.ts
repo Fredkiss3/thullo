@@ -1224,7 +1224,7 @@ export function useMoveCardMutation() {
             onSuccess: (ctx) => {
                 ctx.onSuccess();
             },
-            onError: (err) => {
+            onError: (err, ctx) => {
                 try {
                     console.error(`Error: ${err}`);
                     const errors = JSON.parse(
@@ -1242,6 +1242,11 @@ export function useMoveCardMutation() {
                         key: `board-move-card-${new Date().getTime()}`,
                         message: `Could not move the selected card.`,
                     });
+                } finally {
+                    queryClient.invalidateQueries([
+                        SINGLE_BOARD_QUERY,
+                        ctx.boardId,
+                    ]);
                 }
             },
         }
