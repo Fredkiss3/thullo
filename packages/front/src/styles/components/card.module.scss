@@ -60,6 +60,7 @@
 
     &--overlay {
         & .card__drag_handle {
+            display: flex;
             cursor: grabbing;
         }
     }
@@ -79,8 +80,15 @@
         border: 1px solid transparent;
         transition: all 0.3s ease;
 
-        &:hover, &:focus {
+        &:hover,
+        &:focus {
             background-color: var(--hollow-color-ring);
+        }
+
+        &:focus,
+        &:active {
+            outline: none;
+            border: 1px solid var(--secondary-color);
         }
 
         &__icon {
@@ -90,7 +98,8 @@
     }
 
     &:hover > &__drag_handle,
-    &:focus > &__drag_handle {
+    &:focus > &__drag_handle,
+    &:focus-within > &__drag_handle {
         display: flex;
     }
 }
