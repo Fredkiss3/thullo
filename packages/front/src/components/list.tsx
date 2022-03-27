@@ -164,6 +164,7 @@ function SortableCard({ card, index, listId, disabled, ...props }: SortableCardP
         <Card
             ref={setNodeRef}
             {...props}
+            dragDisabled={disabled}
             style={style}
             isDragging={isDragging}
             card={card}

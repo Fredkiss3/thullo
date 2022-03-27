@@ -14,6 +14,7 @@ export interface CardProps {
     isDragging?: boolean;
     isOverlay?: boolean;
     isPlaceholder?: boolean;
+    dragDisabled?: boolean;
     otherProps?: any;
 }
 
@@ -24,6 +25,7 @@ export const Card = React.forwardRef<HTMLAnchorElement, CardProps>(
             boardId,
             style,
             otherProps,
+            dragDisabled = false,
             isDragging = false,
             isOverlay = false,
         },
@@ -42,13 +44,17 @@ export const Card = React.forwardRef<HTMLAnchorElement, CardProps>(
                     to={`/dashboard/${boardId}/card/${id}`}
                 >
                     <span className={cls.card__title}>{title}</span>
-                    <button className={cls.card__drag_handle} {...otherProps}>
-                        <Icon
-                            icon="drag-handle"
-                            className={cls.card__drag_handle__icon}
-                        />
-                    </button>
-
+                    {!dragDisabled && (
+                        <button
+                            className={cls.card__drag_handle}
+                            {...otherProps}
+                        >
+                            <Icon
+                                icon="drag-handle"
+                                className={cls.card__drag_handle__icon}
+                            />
+                        </button>
+                    )}
                     <Button
                         square
                         isStatic
