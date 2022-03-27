@@ -10,7 +10,8 @@
     align-items: start;
     gap: 1rem;
     border: 1px solid transparent;
-    cursor: grab;
+    cursor: pointer;
+    position: relative;
 
     &:hover {
         border: 1px solid var(--primary-color-hollow);
@@ -39,7 +40,6 @@
 
     &--overlay {
         outline: none;
-        cursor: grabbing;
         transform: rotate(2.81deg);
         border: 1px solid var(--primary-color) !important;
         box-shadow: 0 0 0 0.25rem var(--primary-color-hollow);
@@ -52,8 +52,45 @@
             height: 1.1rem;
         }
     }
+
     &__title {
         max-width: 100%;
         overflow-wrap: break-word;
+    }
+
+    &--overlay {
+        & .card__drag_handle {
+            cursor: grabbing;
+        }
+    }
+
+    &__drag_handle {
+        display: none;
+        cursor: grab;
+        padding: 0.75rem 0.8rem;
+        align-items: center;
+        border-radius: var(--border-radius-md);
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+
+        color: var(--black-color);
+        background-color: var(--hollow-color);
+        border: 1px solid transparent;
+        transition: all 0.3s ease;
+
+        &:hover, &:focus {
+            background-color: var(--hollow-color-ring);
+        }
+
+        &__icon {
+            height: 1rem;
+            color: var(--secondary-color);
+        }
+    }
+
+    &:hover > &__drag_handle,
+    &:focus > &__drag_handle {
+        display: flex;
     }
 }

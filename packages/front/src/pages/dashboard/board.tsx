@@ -24,6 +24,7 @@ import { Dropdown } from '@/components/dropdown';
 import { BoardVisilityDropdown } from '@/components/board-visibility-toggler';
 import { Drawer } from '@/components/drawer';
 import { ColumnsSection } from '@/components/column-section';
+import { Outlet } from 'react-router-dom';
 
 // styles
 import cls from '@/styles/pages/dashboard/board.module.scss';
@@ -81,6 +82,8 @@ export function DashboardDetails() {
                     />
                 </>
             )}
+
+            <Outlet />
         </Layout>
     );
 }
