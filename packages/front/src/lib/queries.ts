@@ -1198,7 +1198,7 @@ export function useMoveCardMutation() {
             };
         },
         {
-            onMutate: async () => {
+            onMutate: async ({ boardId }) => {
                 dispatch({
                     type: 'ADD_INFO',
                     key: `board-move-card`,
@@ -1206,6 +1206,9 @@ export function useMoveCardMutation() {
                     keep: true,
                     closeable: false,
                 });
+
+                // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
+                await queryClient.cancelQueries([SINGLE_BOARD_QUERY, boardId]);
             },
             onSettled: (ctx) => {
                 // Invalidate the board cache
