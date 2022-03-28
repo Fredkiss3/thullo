@@ -3,7 +3,7 @@ import {
     __UC__UseCase,
     __UC__Presenter,
     __UC__Response
-} from '@thullo/domain';
+} from '../../src';
 
 const presenter = new (class implements __UC__Presenter {
     response?: __UC__Response | null;
