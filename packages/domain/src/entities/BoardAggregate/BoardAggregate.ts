@@ -49,6 +49,16 @@ export class BoardAggregate {
         }
     }
 
+    private checkAdminOrThrowError(memberId: MemberId, message: string): void {
+        if (
+            this._participants.find(
+                ({ member: { id }, isAdmin }) => id === memberId && isAdmin
+            ) === undefined
+        ) {
+            throw new OperationUnauthorizedError(message);
+        }
+    }
+
     addMemberToBoard(member: Member): void {
         if (
             this._participants.find(
@@ -129,13 +139,13 @@ export class BoardAggregate {
         this._board.description = description;
     }
 
-    private checkAdminOrThrowError(memberId: MemberId, message: string): void {
-        if (
-            this._participants.find(
-                ({ member: { id }, isAdmin }) => id === memberId && isAdmin
-            ) === undefined
-        ) {
-            throw new OperationUnauthorizedError(message);
+    removeListFromBoard(listId: ListId) {
+        if (listId in this.listsByIds) {
+            const { [listId]: list, ...rest } = this._listsById;
+            const { [listId]: cards, ...restCards } = this._cardsByListIds;
+
+            this._listsById = rest;
+            this._cardsByListIds = restCards;
         }
     }
 
