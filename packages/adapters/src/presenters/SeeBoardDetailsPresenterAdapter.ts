@@ -27,6 +27,7 @@ interface BoardAggregateData {
     lists: Array<{
         id: string;
         name: string;
+        position: number;
         cards: Array<{
             id: string;
             title: string;
@@ -96,6 +97,7 @@ export class SeeBoardDetailsPresenterAdapter
                           return {
                               id: short().fromUUID(id),
                               name: board.listsByIds[id].name,
+                              position: board.listsByIds[id].position,
                               cards: cards.map(
                                   ({
                                       id,
