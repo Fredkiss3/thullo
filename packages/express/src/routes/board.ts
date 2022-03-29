@@ -3,9 +3,9 @@ import router from 'express-promise-router';
 import { auth_middleware } from '../middleware/auth';
 import { getController } from '../lib/functions';
 
-import { MoveCardController } from './../controllers/MoveCardController';
-import { AddCardController } from './../controllers/AddCardController';
-import { UpdateBoardDescriptionController } from './../controllers/UpdateBoardDescriptionController';
+import { MoveCardController } from '../controllers/MoveCardController';
+import { AddCardController } from '../controllers/AddCardController';
+import { UpdateBoardDescriptionController } from '../controllers/UpdateBoardDescriptionController';
 import { AddBoardController } from '../controllers/AddBoardController';
 import { SetBoardVisibilityController } from '../controllers/SetBoardVisibilityController';
 import { GetAllBoardsController } from '../controllers/GetAllBoardsController';
@@ -14,6 +14,8 @@ import { AddMemberToBoardController } from '../controllers/AddMemberToBoardContr
 import { RemoveMemberFromBoardController } from '../controllers/RemoveMemberFromBoardController';
 import { ChangeBoardNameController } from '../controllers/ChangeBoardNameController';
 import { AddListToBoardController } from '../controllers/AddListToBoardController';
+import { RenameListController } from '../controllers/RenameListController';
+import { DeleteListController } from '../controllers/DeleteListController';
 
 const Router = router();
 
@@ -59,6 +61,15 @@ Router.get('/', getController(GetAllBoardsController))
         '/:boardId/lists/:listId/cards',
         auth_middleware,
         getController(AddCardController)
+    )
+    .put(
+        '/:boardId/lists/:listId/rename',
+        auth_middleware,
+        getController(RenameListController)
+    )
+    .delete(
+        '/:boardId/lists/:listId',
+        auth_middleware,
+        getController(DeleteListController)
     );
-
 export { Router as boardRouter };
