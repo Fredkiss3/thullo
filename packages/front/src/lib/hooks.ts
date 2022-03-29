@@ -1,4 +1,5 @@
-import { RefObject, useEffect, useRef } from 'react';
+import { RefObject, useEffect, useRef, useState } from 'react';
+import * as React from 'react';
 
 function useEventListener<K extends keyof WindowEventMap>(
     eventName: K,
@@ -65,4 +66,24 @@ export function useOnClickOutside<T extends HTMLElement = HTMLElement>(
 
         handler(event);
     });
+}
+
+export function useDropdownToggle(): [
+    ref: RefObject<any>,
+    isOpen: boolean,
+    toggle: () => void,
+] {
+    const [showDropdown, setShowDropdown] = useState(false);
+    const dropdownRef = React.useRef(null);
+    useOnClickOutside(dropdownRef, () => {
+        setShowDropdown(false);
+    });
+
+    return [
+        dropdownRef,
+        showDropdown,
+        () => {
+            setShowDropdown(!showDropdown);
+        },
+    ];
 }

@@ -1,22 +1,29 @@
 import * as React from 'react';
 
-import { List as ListType, ListWithId, CardWithId } from '@/lib/types';
-import cls from '@/styles/components/list.module.scss';
-import { Icon } from '@/components/icon';
-import { Button } from '@/components/button';
-import { useToastContext } from '@/context/toast.context';
-import { Card, CardProps } from './card';
-import { useState } from 'react';
-import { AddCardForm } from './addcard-form';
-import { clsx } from '@/lib/functions';
-import { useDroppable } from '@dnd-kit/core';
+// functions & others
+import type { List as ListType, ListWithId, CardWithId } from '@/lib/types';
 import {
     SortableContext,
     useSortable,
     verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
-
 import { CSS } from '@dnd-kit/utilities';
+import { useDroppable } from '@dnd-kit/core';
+import { useDropdownToggle, useOnClickOutside } from '@/lib/hooks';
+import { clsx } from '@/lib/functions';
+import { useDeleteListMutation, useRenameListMutation } from '@/lib/queries';
+
+// Components
+import { Icon } from '@/components/icon';
+import { Button } from '@/components/button';
+import { Card, CardProps } from '@/components/card';
+import { AddCardForm } from '@/components/addcard-form';
+import { Dropdown } from '@/components/dropdown';
+import { Input } from '@/components/input';
+
+// Styles
+import cls from '@/styles/components/list.module.scss';
+import { useToastContext } from '@/context/toast.context';
 
 export interface ListProps {
     list: ListType;
@@ -30,25 +37,71 @@ function isListWithId(list: ListType): list is ListWithId {
 }
 
 export function List({ list, className, ...props }: ListProps) {
+    const renameListMutation = useRenameListMutation();
+    const deleteListMutation = useDeleteListMutation();
     const { dispatch } = useToastContext();
+
+    // state
+    const [isEditingName, setIsEditingName] = React.useState(false);
+    const [name, setName] = React.useState(list.name);
+    const [ref, isOpen, toggle] = useDropdownToggle();
+
+    const inputRef = React.useRef<HTMLInputElement>(null);
+
+    // focus input on click
+    React.useEffect(() => {
+        if (isEditingName) {
+            inputRef.current?.focus();
+        }
+    }, [isEditingName]);
+
+    // update list name
+    React.useEffect(() => {
+        if (list.name) {
+            setName(list.name);
+        }
+    }, [list]);
 
     return (
         <div className={clsx(cls.list, className)}>
             <div className={cls.list__header}>
-                <span>{list.name}</span>
-                <Button
-                    square
-                    renderTrailingIcon={(cls) => (
-                        <Icon icon="h-dots" className={cls} />
-                    )}
-                    onClick={() => {
-                        dispatch({
-                            type: 'ADD_WARNING',
-                            key: 'list',
-                            message: 'This feature is not implemented yet',
-                        });
-                    }}
-                />
+                {isEditingName && isListWithId(list) ? (
+                    <Input
+                        value={name}
+                        onChange={setName}
+                        ref={inputRef}
+                        onBlur={updateListName}
+                    />
+                ) : (
+                    <span onClick={() => setIsEditingName(true)}>{name}</span>
+                )}
+
+                {isListWithId(list) && (
+                    <div className={cls.list__header__dropdown} ref={ref}>
+                        <Button
+                            square
+                            renderTrailingIcon={(cls) => (
+                                <Icon icon="h-dots" className={cls} />
+                            )}
+                            onClick={toggle}
+                        />
+
+                        <Dropdown
+                            align={'left'}
+                            className={clsx(cls.list__header__dropdown__menu, {
+                                [cls[`list__header__dropdown__menu--open`]]:
+                                    isOpen,
+                            })}
+                        >
+                            <Button
+                                variant={`danger-hollow`}
+                                onClick={deleteList}
+                            >
+                                Delete this list
+                            </Button>
+                        </Dropdown>
+                    </div>
+                )}
             </div>
             {isListWithId(list) ? (
                 <CardSection {...props} list={list} />
@@ -58,7 +111,43 @@ export function List({ list, className, ...props }: ListProps) {
             )}
         </div>
     );
+
+    function updateListName() {
+        if (name.trim().length > 0 && name.trim() !== list.name) {
+            renameListMutation.mutate({
+                boardId: props.boardId,
+                listId: list.id!,
+                newName: name.trim(),
+                oldName: list.name,
+                onSuccess: () => {
+                    dispatch({
+                        type: 'ADD_SUCCESS',
+                        key: `board-rename-list-${new Date().getTime()}`,
+                        message: 'List renamed successfully',
+                    });
+                },
+            });
+        }
+
+        setName(name.trim());
+        setIsEditingName(false);
+    }
+
+    function deleteList() {
+        deleteListMutation.mutate({
+            boardId: props.boardId,
+            list: list as ListWithId,
+            onSuccess: () => {
+                dispatch({
+                    type: 'ADD_SUCCESS',
+                    key: `board-delete-list-${new Date().getTime()}`,
+                    message: 'List deleted successfully',
+                });
+            },
+        });
+    }
 }
+
 export interface CardSectionProps extends ListProps {
     list: ListWithId;
 }
@@ -68,7 +157,7 @@ export function CardSection({
     boardId,
     isUserParticipant,
 }: CardSectionProps) {
-    const [isAddingCard, setIsAddingCard] = useState(false);
+    const [isAddingCard, setIsAddingCard] = React.useState(false);
 
     const { setNodeRef } = useDroppable({
         id: list.id,
@@ -137,7 +226,13 @@ interface SortableCardProps extends CardProps {
     disabled?: boolean;
 }
 
-function SortableCard({ card, index, listId, disabled, ...props }: SortableCardProps) {
+function SortableCard({
+    card,
+    index,
+    listId,
+    disabled,
+    ...props
+}: SortableCardProps) {
     const {
         attributes,
         listeners,

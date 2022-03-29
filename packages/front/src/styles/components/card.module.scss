@@ -36,6 +36,11 @@
         & * {
             visibility: hidden !important;
         }
+
+        & > .card__drag_handle {
+            display: none;
+            transition: none;
+        }
     }
 
     &--overlay {
