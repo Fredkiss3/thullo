@@ -77,6 +77,7 @@ export type CardWithId = Omit<Card, 'id'> & { id: string };
 export type List = {
     id?: string;
     name: string;
+    position: number;
     cards: Card[];
 };
 

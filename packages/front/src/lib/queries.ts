@@ -21,6 +21,7 @@ import type {
     BoardMember,
     Card,
     List,
+    ListWithId,
     User,
 } from './types';
 import { useErrorsContext } from '@/context/error.context';
@@ -899,6 +900,7 @@ export function useAddListMutation() {
                             {
                                 name,
                                 cards: [],
+                                position: data!.lists!.length,
                             },
                         ],
                     }
@@ -922,6 +924,7 @@ export function useAddListMutation() {
                     {
                         id: ctx.list.id,
                         name: ctx.name,
+                        position: ctx.list.position,
                         cards: [],
                     },
                 ];
@@ -967,6 +970,250 @@ export function useAddListMutation() {
                             lists: data!.lists.filter(
                                 (list) => list.id !== undefined
                             ),
+                        }
+                    );
+                }
+            },
+        }
+    );
+}
+
+export function useRenameListMutation() {
+    const queryClient = useQueryClient();
+    const { dispatch } = useToastContext();
+
+    return useMutation(
+        async ({
+            oldName,
+            newName,
+            boardId,
+            listId,
+            onSuccess,
+        }: {
+            boardId: string;
+            listId: string;
+            newName: string;
+            oldName: string;
+            onSuccess: () => void;
+        }) => {
+            const { errors } = await jsonFetch<{ success: boolean }>(
+                `${
+                    import.meta.env.VITE_API_URL
+                }/api/boards/${boardId}/lists/${listId}/rename`,
+                {
+                    method: 'PUT',
+                    body: JSON.stringify({
+                        name: newName,
+                    }),
+                    headers: {
+                        Authorization: `Bearer ${getCookie(USER_TOKEN)}`,
+                    },
+                }
+            );
+
+            if (errors) {
+                throw new Error(JSON.stringify(errors));
+            }
+
+            return { onSuccess, boardId, newName, oldName, listId };
+        },
+        {
+            onMutate: async ({ boardId, newName, oldName, listId }) => {
+                dispatch({
+                    type: 'ADD_INFO',
+                    key: `board-rename-list`,
+                    message: `Renaming the list...`,
+                    keep: true,
+                    closeable: false,
+                });
+
+                // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
+                await queryClient.cancelQueries([SINGLE_BOARD_QUERY, boardId]);
+
+                // Change optimistically the board in the cache
+                const data = queryClient.getQueryData<BoardDetails>([
+                    SINGLE_BOARD_QUERY,
+                    boardId,
+                ]);
+
+                const newLists = data!.lists.map((list) => {
+                    if (list.id === listId) {
+                        return {
+                            ...list,
+                            name: newName,
+                        };
+                    }
+                    return list;
+                });
+
+                queryClient.setQueryData<BoardDetails>(
+                    [SINGLE_BOARD_QUERY, boardId],
+                    {
+                        ...data!,
+                        lists: newLists,
+                    }
+                );
+            },
+            onSettled: () => {
+                dispatch({
+                    type: 'REMOVE_TOAST',
+                    key: `board-rename-list`,
+                });
+            },
+            onSuccess: (ctx) => {
+                // Change optimistically the board in the cache
+                ctx.onSuccess();
+            },
+            onError: (err, { boardId, oldName, listId }) => {
+                try {
+                    console.error(`Error: ${err}`);
+                    const errors = JSON.parse(
+                        (err as Error).message
+                    ) as ApiErrors;
+                    if (errors) {
+                        dispatch({
+                            type: 'ADD_TOASTS',
+                            toasts: formatAPIError(errors),
+                        });
+                    }
+                } catch (e) {
+                    dispatch({
+                        type: 'ADD_ERROR',
+                        key: `board-rename-list-${new Date().getTime()}`,
+                        message: `Could not rename the list`,
+                    });
+
+                    // revert the optimistic update
+                    const data = queryClient.getQueryData<BoardDetails>([
+                        SINGLE_BOARD_QUERY,
+                        boardId,
+                    ]);
+
+                    const newLists = data!.lists.map((list) => {
+                        if (list.id === listId) {
+                            return {
+                                ...list,
+                                name: oldName,
+                            };
+                        }
+                        return list;
+                    });
+
+                    queryClient.setQueryData<BoardDetails>(
+                        [SINGLE_BOARD_QUERY, boardId],
+                        {
+                            ...data!,
+                            lists: newLists,
+                        }
+                    );
+                }
+            },
+        }
+    );
+}
+
+export function useDeleteListMutation() {
+    const queryClient = useQueryClient();
+    const { dispatch } = useToastContext();
+
+    return useMutation(
+        async ({
+            boardId,
+            list,
+            onSuccess,
+        }: {
+            boardId: string;
+            list: ListWithId;
+            onSuccess: () => void;
+        }) => {
+            const { errors } = await jsonFetch<{ success: boolean }>(
+                `${import.meta.env.VITE_API_URL}/api/boards/${boardId}/lists/${
+                    list.id
+                }`,
+                {
+                    method: 'DELETE',
+                    headers: {
+                        Authorization: `Bearer ${getCookie(USER_TOKEN)}`,
+                    },
+                }
+            );
+
+            if (errors) {
+                throw new Error(JSON.stringify(errors));
+            }
+
+            return { onSuccess, boardId, list };
+        },
+        {
+            onMutate: async ({ boardId, list }) => {
+                dispatch({
+                    type: 'ADD_INFO',
+                    key: `board-delete-list`,
+                    message: `Deleting the list...`,
+                    keep: true,
+                    closeable: false,
+                });
+
+                // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
+                await queryClient.cancelQueries([SINGLE_BOARD_QUERY, boardId]);
+
+                // Change optimistically the board in the cache
+                const data = queryClient.getQueryData<BoardDetails>([
+                    SINGLE_BOARD_QUERY,
+                    boardId,
+                ]);
+
+                const newLists = data!.lists.filter((l) => l.id !== list.id);
+
+                queryClient.setQueryData<BoardDetails>(
+                    [SINGLE_BOARD_QUERY, boardId],
+                    {
+                        ...data!,
+                        lists: [...newLists],
+                    }
+                );
+            },
+            onSettled: () => {
+                dispatch({
+                    type: 'REMOVE_TOAST',
+                    key: `board-delete-list`,
+                });
+            },
+            onSuccess: (ctx) => {
+                // Change optimistically the board in the cache
+                ctx.onSuccess();
+            },
+            onError: (err, { boardId, list }) => {
+                try {
+                    console.error(`Error: ${err}`);
+                    const errors = JSON.parse(
+                        (err as Error).message
+                    ) as ApiErrors;
+                    if (errors) {
+                        dispatch({
+                            type: 'ADD_TOASTS',
+                            toasts: formatAPIError(errors),
+                        });
+                    }
+                } catch (e) {
+                    console.log(e);
+                    dispatch({
+                        type: 'ADD_ERROR',
+                        key: `board-delete-list-${new Date().getTime()}`,
+                        message: `Could not delete the list`,
+                    });
+
+                    // revert the optimistic update
+                    const data = queryClient.getQueryData<BoardDetails>([
+                        SINGLE_BOARD_QUERY,
+                        boardId,
+                    ]);
+
+                    queryClient.setQueryData<BoardDetails>(
+                        [SINGLE_BOARD_QUERY, boardId],
+                        {
+                            ...data!,
+                            lists: [...data!.lists, list],
                         }
                     );
                 }
