@@ -5,6 +5,7 @@ import { Button } from './button';
 import { Icon } from './icon';
 import { useSetBoardVisibilityMutation } from '@/lib/queries';
 import { useToastContext } from '@/context/toast.context';
+import { clsx } from '@/lib/functions';
 
 export interface BoardVisilityDropdownProps {
     show?: boolean;
@@ -13,8 +14,8 @@ export interface BoardVisilityDropdownProps {
 }
 
 export function BoardVisilityDropdown({
-    show,
     boardId,
+    show = false,
     isBoardPrivate,
 }: BoardVisilityDropdownProps) {
     const mutation = useSetBoardVisibilityMutation();
@@ -45,9 +46,9 @@ export function BoardVisilityDropdown({
     return (
         <Dropdown
             align="right"
-            className={`${cls.board_visibility_toggler} ${
-                show && cls['board_visibility_toggler--open']
-            }`}
+            className={clsx(cls.board_visibility_toggler, {
+                [cls['board_visibility_toggler--open']]: show,
+            })}
         >
             <div className={cls.board_visibility_toggler__header}>
                 <strong className={cls.board_visibility_toggler__header__title}>

@@ -8,7 +8,7 @@ import {
     useUserQuery,
 } from '@/lib/queries';
 import { useToastContext } from '@/context/toast.context';
-import { useOnClickOutside } from '@/lib/hooks';
+import { useDropdownToggle, useOnClickOutside } from '@/lib/hooks';
 
 import type { BoardDetails, BoardMember, User } from '@/lib/types';
 
@@ -101,23 +101,15 @@ function HeaderSection({
     userIsParticipant: boolean;
     currentUser: User | null;
 }) {
-    const [showVisibilityTogglerDropdown, setShowVisibilityTogglerDropdown] =
-        React.useState(false);
-    const [showInviteDropdown, setShowInviteDropdown] = React.useState(false);
     const [showDrawer, setShowDrawer] = React.useState(false);
 
-    const toggleButtonRef = React.useRef(null);
-    const inviteButtonRef = React.useRef(null);
-
-    // when the user clicks outside of the visibility dropdown, close it
-    useOnClickOutside(toggleButtonRef, () => {
-        setShowVisibilityTogglerDropdown(false);
-    });
-
-    // when the user clicks outside of the invite dropdown, close it
-    useOnClickOutside(inviteButtonRef, () => {
-        setShowInviteDropdown(false);
-    });
+    const [inviteButtonRef, showInviteDropdown, toggleInviteDropdown] =
+        useDropdownToggle();
+    const [
+        toggleButtonRef,
+        showVisibilityTogglerDropdown,
+        toggleVisibilityTogglerDropdown,
+    ] = useDropdownToggle();
 
     const participantsFiltered = React.useMemo(
         () =>
@@ -146,11 +138,7 @@ function HeaderSection({
                         )}
                         isStatic={isPrivate}
                         variant={isPrivate ? 'black' : 'hollow'}
-                        onClick={() =>
-                            setShowVisibilityTogglerDropdown(
-                                !showVisibilityTogglerDropdown
-                            )
-                        }
+                        onClick={toggleVisibilityTogglerDropdown}
                     >
                         {isPrivate ? 'Private' : 'Public'}
                     </Button>
@@ -162,16 +150,14 @@ function HeaderSection({
                     />
                 </div>
                 <ul className={cls.header_section__left__participant_list}>
-                    {participantsFiltered.map((p) => {
-                        return (
-                            <AvatarButton
-                                key={p.id}
-                                member={p}
-                                boardId={id}
-                                canRemove={userIsBoardAdmin}
-                            />
-                        );
-                    })}
+                    {participantsFiltered.map((p) => (
+                        <AvatarButton
+                            key={p.id}
+                            member={p}
+                            boardId={id}
+                            canRemove={userIsBoardAdmin}
+                        />
+                    ))}
 
                     {(userIsParticipant || userIsBoardAdmin) && (
                         <div
@@ -181,7 +167,7 @@ function HeaderSection({
                             <Button
                                 square
                                 variant="primary"
-                                onClick={() => setShowInviteDropdown(true)}
+                                onClick={toggleInviteDropdown}
                                 renderTrailingIcon={(cls) => (
                                     <Icon icon="plus" className={cls} />
                                 )}
@@ -225,15 +211,10 @@ function AvatarButton({
     boardId: string;
     canRemove: boolean;
 }) {
-    const [showMenu, setShowMenu] = React.useState(false);
-    const avatarRef = React.useRef<HTMLDivElement>(null);
+    const [avatarRef, showAvatarMenu, toggleAvatarMenu] = useDropdownToggle();
+
     const mutation = useRemoveMemberMutation();
     const { dispatch } = useToastContext();
-
-    // when the user clicks outside of the invite dropdown, close it
-    useOnClickOutside(avatarRef, () => {
-        setShowMenu(false);
-    });
 
     const removeMember = React.useCallback(() => {
         mutation.mutate({
@@ -245,7 +226,6 @@ function AvatarButton({
                     key: `board-remove-${new Date().getTime()}`,
                     message: 'Member successfully removed from the board.',
                 });
-                setShowMenu(false);
             },
         });
     }, []);
@@ -255,7 +235,7 @@ function AvatarButton({
             <Button
                 disabled={!canRemove}
                 className={cls.avatar_wrapper__button}
-                onClick={() => setShowMenu(true)}
+                onClick={toggleAvatarMenu}
             >
                 <Avatar
                     photoURL={member.avatarURL}
@@ -264,7 +244,7 @@ function AvatarButton({
                 />
             </Button>
 
-            {showMenu && (
+            {showAvatarMenu && (
                 <Dropdown
                     align={`right`}
                     className={cls.avatar_wrapper__dropdown}

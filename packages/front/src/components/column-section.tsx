@@ -69,15 +69,12 @@ export function ColumnsSection({
         arrayToRecord(lists)
     );
 
-    const listsToShow = Object.entries(listsToReorder).sort((a, b) => {
-        // if a[0] is a number put it at the end
-        if (Number(a[0]) && !Number(b[0])) {
-            return 1; // after
-        } else if (!Number(a[0]) && Number(b[0])) {
-            return -1; // before
+    // sort lists by position
+    const listsToShow = Object.entries(listsToReorder).sort(
+        ([_a, listA], [_b, listB]) => {
+            return listA.position - listB.position;
         }
-        return 0;
-    });
+    );
 
     const [activeCard, setActiveCard] = React.useState<CardType | null>(null);
 
@@ -300,7 +297,17 @@ export function ColumnsSection({
     }
 
     function handleDragEnd() {
-        if (dragHistory?.destListId && dragHistory?.newPosition !== undefined) {
+        if (
+            dragHistory?.destListId &&
+            dragHistory?.newPosition !== undefined &&
+            !(
+                // No change in position and list
+                (
+                    dragHistory.destListId === dragHistory.srcListId &&
+                    dragHistory.oldPosition === dragHistory.newPosition
+                )
+            )
+        ) {
             moveCard(
                 dragHistory.cardId,
                 dragHistory.srcListId,

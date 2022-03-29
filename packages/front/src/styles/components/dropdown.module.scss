@@ -3,10 +3,11 @@
     position: absolute;
     border: 1px solid var(--divider-color);
     border-radius: var(--border-radius-lg);
-    top: calc(100% + 0.1rem);
+    top: calc(100% + 0.5rem);
     padding: 0.5rem;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     color: var(--dropdown-text-color);
+    z-index: 10;
 
     &--right {
         left: 0;

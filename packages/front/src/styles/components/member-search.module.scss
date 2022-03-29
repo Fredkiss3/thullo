@@ -9,6 +9,7 @@
     padding: 1rem;
     right: -100%;
     left: auto !important;
+    z-index: 10;
 
     @include phone {
         left: 0 !important;

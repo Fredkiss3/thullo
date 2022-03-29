@@ -91,6 +91,9 @@ export function Header({ currentPageTitle }: HeaderProps) {
                         {!isEditing || !isBoardAdmin ? (
                             <h1
                                 className={cls.header__left__title}
+                                style={{
+                                    cursor: 'pointer',
+                                }}
                                 onClick={() => board && setIsEditing(true)}
                                 data-test-id="page-title"
                             >

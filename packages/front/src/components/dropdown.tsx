@@ -1,5 +1,6 @@
 import * as React from 'react';
 import cls from '../styles/components/dropdown.module.scss';
+import { clsx } from '@/lib/functions';
 
 export interface DropdownProps {
     testId?: string;
@@ -17,11 +18,7 @@ export function Dropdown({
     return (
         <div
             data-test-id={testId}
-            className={`
-                ${className ?? ''}
-                ${cls.dropdown} 
-                ${cls[`dropdown--${align}`]}
-            `}
+            className={clsx(className, cls.dropdown, cls[`dropdown--${align}`])}
         >
             {children}
         </div>
