@@ -25,6 +25,10 @@ export * from './usecases/RemoveMemberFromBoard';
 export * from './usecases/MoveCard';
 export * from './usecases/RenameList';
 export * from './usecases/DeleteList';
+export * from './usecases/SeeCardDetails';
+export * from './usecases/RenameCard';
+export * from './usecases/UpdateCardDescription';
+export * from './usecases/UpdateCardCover';
 
 // Lib and builders
 export * from './builder/BoardAggregateBuilder';
