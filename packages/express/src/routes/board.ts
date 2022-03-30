@@ -16,6 +16,10 @@ import { ChangeBoardNameController } from '../controllers/ChangeBoardNameControl
 import { AddListToBoardController } from '../controllers/AddListToBoardController';
 import { RenameListController } from '../controllers/RenameListController';
 import { DeleteListController } from '../controllers/DeleteListController';
+import { RenameCardController } from '../controllers/RenameCardController';
+import { ChangeCardDescriptionController } from '../controllers/ChangeCardDescriptionController';
+import { GetCardDetailsController } from '../controllers/GetCardDetailsController';
+import { ChangeCardCoverController } from '../controllers/ChangeCardCoverController';
 
 const Router = router();
 
@@ -61,6 +65,26 @@ Router.get('/', getController(GetAllBoardsController))
         '/:boardId/lists/:listId/cards',
         auth_middleware,
         getController(AddCardController)
+    )
+    .get(
+        '/:boardId/cards/:cardId',
+        auth_middleware,
+        getController(GetCardDetailsController)
+    )
+    .put(
+        '/:boardId/cards/:cardId/set-cover',
+        auth_middleware,
+        getController(ChangeCardCoverController)
+    )
+    .put(
+        '/:boardId/cards/:cardId/rename',
+        auth_middleware,
+        getController(RenameCardController)
+    )
+    .put(
+        '/:boardId/cards/:cardId/set-description',
+        auth_middleware,
+        getController(ChangeCardDescriptionController)
     )
     .put(
         '/:boardId/lists/:listId/rename',
