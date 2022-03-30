@@ -4,8 +4,9 @@ import {
     AddListToBoardPresenter,
     AddListToBoardResponse,
     BoardAggregate,
-    Member
-} from '@thullo/domain';
+    Member,
+    BoardAggregateBuilder
+} from '../../src';
 import { v4 as uuidv4 } from 'uuid';
 import { BoardAggregateRepositoryBuilder } from '../builder/BoardAggregateRepositoryBuilder';
 
@@ -78,6 +79,99 @@ describe('AddListToBoard Use case', () => {
 
         expect(presenter.response?.list).not.toBe(null);
         expect(presenter.response?.list?.name).toBe(request.name);
+    });
+
+    it('should set the position of the new list to the last position + 1', async () => {
+        // Given
+        let aggregateExpected: BoardAggregate | null = null;
+
+        const aggregate = new BoardAggregateBuilder()
+            .withBoardId(BOARD_ID)
+            .withName('Dev Challenge Boards')
+            .withIsPrivate(true)
+            .withLists([
+                {
+                    id: uuidv4(),
+                    name: 'List 1',
+                    position: 1
+                },
+                {
+                    id: uuidv4(),
+                    name: 'List 2',
+                    position: 3
+                }
+            ])
+            .withParticipants([
+                {
+                    isAdmin: true,
+                    member: admin
+                }
+            ])
+            .build();
+
+        const boardAggregateRepository = new BoardAggregateRepositoryBuilder()
+            .withGetBoardAggregateById(async () => {
+                return aggregate;
+            })
+            .withSaveAggregate(async (board: BoardAggregate) => {
+                aggregateExpected = board;
+                return board;
+            })
+            .build();
+
+        const useCase = new AddListToBoardUseCase(boardAggregateRepository);
+
+        // When
+        await useCase.execute(request, presenter);
+
+        // Then
+        expect(presenter.response).not.toBe(null);
+        expect(presenter.response?.errors).toBe(null);
+        expect(aggregateExpected).not.toBe(null);
+
+        expect(presenter.response?.list).not.toBe(null);
+        expect(presenter.response?.list?.position).toBe(4);
+    });
+
+    it('should set the position of the new list 0 if there is no list in the board', async () => {
+        // Given
+        let aggregateExpected: BoardAggregate | null = null;
+
+        const aggregate = new BoardAggregateBuilder()
+            .withBoardId(BOARD_ID)
+            .withName('Dev Challenge Boards')
+            .withIsPrivate(true)
+            .withLists([])
+            .withParticipants([
+                {
+                    isAdmin: true,
+                    member: admin
+                }
+            ])
+            .build();
+
+        const boardAggregateRepository = new BoardAggregateRepositoryBuilder()
+            .withGetBoardAggregateById(async () => {
+                return aggregate;
+            })
+            .withSaveAggregate(async (board: BoardAggregate) => {
+                aggregateExpected = board;
+                return board;
+            })
+            .build();
+
+        const useCase = new AddListToBoardUseCase(boardAggregateRepository);
+
+        // When
+        await useCase.execute(request, presenter);
+
+        // Then
+        expect(presenter.response).not.toBe(null);
+        expect(presenter.response?.errors).toBe(null);
+        expect(aggregateExpected).not.toBe(null);
+
+        expect(presenter.response?.list).not.toBe(null);
+        expect(presenter.response?.list?.position).toBe(0);
     });
 
     it('Should show error if board is inexistant', async () => {

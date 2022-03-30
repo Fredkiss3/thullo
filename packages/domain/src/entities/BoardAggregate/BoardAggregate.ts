@@ -75,11 +75,22 @@ export class BoardAggregate {
     addList(name: string): ListId {
         const id = uuidv4();
 
+        let newPosition = 0;
+
+        if (Object.keys(this._listsById).length > 0) {
+            newPosition =
+                Math.max(
+                    ...Object.values(this._listsById).map(
+                        ({ position }) => position
+                    )
+                ) + 1;
+        }
+
         this._listsById[id] = {
             id,
             name,
             boardId: this._board.id,
-            position: Object.keys(this._listsById).length
+            position: newPosition
         };
 
         this._cardsByListIds[id] = [];
