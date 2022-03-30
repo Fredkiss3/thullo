@@ -215,6 +215,12 @@ describe('UpdateCardDescription Use case', () => {
                     position: 0
                 }
             ])
+            .withParticipants([
+                {
+                    isAdmin: true,
+                    member: admin
+                }
+            ])
             .withCards([])
             .build();
 
@@ -250,6 +256,12 @@ describe('UpdateCardDescription Use case', () => {
                     id: todoListID,
                     name: 'Todo',
                     position: 0
+                }
+            ])
+            .withParticipants([
+                {
+                    isAdmin: true,
+                    member: admin
                 }
             ])
             .withCards([cardDetails])

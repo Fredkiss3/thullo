@@ -4,6 +4,7 @@ import { UpdateCardDescriptionResponse } from './UpdateCardDescriptionResponse';
 import { FieldErrors } from '../../lib/types';
 import Validator from 'validatorjs';
 import { BoardAggregateRepository } from '../../entities/BoardAggregate';
+import * as console from 'console';
 Validator.useLang('fr');
 
 export class UpdateCardDescriptionUseCase {
@@ -36,8 +37,8 @@ export class UpdateCardDescriptionUseCase {
                 if (!board.isParticipant(request.requestedBy)) {
                     errors = {
                         requestedBy: [
-                            'You can not update card description in a private' +
-                                ' board if you are not a participant of the board'
+                            'You can not update card description' +
+                                ' if you are not a participant of the board'
                         ]
                     };
                 } else {
