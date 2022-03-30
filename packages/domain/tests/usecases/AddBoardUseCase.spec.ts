@@ -7,7 +7,7 @@ import {
     MemberRepository,
     BoardRepository,
     Board
-} from '@thullo/domain';
+} from '../../src';
 import { v4 as uuidv4 } from 'uuid';
 import { MemberRepositoryBuilder } from '../builder/MemberRepositoryBuilder';
 import { BoardRepositoryBuilder } from '../builder/BoardRepositoryBuilder';
@@ -84,7 +84,7 @@ describe('AddBoard Use case', () => {
         expect(boardResult).toMatchObject(boardExpected);
     });
 
-    it('Shows error & does not add to repo if memberId invalid', async () => {
+    it('Should show error & does not add to repo if memberId invalid', async () => {
         // Given
         let boardResult: Board | null = null;
         const memberRepo: MemberRepository = new MemberRepositoryBuilder()
@@ -120,7 +120,7 @@ describe('AddBoard Use case', () => {
         expect(presenter.response!.board).toBe(null);
     });
 
-    it('Shows error & does not add to repo if coverPhotoId is invalid', async () => {
+    it('Should show error & does not add to repo if coverPhotoId is invalid', async () => {
         // Given
         let boardResult: Board | null = null;
         const memberRepo: MemberRepository = new MemberRepositoryBuilder()

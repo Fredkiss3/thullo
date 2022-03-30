@@ -40,13 +40,13 @@ export class AddBoardUseCase {
                     request.coverPhotoId
                 );
 
-                if(null === photo) {
+                if(!photo) {
                     errors = {
                         coverPhotoId: ['La photo de couverture choisie n\'existe pas']
                     };
                 } else {
                     board = await this.boardRepository.addBoard({
-                        cover: photo!,
+                        cover: photo,
                         name: request.name,
                         private: request.private,
                         id: uuidv4(),

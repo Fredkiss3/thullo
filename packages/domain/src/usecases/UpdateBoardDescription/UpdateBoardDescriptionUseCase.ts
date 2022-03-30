@@ -1,7 +1,7 @@
 import Validator from 'validatorjs';
 import { FieldErrors } from '../../lib/types';
-import { BoardAggregateRepository } from './../../entities/BoardAggregate/BoardAggregateRepository';
-import { OperationUnauthorizedError } from './../../entities/BoardAggregate/Exceptions';
+import { BoardAggregateRepository } from '../../entities/BoardAggregate';
+import { OperationUnauthorizedError } from '../../entities/BoardAggregate';
 import { UpdateBoardDescriptionPresenter } from './UpdateBoardDescriptionPresenter';
 import { UpdateBoardDescriptionRequest } from './UpdateBoardDescriptionRequest';
 import { UpdateBoardDescriptionResponse } from './UpdateBoardDescriptionResponse';
