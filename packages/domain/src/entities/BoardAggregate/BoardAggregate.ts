@@ -252,6 +252,20 @@ export class BoardAggregate {
         return member?.isAdmin ?? false;
     }
 
+    getCardById(cardId: CardId): Card {
+        const card = Object.values(this._cardsByListIds)
+            .reduce((acc, list) => acc.concat(list), [])
+            .find(({ id }) => id === cardId);
+
+        if (card === undefined) {
+            throw new CardNotFoundError(
+                "cette carte n'existe pas dans le tableau"
+            );
+        }
+
+        return card;
+    }
+
     // getters & setters
     get participants(): Readonly<Participation>[] {
         return this._participants;
