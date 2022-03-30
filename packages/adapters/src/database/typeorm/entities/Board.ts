@@ -19,7 +19,7 @@ export class ParticipationEntity {
     @Column()
     isAdmin?: boolean;
 
-    @Column(type => MemberEntity)
+    @Column(_ => MemberEntity)
     member?: MemberEntity;
 
     toDomain(): Participation {

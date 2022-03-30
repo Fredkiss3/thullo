@@ -20,3 +20,7 @@ export * from './presenters/AddCardToListPresenterAdapter';
 export * from './presenters/MoveCardPresenterAdapter';
 export * from './presenters/RenameListPresenterAdapter';
 export * from './presenters/DeleteListPresenterAdapter';
+export * from './presenters/SeeCardDetailsPresenterAdapter';
+export * from './presenters/RenameCardPresenterAdapter';
+export * from './presenters/UpdateCardCoverPresenterAdapter';
+export * from './presenters/UpdateCardDescriptionPresenterAdapter';
