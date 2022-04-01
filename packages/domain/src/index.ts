@@ -29,6 +29,8 @@ export * from './usecases/SeeCardDetails';
 export * from './usecases/RenameCard';
 export * from './usecases/UpdateCardDescription';
 export * from './usecases/UpdateCardCover';
+export * from './usecases/AddLabelToCard';
+export * from './usecases/RemoveLabelFromCard';
 
 // Lib and builders
 export * from './builder/BoardAggregateBuilder';

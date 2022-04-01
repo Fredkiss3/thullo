@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import { BoardId } from '../Board';
 import { Card, CardId } from '../Card';
+import { Label, LabelId, ColorType } from '../Label';
 import { List, ListId } from '../List';
 import { Member, MemberId } from '../Member';
 import { Participation } from '../Participation';
@@ -9,17 +10,20 @@ import {
     InvalidPositionError,
     ListNotFoundError,
     MemberNotInBoardError,
-    OperationUnauthorizedError
+    OperationUnauthorizedError,
+    LabelNotFoundError
 } from './Exceptions';
 
 type CardsByLists = Record<ListId, Card[]>;
 type ListsById = Record<ListId, List>;
+type LabelsById = Record<LabelId, Label>;
 
 interface BoardAggregateData {
     lists: List[];
     // the cards are sorted by listId and position
     cards: Card[];
     participants: Participation[];
+    labels: Label[];
 }
 
 interface BoardData {
@@ -33,6 +37,7 @@ export class BoardAggregate {
     private _cardsByListIds: CardsByLists = {};
     private _listsById: ListsById = {};
     private _participants: Participation[] = [];
+    private _labelsById: LabelsById = {};
 
     constructor(private _board: BoardData, data: BoardAggregateData) {
         this._participants = data.participants;
@@ -47,6 +52,11 @@ export class BoardAggregate {
         for (const list of data.lists) {
             this._listsById[list.id] = list;
         }
+
+        // initialize labels
+        for (const label of data.labels) {
+            this._labelsById[label.id] = label;
+        }
     }
 
     private checkAdminOrThrowError(memberId: MemberId, message: string): void {
@@ -57,6 +67,56 @@ export class BoardAggregate {
         ) {
             throw new OperationUnauthorizedError(message);
         }
+    }
+
+    addLabelToCard(
+        cardId: CardId,
+        color?: ColorType,
+        name?: string,
+        labelId?: LabelId
+    ): void {
+        const card = this.getCardById(cardId);
+
+        if (
+            labelId === undefined &&
+            name !== undefined &&
+            color !== undefined
+        ) {
+            labelId = uuidv4();
+            const label: Label = {
+                id: labelId,
+                name,
+                color,
+                parentBoardId: this._board.id
+            };
+
+            this._labelsById[labelId] = label;
+
+            card.labels.push(label);
+        } else if (labelId !== undefined) {
+            const label = this._labelsById[labelId];
+
+            if (label === undefined) {
+                throw new LabelNotFoundError(
+                    "this label doesn't exist in the board"
+                );
+            }
+
+            card.labels.push(label);
+        }
+    }
+
+    removeLabelFromCard(cardId: CardId, labelId: LabelId): void {
+        const card = this.getCardById(cardId);
+        const label = this._labelsById[labelId];
+
+        if (label === undefined) {
+            throw new LabelNotFoundError(
+                "this label doesn't exist in the board"
+            );
+        }
+
+        card.labels = card.labels.filter(({ id }) => id !== label.id);
     }
 
     addMemberToBoard(member: Member): void {
@@ -307,5 +367,9 @@ export class BoardAggregate {
 
     get boardId(): BoardId {
         return this._board.id;
+    }
+
+    get labelsByIds(): Readonly<LabelsById> {
+        return this._labelsById;
     }
 }

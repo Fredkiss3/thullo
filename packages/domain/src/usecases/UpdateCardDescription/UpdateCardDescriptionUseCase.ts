@@ -4,7 +4,6 @@ import { UpdateCardDescriptionResponse } from './UpdateCardDescriptionResponse';
 import { FieldErrors } from '../../lib/types';
 import Validator from 'validatorjs';
 import { BoardAggregateRepository } from '../../entities/BoardAggregate';
-import * as console from 'console';
 Validator.useLang('fr');
 
 export class UpdateCardDescriptionUseCase {

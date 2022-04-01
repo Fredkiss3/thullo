@@ -3,6 +3,7 @@ import { BoardId } from '../entities/Board';
 import { BoardAggregate } from '../entities/BoardAggregate';
 import { Card } from '../entities/Card';
 import { List } from '../entities/List';
+import { Label } from '../entities/Label';
 import { Participation } from '../entities/Participation';
 import { PartialOmit } from '../lib/types';
 
@@ -14,6 +15,7 @@ export class BoardAggregateBuilder {
     private isPrivate: boolean = false;
     private cards: Card[] = [];
     private lists: List[] = [];
+    private labels: Label[] = [];
 
     public withBoardId(boardId: BoardId): BoardAggregateBuilder {
         this.boardId = boardId;
@@ -35,6 +37,16 @@ export class BoardAggregateBuilder {
         return this;
     }
 
+    public withLabels(
+        labels: PartialOmit<Label, 'parentBoardId'>[]
+    ): BoardAggregateBuilder {
+        this.labels = labels.map((label) => ({
+            ...label,
+            parentBoardId: this.boardId
+        }));
+        return this;
+    }
+
     public withCards(
         cards: PartialOmit<
             Card,
@@ -46,7 +58,8 @@ export class BoardAggregateBuilder {
             description: card.description ?? '',
             comments: card.comments ?? [],
             attachments: card.attachments ?? [],
-            labels: card.labels ?? [],
+            // We use this because we want the labels to not be a reference to the card labels
+            labels: card.labels?.map((label) => ({ ...label })) ?? [],
             cover: card.cover ?? null
         }));
         return this;
@@ -77,7 +90,8 @@ export class BoardAggregateBuilder {
             {
                 cards: this.cards,
                 lists: this.lists,
-                participants: this.participants
+                participants: this.participants,
+                labels: this.labels
             }
         );
     }

@@ -10,14 +10,14 @@ export const Colors = {
     PURPLE: 'PURPLE',
     DARK: 'DARK',
     GREY: 'GREY',
-    LIGHTGREY: 'LIGHTGREY',
-    LIGHT: 'LIGHT'
+    LIGHTGREY: 'LIGHTGREY'
 } as const;
 
 export type ColorType = typeof Colors[keyof typeof Colors];
 
+export type LabelId = string;
 export interface Label {
-    id: string;
+    id: LabelId;
     name: string;
     color: ColorType;
     parentBoardId: string;
