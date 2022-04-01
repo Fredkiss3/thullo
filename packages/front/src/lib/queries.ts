@@ -32,11 +32,10 @@ import { useToastContext } from '@/context/toast.context';
 
 // Queries
 export function useUserQuery() {
-    const { dispatch } = useErrorsContext();
     return useQuery<User | null>(
         USER_QUERY,
         async () => {
-            const { data, errors } = await jsonFetch<{ user: User } | null>(
+            const { data } = await jsonFetch<{ user: User } | null>(
                 `${import.meta.env.VITE_API_URL}/api/auth/me`,
                 {
                     headers: {
@@ -44,10 +43,6 @@ export function useUserQuery() {
                     },
                 }
             );
-
-            if (errors) {
-                throw JSON.stringify(errors);
-            }
 
             return data ? data.user : null;
         },

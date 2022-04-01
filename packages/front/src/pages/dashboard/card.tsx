@@ -48,6 +48,10 @@ export function CardDetails({}: CardDetailsProps) {
         return <></>;
     }
 
+    if (!isLoading && !card) {
+        closeModal();
+    }
+
     return (
         <>
             <Seo title={card?.title ?? 'Card Details'} />
