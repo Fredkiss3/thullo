@@ -163,7 +163,6 @@ describe('RenameList Use case', () => {
 
     describe('Invalid Requests', () => {
         const dataset: { label: string; request: RenameListRequest }[] = [
-            // TODO: Specify requests
             {
                 label: 'Empty name',
                 request: {
