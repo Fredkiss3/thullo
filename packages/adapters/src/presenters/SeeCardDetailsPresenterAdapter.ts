@@ -6,6 +6,7 @@ import type {
     SeeCardDetailsResponse
 } from '@thullo/domain';
 import type { FieldErrors } from '@thullo/domain';
+import short from 'short-uuid';
 
 export interface CardData {
     id: string;
@@ -13,6 +14,7 @@ export interface CardData {
     description: string;
     coverURL: string | null;
     attachments: {}[];
+    parentListId: string;
     labels: {
         id: string;
         name: string;
@@ -41,10 +43,11 @@ export class SeeCardDetailsPresenterAdapter implements SeeCardDetailsPresenter {
         return card === null
             ? null
             : {
-                  id: card.id,
+                  id: short().fromUUID(card.id),
                   title: card.title,
                   description: card.description,
                   coverURL: card.cover === null ? null : card.cover.regularURL,
+                  parentListId: short().fromUUID(card.parentListId),
                   attachments: [],
                   labels: [],
                   comments: []
