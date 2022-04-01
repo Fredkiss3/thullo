@@ -40,6 +40,7 @@ rectangle Thullo {
     (Rechercher Images) as (searchImages)
     (Ajouter label) as (addLabelToCard)
     (Retirer label) as (removeLabelFromCard)
+    (Supprimer label) as (deleteLabelFromBoard)
 
     (register) <.left. (auth) : << include >>
     (seeBoard) .left.> (addBoard): << include >>
@@ -60,6 +61,7 @@ rectangle Thullo {
     member -- (updateComment)
     member -- (deleteComment)
     member -- (addLabelToCard)
+    member -- (deleteLabelFromBoard)
     member -- (removeLabelFromCard)
     member -- (updateCardDescription)
     member -- (updateCardCover)
