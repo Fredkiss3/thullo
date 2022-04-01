@@ -65,7 +65,9 @@ export function List({ list, className, ...props }: ListProps) {
     return (
         <div className={clsx(cls.list, className)}>
             <div className={cls.list__header}>
-                {isEditingName && isListWithId(list) ? (
+                {isEditingName &&
+                isListWithId(list) &&
+                props.isUserParticipant ? (
                     <Input
                         value={name}
                         onChange={setName}
@@ -73,10 +75,21 @@ export function List({ list, className, ...props }: ListProps) {
                         onBlur={updateListName}
                     />
                 ) : (
-                    <span onClick={() => setIsEditingName(true)}>{name}</span>
+                    <span
+                        style={{
+                            cursor: props.isUserParticipant
+                                ? 'pointer'
+                                : 'default',
+                        }}
+                        onClick={() =>
+                            props.isUserParticipant && setIsEditingName(true)
+                        }
+                    >
+                        {name}
+                    </span>
                 )}
 
-                {isListWithId(list) && (
+                {isListWithId(list) && props.isUserParticipant && (
                     <div className={cls.list__header__dropdown} ref={ref}>
                         <Button
                             square
