@@ -33,7 +33,7 @@ export class GetCardDetailsController extends AbstractController {
             {
                 cardId: short().toUUID(req.params.cardId),
                 boardId: short().toUUID(req.params.boardId),
-                requestedBy: short().toUUID(member!.id),
+                requestedBy: member === null ? null : short().toUUID(member.id),
             },
             this.presenter
         );

@@ -66,11 +66,7 @@ Router.get('/', getController(GetAllBoardsController))
         auth_middleware,
         getController(AddCardController)
     )
-    .get(
-        '/:boardId/cards/:cardId',
-        auth_middleware,
-        getController(GetCardDetailsController)
-    )
+    .get('/:boardId/cards/:cardId', getController(GetCardDetailsController))
     .put(
         '/:boardId/cards/:cardId/set-cover',
         auth_middleware,
