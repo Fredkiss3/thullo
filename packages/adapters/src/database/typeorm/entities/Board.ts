@@ -71,9 +71,9 @@ export class BoardEntity extends BaseEntity<Board> {
             .withDescription(this.description!)
             .withIsPrivate(this.private!)
             .withCards(
-                this.cards!
-                    .sort((a, b) => a.position! - b.position!)
-                    .map(card => card.toDomain())
+                this.cards!.sort((a, b) => a.position! - b.position!).map(
+                    card => card.toDomain()
+                )
             )
             .withLists(this.lists.map(list => list.toDomain()))
             .withParticipants(
@@ -110,7 +110,7 @@ export class BoardEntity extends BaseEntity<Board> {
         return {
             id: this.uuid!,
             name: this.name!,
-            cover: this.cover!.toDomain(),
+            cover: UnsplashMetadataEntity.toDomain(this.cover!),
             description: this.description!,
             private: this.private!,
             participants: this.participants!.map(participant =>

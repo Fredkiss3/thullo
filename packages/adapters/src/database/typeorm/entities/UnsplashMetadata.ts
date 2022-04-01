@@ -24,14 +24,14 @@ export class UnsplashMetadataEntity {
     @Column()
     authorName?: string; // ex: "John Doe"
 
-    toDomain(): UnsplashPhoto {
+    static toDomain(photo: UnsplashMetadataEntity): UnsplashPhoto {
         return {
-            id: this.photoId!,
-            regularURL: this.url!,
-            thumbnailURL: this.thumbnailURL!,
-            smallURL: this.smallURL!,
-            authorUserName: this.authorUsername!,
-            authorName: this.authorName!
+            id: photo.photoId!,
+            regularURL: photo.url!,
+            thumbnailURL: photo.thumbnailURL!,
+            smallURL: photo.smallURL!,
+            authorUserName: photo.authorUsername!,
+            authorName: photo.authorName!
         };
     }
 

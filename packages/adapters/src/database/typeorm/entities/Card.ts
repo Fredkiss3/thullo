@@ -42,7 +42,9 @@ export class CardEntity extends BaseEntity<Card> {
             title: this.title!,
             description: this.description!,
             parentListId: this.parentListId!,
-            cover: this.cover ? this.cover.toDomain() : null,
+            cover: this.cover
+                ? UnsplashMetadataEntity.toDomain(this.cover)
+                : null,
             // TODO: implement the rest of the properties
             attachments: [],
             labels: [],
