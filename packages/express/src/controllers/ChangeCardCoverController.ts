@@ -1,5 +1,11 @@
-import { UpdateCardCoverPresenter, UpdateCardCoverUseCase } from '@thullo/domain';
-import type { UpdateCardCoverPresenterAdapter, UpdateCardCoverViewModel } from '@thullo/adapters';
+import {
+    UpdateCardCoverPresenter,
+    UpdateCardCoverUseCase,
+} from '@thullo/domain';
+import type {
+    UpdateCardCoverPresenterAdapter,
+    UpdateCardCoverViewModel,
+} from '@thullo/adapters';
 import type { Request, Response } from 'express';
 import { container, inject, injectable } from 'tsyringe';
 import { AbstractController } from './AbstractController';
@@ -9,7 +15,8 @@ import short from 'short-uuid';
 @injectable()
 export class ChangeCardCoverController extends AbstractController {
     constructor(
-        @inject('UpdateCardCoverPresenter') private presenter: UpdateCardCoverPresenterAdapter
+        @inject('UpdateCardCoverPresenter')
+        private presenter: UpdateCardCoverPresenterAdapter
     ) {
         super();
     }
@@ -31,7 +38,7 @@ export class ChangeCardCoverController extends AbstractController {
                 cardId: short().toUUID(req.params.cardId),
                 boardId: short().toUUID(req.params.boardId),
                 requestedBy: short().toUUID(member!.id),
-                coverPhotoId: req.body.coverPhotoId
+                coverPhotoId: req.body.coverPhotoId ?? undefined,
             },
             this.presenter
         );
