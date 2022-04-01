@@ -4,6 +4,6 @@ import { CardId } from '../../entities/Card';
 
 export interface SeeCardDetailsRequest {
     boardId: BoardId;
-    requestedBy: MemberId;
     cardId: CardId;
+    requestedBy: MemberId | null;
 }

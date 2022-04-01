@@ -10,8 +10,7 @@ Validator.useLang('fr');
 export class SeeCardDetailsUseCase {
     RULES = {
         cardId: 'required|string',
-        boardId: 'required|string',
-        requestedBy: 'required|string'
+        boardId: 'required|string'
     };
 
     constructor(private boardAggregateRepository: BoardAggregateRepository) {}
@@ -61,8 +60,7 @@ export class SeeCardDetailsUseCase {
     validate(request: SeeCardDetailsRequest): FieldErrors {
         const validation = new Validator(request, this.RULES, {
             'required.cardId': 'the card is required',
-            'required.boardId': 'the board is required',
-            'required.requestedBy': 'The user requesting the card is required'
+            'required.boardId': 'the board is required'
         });
 
         if (validation.passes()) {

@@ -251,7 +251,7 @@ export class BoardAggregate {
         cardToMove.parentListId = destinationListId;
     }
 
-    isParticipant(memberId: MemberId) {
+    isParticipant(memberId: MemberId | null) {
         return this._participants.some(({ member: { id } }) => id === memberId);
     }
 

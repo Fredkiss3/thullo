@@ -83,6 +83,43 @@ describe('SeeCardDetails Use case', () => {
         expect(presenter.response!.card).toStrictEqual(cardDetails);
     });
 
+    it('should work if the board is public and no user has been passed', async () => {
+        // Given
+        const aggregate: BoardAggregate = new BoardAggregateBuilder()
+            .withBoardId(BOARD_ID)
+            .withLists([
+                {
+                    id: todoListID,
+                    name: 'Todo',
+                    position: 0
+                }
+            ])
+            .withCards([cardDetails])
+            .withParticipants([
+                {
+                    isAdmin: true,
+                    member: admin
+                }
+            ])
+            .build();
+
+        const boardAggregateRepository = new BoardAggregateRepositoryBuilder()
+            .withGetBoardAggregateById(() => Promise.resolve(aggregate))
+            .build();
+
+        const useCase = new SeeCardDetailsUseCase(boardAggregateRepository);
+
+        // When
+        await useCase.execute({
+            ...request,
+            requestedBy: null
+        }, presenter);
+
+        // Then
+        expect(presenter.response).not.toBe(null);
+        expect(presenter.response!.card).toStrictEqual(cardDetails);
+    });
+
     it('should show error if the board is private and the user is not a participant of the board', async () => {
         // Given
         const aggregate: BoardAggregate = new BoardAggregateBuilder()
@@ -175,13 +212,6 @@ describe('SeeCardDetails Use case', () => {
                     boardId: ''
                 }
             },
-            {
-                label: 'Empty user id',
-                request: {
-                    ...request,
-                    requestedBy: ''
-                }
-            }
         ];
 
         it.each(dataset)(
