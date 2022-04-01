@@ -303,9 +303,11 @@ export function deepCopy<T>(obj: T): T {
  * @param key
  */
 export function getMax<T>(array: T[], key: keyof T): T | undefined {
-    return array.reduce((acc, cur) => {
-        return acc[key] > cur[key] ? acc : cur;
-    });
+    return array.length === 0
+        ? undefined
+        : array.reduce((acc, cur) => {
+              return acc[key] > cur[key] ? acc : cur;
+          });
 }
 
 /**
