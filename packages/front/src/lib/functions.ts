@@ -186,8 +186,7 @@ export function renderMarkdown(markdown: string): string {
         typographer: true,
     })
         .use(linkify)
-        .render(markdown)
-        .replace(/\n/g, '<br>');
+        .render(markdown);
 }
 
 /**
