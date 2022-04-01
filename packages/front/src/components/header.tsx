@@ -92,7 +92,7 @@ export function Header({ currentPageTitle }: HeaderProps) {
                             <h1
                                 className={cls.header__left__title}
                                 style={{
-                                    cursor: 'pointer',
+                                    cursor: isBoardAdmin ? 'pointer' : 'default',
                                 }}
                                 onClick={() => board && setIsEditing(true)}
                                 data-test-id="page-title"
