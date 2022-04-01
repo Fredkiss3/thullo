@@ -10,6 +10,7 @@ export const Icons = [
     'chevron-up',
     'logout',
     'user',
+    'users',
     'plus',
     'lock-open',
     'lock-closed',
@@ -22,6 +23,8 @@ export const Icons = [
     'document',
     'pencil',
     'drag-handle',
+    'tag',
+    'trash',
 ] as const;
 
 export type IconName = typeof Icons[number];
@@ -75,9 +78,61 @@ export function Icon({ icon, className }: IconProps) {
             return <PencilSVG className={className} />;
         case 'drag-handle':
             return <DragHandleSVG className={className} />;
+        case 'tag':
+            return <TagSVG className={className} />;
+        case 'users':
+            return <UsersSVG className={className} />;
+        case 'trash':
+            return <TrashSVG className={className} />;
         default:
             return null;
     }
+}
+
+function TagSVG(props: SVGProps<SVGSVGElement>) {
+    return (
+        <svg
+            {...props}
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+        >
+            <path
+                fillRule="evenodd"
+                d="M17.707 9.293a1 1 0 010 1.414l-7 7a1 1 0 01-1.414 0l-7-7A.997.997 0 012 10V5a3 3 0 013-3h5c.256 0 .512.098.707.293l7 7zM5 6a1 1 0 100-2 1 1 0 000 2z"
+                clipRule="evenodd"
+            />
+        </svg>
+    );
+}
+function TrashSVG(props: SVGProps<SVGSVGElement>) {
+    return (
+        <svg
+            {...props}
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+        >
+            <path
+                fillRule="evenodd"
+                d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                clipRule="evenodd"
+            />
+        </svg>
+    );
+}
+
+function UsersSVG(props: SVGProps<SVGSVGElement>) {
+    return (
+        <svg
+            {...props}
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+        >
+            <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
+        </svg>
+    );
 }
 
 function DragHandleSVG(props: SVGProps<SVGSVGElement>) {

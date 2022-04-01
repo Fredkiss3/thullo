@@ -270,7 +270,6 @@ export type MoveCardArgs = {
  *      // list1 = {id: 1, cards: [{id: 2}]}
  *      // list2 = {id: 2, cards: [{id: 1}, {id: 3}, {id: 4}]}
  *
- * @param
  * @returns
  */
 export function moveCardBetweenLists({
@@ -301,8 +300,9 @@ export function deepCopy<T>(obj: T): T {
 /**
  * get the max element of an array
  * @param array
+ * @param key
  */
-export function getMax<T>(array: T[], key: keyof T): T {
+export function getMax<T>(array: T[], key: keyof T): T | undefined {
     return array.reduce((acc, cur) => {
         return acc[key] > cur[key] ? acc : cur;
     });

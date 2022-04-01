@@ -5,23 +5,26 @@ import {
     USER_TOKEN,
     BOARD_QUERY,
     SINGLE_BOARD_QUERY,
+    SINGLE_CARD_QUERY,
 } from './constants';
 import {
     deleteCookie,
     formatAPIError,
     getCookie,
+    getMax,
     jsonFetch,
     setCookie,
 } from './functions';
 import type {
-    AddBoardRequest,
     ApiErrors,
     Board,
     BoardDetails,
     BoardMember,
     Card,
+    CardDetails,
     List,
     ListWithId,
+    Photo,
     User,
 } from './types';
 import { useErrorsContext } from '@/context/error.context';
@@ -129,6 +132,41 @@ export function useSingleBoardQuery(id?: string) {
     );
 }
 
+export function useSingleCardQuery(boardId?: string, id?: string) {
+    return useQuery<CardDetails | null>(
+        [SINGLE_BOARD_QUERY, boardId, SINGLE_CARD_QUERY, id],
+        async () => {
+            let data: CardDetails | null = null;
+            let errors: ApiErrors = null;
+
+            if (id && boardId) {
+                ({ data, errors } = await jsonFetch<CardDetails | null>(
+                    `${
+                        import.meta.env.VITE_API_URL
+                    }/api/boards/${boardId}/cards/${id}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${getCookie(USER_TOKEN)}`,
+                        },
+                    }
+                ));
+            } else {
+                throw new Error('Invalid card id');
+            }
+
+            if (errors) {
+                // indicate that the board is not found
+                throw new Error(JSON.stringify(errors));
+            }
+
+            return data;
+        },
+        {
+            retry: 0,
+        }
+    );
+}
+
 // Mutations
 export function useLogoutMutation() {
     const queryClient = useQueryClient();
@@ -198,7 +236,12 @@ export function useAddBoardMutation() {
             board,
             onSuccess,
         }: {
-            board: AddBoardRequest;
+            board: {
+                name: string;
+                coverPhotoId: string;
+                coverPhotoUrl: string;
+                private: boolean;
+            };
             onSuccess: () => void;
         }) => {
             const { data, errors } = await jsonFetch<Board>(
@@ -891,6 +934,9 @@ export function useAddListMutation() {
                     boardId,
                 ]);
 
+                // new position is the last position
+                const maxList = getMax(data!.lists, 'position');
+
                 queryClient.setQueryData<BoardDetails>(
                     [SINGLE_BOARD_QUERY, boardId],
                     {
@@ -900,7 +946,7 @@ export function useAddListMutation() {
                             {
                                 name,
                                 cards: [],
-                                position: data!.lists!.length,
+                                position: maxList ? maxList.position + 1 : 0,
                             },
                         ],
                     }
@@ -1497,6 +1543,540 @@ export function useMoveCardMutation() {
                         SINGLE_BOARD_QUERY,
                         ctx.boardId,
                     ]);
+                }
+            },
+        }
+    );
+}
+
+export function useChangeCardTitleMutation() {
+    const queryClient = useQueryClient();
+    const { dispatch } = useToastContext();
+
+    return useMutation(
+        async ({
+            oldName,
+            newName,
+            boardId,
+            cardId,
+            listId,
+            onSuccess,
+        }: {
+            boardId: string;
+            cardId: string;
+            listId: string;
+            newName: string;
+            oldName: string;
+            onSuccess: () => void;
+        }) => {
+            const { errors } = await jsonFetch<{ success: boolean }>(
+                `${
+                    import.meta.env.VITE_API_URL
+                }/api/boards/${boardId}/cards/${cardId}/rename`,
+                {
+                    method: 'PUT',
+                    body: JSON.stringify({
+                        title: newName,
+                    }),
+                    headers: {
+                        Authorization: `Bearer ${getCookie(USER_TOKEN)}`,
+                    },
+                }
+            );
+
+            if (errors) {
+                throw new Error(JSON.stringify(errors));
+            }
+
+            return { onSuccess, boardId, newName, oldName, cardId, listId };
+        },
+        {
+            onMutate: async ({ boardId, newName, cardId, listId }) => {
+                dispatch({
+                    type: 'ADD_INFO',
+                    key: `board-rename-card`,
+                    message: `Updating the card...`,
+                    keep: true,
+                    closeable: false,
+                });
+
+                // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
+                await queryClient.cancelQueries([
+                    SINGLE_BOARD_QUERY,
+                    boardId,
+                    SINGLE_CARD_QUERY,
+                    cardId,
+                ]);
+
+                // Change optimistically the board in the cache
+                const boardData = queryClient.getQueryData<BoardDetails>([
+                    SINGLE_BOARD_QUERY,
+                    boardId,
+                ]);
+
+                // Change optimistically the card in the cache
+                const cardData = queryClient.getQueryData<CardDetails>([
+                    SINGLE_BOARD_QUERY,
+                    boardId,
+                    SINGLE_CARD_QUERY,
+                    cardId,
+                ]);
+
+                queryClient.setQueryData<CardDetails>(
+                    [SINGLE_BOARD_QUERY, boardId, SINGLE_CARD_QUERY, cardId],
+                    {
+                        ...cardData!,
+                        title: newName,
+                    }
+                );
+
+                const newLists = boardData!.lists.map((list) => {
+                    if (list.id === listId) {
+                        return {
+                            ...list,
+                            cards: list.cards.map((card) => {
+                                if (card.id === cardId) {
+                                    return {
+                                        ...card,
+                                        title: newName,
+                                    };
+                                }
+                                return card;
+                            }),
+                        };
+                    }
+                    return list;
+                });
+
+                queryClient.setQueryData<BoardDetails>(
+                    [SINGLE_BOARD_QUERY, boardId],
+                    {
+                        ...boardData!,
+                        lists: newLists,
+                    }
+                );
+            },
+            onSettled: () => {
+                dispatch({
+                    type: 'REMOVE_TOAST',
+                    key: `board-rename-card`,
+                });
+            },
+            onSuccess: (ctx) => {
+                // Change optimistically the board in the cache
+                ctx.onSuccess();
+            },
+            onError: (err, { boardId, oldName, listId, cardId }) => {
+                try {
+                    const errors = JSON.parse(
+                        (err as Error).message
+                    ) as ApiErrors;
+                    if (errors) {
+                        dispatch({
+                            type: 'ADD_TOASTS',
+                            toasts: formatAPIError(errors),
+                        });
+                    }
+                } catch (e) {
+                    dispatch({
+                        type: 'ADD_ERROR',
+                        key: `board-rename-card-${new Date().getTime()}`,
+                        message: `Could not update the card`,
+                    });
+
+                    // revert the optimistic update for the card
+                    const boardData = queryClient.getQueryData<BoardDetails>([
+                        SINGLE_BOARD_QUERY,
+                        boardId,
+                    ]);
+
+                    const cardData = queryClient.getQueryData<CardDetails>([
+                        SINGLE_BOARD_QUERY,
+                        boardId,
+                        SINGLE_CARD_QUERY,
+                        cardId,
+                    ]);
+
+                    queryClient.setQueryData<CardDetails>(
+                        [
+                            SINGLE_BOARD_QUERY,
+                            boardId,
+                            SINGLE_CARD_QUERY,
+                            cardId,
+                        ],
+                        {
+                            ...cardData!,
+                            title: oldName,
+                        }
+                    );
+
+                    const newLists = boardData!.lists.map((list) => {
+                        if (list.id === listId) {
+                            return {
+                                ...list,
+                                cards: list.cards.map((card) => {
+                                    if (card.id === cardId) {
+                                        return {
+                                            ...card,
+                                            title: oldName,
+                                        };
+                                    }
+                                    return card;
+                                }),
+                            };
+                        }
+                        return list;
+                    });
+
+                    // revert the optimistic update for the board
+                    queryClient.setQueryData<BoardDetails>(
+                        [SINGLE_BOARD_QUERY, boardId],
+                        {
+                            ...boardData!,
+                            lists: newLists,
+                        }
+                    );
+                }
+            },
+        }
+    );
+}
+
+export function useChangeCardCoverMutation() {
+    const queryClient = useQueryClient();
+    const { dispatch } = useToastContext();
+
+    return useMutation(
+        async ({
+            oldCoverPhotoUrl,
+            newCover,
+            boardId,
+            cardId,
+            listId,
+            onSuccess,
+        }: {
+            boardId: string;
+            cardId: string;
+            listId: string;
+            newCover: Photo | null;
+            oldCoverPhotoUrl: string | null;
+            onSuccess: () => void;
+        }) => {
+            const { errors } = await jsonFetch<{ success: boolean }>(
+                `${
+                    import.meta.env.VITE_API_URL
+                }/api/boards/${boardId}/cards/${cardId}/set-cover`,
+                {
+                    method: 'PUT',
+                    body: JSON.stringify({
+                        coverPhotoId: newCover?.id ?? undefined,
+                    }),
+                    headers: {
+                        Authorization: `Bearer ${getCookie(USER_TOKEN)}`,
+                    },
+                }
+            );
+
+            if (errors) {
+                throw new Error(JSON.stringify(errors));
+            }
+
+            return {
+                onSuccess,
+                boardId,
+                cardId,
+                listId,
+                newCover,
+                oldCoverPhotoUrl,
+            };
+        },
+        {
+            onMutate: async ({ boardId, newCover, cardId, listId }) => {
+                dispatch({
+                    type: 'ADD_INFO',
+                    key: `board-change-cover`,
+                    message: `Updating the card cover...`,
+                    keep: true,
+                    closeable: false,
+                });
+
+                // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
+                await queryClient.cancelQueries([SINGLE_BOARD_QUERY, boardId]);
+                await queryClient.cancelQueries([
+                    SINGLE_BOARD_QUERY,
+                    boardId,
+                    SINGLE_CARD_QUERY,
+                    cardId,
+                ]);
+
+                // Change optimistically the board in the cache
+                const boardData = queryClient.getQueryData<BoardDetails>([
+                    SINGLE_BOARD_QUERY,
+                    boardId,
+                ]);
+
+                // Change optimistically the card in the cache
+                const cardData = queryClient.getQueryData<CardDetails>([
+                    SINGLE_BOARD_QUERY,
+                    boardId,
+                    SINGLE_CARD_QUERY,
+                    cardId,
+                ]);
+
+                queryClient.setQueryData<CardDetails>(
+                    [SINGLE_BOARD_QUERY, boardId, SINGLE_CARD_QUERY, cardId],
+                    {
+                        ...cardData!,
+                        coverURL: newCover?.regularURL ?? null,
+                    }
+                );
+
+                const newLists = boardData!.lists.map((list) => {
+                    if (list.id === listId) {
+                        return {
+                            ...list,
+                            cards: list.cards.map((card) => {
+                                if (card.id === cardId) {
+                                    return {
+                                        ...card,
+                                        coverURL: newCover?.smallURL ?? null,
+                                    };
+                                }
+                                return card;
+                            }),
+                        };
+                    }
+                    return list;
+                });
+
+                queryClient.setQueryData<BoardDetails>(
+                    [SINGLE_BOARD_QUERY, boardId],
+                    {
+                        ...boardData!,
+                        lists: newLists,
+                    }
+                );
+            },
+            onSettled: () => {
+                dispatch({
+                    type: 'REMOVE_TOAST',
+                    key: `board-change-cover`,
+                });
+            },
+            onSuccess: ({ onSuccess, cardId, boardId }) => {
+                queryClient.invalidateQueries([SINGLE_BOARD_QUERY, boardId]);
+                queryClient.invalidateQueries([
+                    SINGLE_BOARD_QUERY,
+                    boardId,
+                    SINGLE_CARD_QUERY,
+                    cardId,
+                ]);
+
+                onSuccess();
+            },
+            onError: (err, { boardId, oldCoverPhotoUrl, listId, cardId }) => {
+                try {
+                    const errors = JSON.parse(
+                        (err as Error).message
+                    ) as ApiErrors;
+                    if (errors) {
+                        dispatch({
+                            type: 'ADD_TOASTS',
+                            toasts: formatAPIError(errors),
+                        });
+                    }
+                } catch (e) {
+                    dispatch({
+                        type: 'ADD_ERROR',
+                        key: `board-change-cover-${new Date().getTime()}`,
+                        message: `Could not change the card cover`,
+                    });
+
+                    // revert the optimistic update for the card
+                    const boardData = queryClient.getQueryData<BoardDetails>([
+                        SINGLE_BOARD_QUERY,
+                        boardId,
+                    ]);
+
+                    const cardData = queryClient.getQueryData<CardDetails>([
+                        SINGLE_BOARD_QUERY,
+                        boardId,
+                        SINGLE_CARD_QUERY,
+                        cardId,
+                    ]);
+
+                    queryClient.setQueryData<CardDetails>(
+                        [
+                            SINGLE_BOARD_QUERY,
+                            boardId,
+                            SINGLE_CARD_QUERY,
+                            cardId,
+                        ],
+                        {
+                            ...cardData!,
+                            coverURL: oldCoverPhotoUrl,
+                        }
+                    );
+
+                    const newLists = boardData!.lists.map((list) => {
+                        if (list.id === listId) {
+                            return {
+                                ...list,
+                                cards: list.cards.map((card) => {
+                                    if (card.id === cardId) {
+                                        return {
+                                            ...card,
+                                            coverURL: oldCoverPhotoUrl,
+                                        };
+                                    }
+                                    return card;
+                                }),
+                            };
+                        }
+                        return list;
+                    });
+
+                    // revert the optimistic update for the board
+                    queryClient.setQueryData<BoardDetails>(
+                        [SINGLE_BOARD_QUERY, boardId],
+                        {
+                            ...boardData!,
+                            lists: newLists,
+                        }
+                    );
+                }
+            },
+        }
+    );
+}
+
+export function useChangeCardDescriptionMutation() {
+    const queryClient = useQueryClient();
+    const { dispatch } = useToastContext();
+
+    return useMutation(
+        async ({
+            oldDescription,
+            newDescription,
+            boardId,
+            cardId,
+            onSuccess,
+        }: {
+            boardId: string;
+            cardId: string;
+            newDescription: string | null;
+            oldDescription: string | null;
+            onSuccess: () => void;
+        }) => {
+            const { errors } = await jsonFetch<{ success: boolean }>(
+                `${
+                    import.meta.env.VITE_API_URL
+                }/api/boards/${boardId}/cards/${cardId}/set-description`,
+                {
+                    method: 'PUT',
+                    body: JSON.stringify({
+                        description: newDescription,
+                    }),
+                    headers: {
+                        Authorization: `Bearer ${getCookie(USER_TOKEN)}`,
+                    },
+                }
+            );
+
+            if (errors) {
+                throw new Error(JSON.stringify(errors));
+            }
+
+            return {
+                onSuccess,
+                boardId,
+                newDescription,
+                oldDescription,
+                cardId,
+            };
+        },
+        {
+            onMutate: async ({ boardId, newDescription, cardId }) => {
+                dispatch({
+                    type: 'ADD_INFO',
+                    key: `board-change-card-description`,
+                    message: `Updating the card...`,
+                    keep: true,
+                    closeable: false,
+                });
+
+                // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
+                await queryClient.cancelQueries([
+                    SINGLE_BOARD_QUERY,
+                    boardId,
+                    SINGLE_CARD_QUERY,
+                    cardId,
+                ]);
+
+                // Change optimistically the card in the cache
+                const cardData = queryClient.getQueryData<CardDetails>([
+                    SINGLE_BOARD_QUERY,
+                    boardId,
+                    SINGLE_CARD_QUERY,
+                    cardId,
+                ]);
+
+                queryClient.setQueryData<CardDetails>(
+                    [SINGLE_BOARD_QUERY, boardId, SINGLE_CARD_QUERY, cardId],
+                    {
+                        ...cardData!,
+                        description: newDescription,
+                    }
+                );
+            },
+            onSettled: () => {
+                dispatch({
+                    type: 'REMOVE_TOAST',
+                    key: `board-change-card-description`,
+                });
+            },
+            onSuccess: (ctx) => {
+                // Change optimistically the board in the cache
+                ctx.onSuccess();
+            },
+            onError: (err, { boardId, oldDescription, cardId }) => {
+                try {
+                    const errors = JSON.parse(
+                        (err as Error).message
+                    ) as ApiErrors;
+                    if (errors) {
+                        dispatch({
+                            type: 'ADD_TOASTS',
+                            toasts: formatAPIError(errors),
+                        });
+                    }
+                } catch (e) {
+                    dispatch({
+                        type: 'ADD_ERROR',
+                        key: `board-change-card-description-${new Date().getTime()}`,
+                        message: `Could not update the card`,
+                    });
+
+                    // revert the optimistic update for the card
+                    const cardData = queryClient.getQueryData<CardDetails>([
+                        SINGLE_BOARD_QUERY,
+                        boardId,
+                        SINGLE_CARD_QUERY,
+                        cardId,
+                    ]);
+
+                    queryClient.setQueryData<CardDetails>(
+                        [
+                            SINGLE_BOARD_QUERY,
+                            boardId,
+                            SINGLE_CARD_QUERY,
+                            cardId,
+                        ],
+                        {
+                            ...cardData!,
+                            description: oldDescription,
+                        }
+                    );
                 }
             },
         }

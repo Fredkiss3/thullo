@@ -13,12 +13,13 @@ import { Input } from '@/components/input';
 // Styles
 import cls from '@/styles/components/photo-search.module.scss';
 
-export interface PhotoSeachProps {
+export interface PhotoSearchProps {
     show?: boolean;
     onSelect?: (photo: Photo) => void;
+    onDelete?: () => void;
 }
 
-export function PhotoSearch({ show, onSelect }: PhotoSeachProps) {
+export function PhotoSearch({ show, onSelect, onDelete }: PhotoSearchProps) {
     const [search, setSearch] = React.useState('');
     const [isLoading, setIsLoading] = React.useState(true);
 
@@ -96,6 +97,18 @@ export function PhotoSearch({ show, onSelect }: PhotoSeachProps) {
                     />
                 }
             />
+
+            {
+                onDelete && (
+                    <Button
+                        className={cls.photo_search__delete}
+                        variant="danger-hollow"
+                        onClick={onDelete}
+                    >
+                        Remove current photo
+                    </Button>
+                )
+            }
 
             <ul className={cls.photo_search__list}>
                 {isLoading ? (

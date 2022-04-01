@@ -17,7 +17,7 @@ import { Error404Page } from './pages/404';
 import { DashboardIndex } from './pages/dashboard';
 import { DashboardDetails } from './pages/dashboard/board';
 import { ToastArea } from '@/components/toast-area';
-import { CardPage } from '@/pages/dashboard/card';
+import { CardDetails } from '@/pages/dashboard/card';
 
 const queryClient = new QueryClient({
     // do not refetch on window focus
@@ -59,7 +59,7 @@ function App() {
                         >
                             <Route
                                 path="/dashboard/:boardId/card/:cardId"
-                                element={<CardPage />}
+                                element={<CardDetails />}
                             />
                         </Route>
                         <Route path="*" element={<Error404Page />} />

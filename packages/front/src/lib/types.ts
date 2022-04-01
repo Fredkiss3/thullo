@@ -99,22 +99,38 @@ export type Photo = {
     id: string;
     thumbnailURL: string;
     smallURL: string;
+    regularURL: string;
     authorUserName: string;
     authorName: string;
 };
 
-// mutation requests
-export type AddBoardRequest = {
-    name: string;
-    coverPhotoId: string;
-    coverPhotoUrl: string;
-    private: boolean;
+export type Comment = {
+    id: string;
+    date: Date;
+    content: string;
+    author: {
+        name: string;
+        id: string;
+        avatarURL: string;
+    };
 };
 
-// drag and drop
-export type DraggablePlaceholder = {
-    clientHeight: number;
-    clientWidth: number;
-    clientY: number;
-    clientX: number;
-} | null;
+export type Attachment = {
+    id: string;
+    url: string;
+    date: Date;
+    name: string;
+};
+
+export type Label = { name: string; color: string };
+
+export type CardDetails = {
+    id: string;
+    title: string;
+    description: string | null;
+    labels: Label[];
+    attachments: Attachment[];
+    comments: Comment[];
+    coverURL: string | null;
+    parentListId: string;
+};

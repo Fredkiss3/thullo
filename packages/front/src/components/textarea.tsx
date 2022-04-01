@@ -1,5 +1,6 @@
 import * as React from 'react';
 import cls from '../styles/components/textarea.module.scss';
+import { clsx } from '@/lib/functions';
 
 export interface TextAreaProps {
     placeholder?: string;
@@ -18,7 +19,7 @@ export const TextArea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
     ) => {
         return (
             <div
-                className={`${cls.textarea} ${className ?? ''}`}
+                className={clsx(cls.textarea, className)}
                 onBlur={onBlur}
                 onFocus={onFocus}
             >

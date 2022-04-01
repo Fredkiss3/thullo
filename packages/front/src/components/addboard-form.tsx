@@ -8,7 +8,7 @@ import { PhotoSearch } from './photo-search';
 
 import { useAddBoardMutation } from '@/lib/queries';
 import { Photo } from '@/lib/types';
-import { useOnClickOutside } from '@/lib/hooks';
+import { useDropdownToggle, useToggle } from '@/lib/hooks';
 
 import cls from '@/styles/components/addboard-form.module.scss';
 import { useToastContext } from '@/context/toast.context';
@@ -67,15 +67,12 @@ export const AddBoardForm = React.forwardRef<
     }
 
     const [boardName, setBoardName] = React.useState('');
-    const [isPrivate, setIsPrivate] = React.useState(false);
-    const [isCoverDropdownOpen, SetIsCoverDropdownOpen] = React.useState(false);
+    const [isPrivate, togglePrivate] = useToggle(false);
     const [cover, setCover] = React.useState<Photo | null>(null);
-    const coverButtonRef = React.useRef(null);
 
-    // when the user clicks outside of the cover dropdown, close it
-    useOnClickOutside(coverButtonRef, () => {
-        SetIsCoverDropdownOpen(false);
-    });
+    // from the dropdown toggle
+    const [coverButtonRef, isCoverDropdownOpen, toggleCoverDropdown] =
+        useDropdownToggle();
 
     return (
         <form
@@ -124,7 +121,7 @@ export const AddBoardForm = React.forwardRef<
                 testId="addboard-form-board-title"
                 placeholder="Add board title"
                 value={boardName}
-                onChange={(value) => setBoardName(value)}
+                onChange={setBoardName}
             />
 
             {/* Actions Button */}
@@ -143,25 +140,21 @@ export const AddBoardForm = React.forwardRef<
                         renderLeadingIcon={(cls) => (
                             <Icon icon={'media'} className={cls} />
                         )}
-                        onClick={() =>
-                            SetIsCoverDropdownOpen(!isCoverDropdownOpen)
-                        }
+                        onClick={toggleCoverDropdown}
                     >
                         Cover
                     </Button>
 
                     <PhotoSearch
                         show={isCoverDropdownOpen}
-                        onSelect={(photo) => {
-                            setCover(photo);
-                        }}
+                        onSelect={setCover}
                     />
                 </div>
                 <div className={cls.addboard_form__actions_buttons__action}>
                     <Button
                         isStatic={isPrivate}
                         variant={!isPrivate ? 'hollow' : 'black'}
-                        onClick={() => setIsPrivate(!isPrivate)}
+                        onClick={togglePrivate}
                         className={
                             cls.addboard_form__actions_buttons__action__button
                         }

@@ -32,6 +32,7 @@ export interface ButtonProps {
     square?: boolean;
     block?: boolean;
     style?: React.CSSProperties;
+    alignText?: 'left' | 'center' | 'right';
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
@@ -52,12 +53,13 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             disabled = false,
             square = false,
             block = false,
+            alignText = 'center',
         },
         ref
     ) => {
         return (
             <button
-               style={style}
+                style={style}
                 data-test-id={testId}
                 ref={ref}
                 type={type}
@@ -68,6 +70,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
                     cls.btn,
                     cls[`btn--${variant}`],
                     cls[`btn--${size}`],
+                    cls[`btn--text-${alignText}`],
                     className,
                     {
                         [cls['btn--disabled']]: disabled,

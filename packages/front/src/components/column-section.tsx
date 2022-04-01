@@ -325,7 +325,7 @@ export function ColumnsSection({
     function handleCancelDrag() {
         // Reset items to their original state in case items have been
         // Dragged across containers
-        listsToReorderCloned && setListsToReorder(listsToReorderCloned);
+        listsToReorderCloned && setListsToReorder({ ...listsToReorderCloned });
         setActiveCard(null);
         setListsToReorderCloned(null);
         setDragHistory(null);

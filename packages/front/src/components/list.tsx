@@ -127,9 +127,12 @@ export function List({ list, className, ...props }: ListProps) {
                     });
                 },
             });
+
+            setName(name.trim());
+        } else {
+            setName(list.name);
         }
 
-        setName(name.trim());
         setIsEditingName(false);
     }
 
@@ -259,7 +262,7 @@ function SortableCard({
         <Card
             ref={setNodeRef}
             {...props}
-            dragDisabled={disabled}
+            dragEnabled={!disabled}
             style={style}
             isDragging={isDragging}
             card={card}

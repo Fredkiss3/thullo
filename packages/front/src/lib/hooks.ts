@@ -1,4 +1,4 @@
-import { RefObject, useEffect, useRef, useState } from 'react';
+import { RefObject, useEffect, useRef, useState, useCallback } from 'react';
 import * as React from 'react';
 
 function useEventListener<K extends keyof WindowEventMap>(
@@ -71,7 +71,7 @@ export function useOnClickOutside<T extends HTMLElement = HTMLElement>(
 export function useDropdownToggle(): [
     ref: RefObject<any>,
     isOpen: boolean,
-    toggle: () => void,
+    toggle: () => void
 ] {
     const [showDropdown, setShowDropdown] = useState(false);
     const dropdownRef = React.useRef(null);
@@ -86,4 +86,43 @@ export function useDropdownToggle(): [
             setShowDropdown(!showDropdown);
         },
     ];
+}
+
+/**
+ * A hook that returns a callback function that can be used to
+ * toggle the state of a boolean value.
+ * @param initialState
+ */
+export function useToggle(
+    initialState: boolean = false
+): [boolean, () => void] {
+    // Initialize the state
+    const [state, setState] = useState<boolean>(initialState);
+
+    // Define and memorize toggler function in case we pass down the component,
+    // This function change the boolean value to it's opposite value
+    const toggle = useCallback((): void => setState((state) => !state), []);
+    return [state, toggle];
+}
+
+/**
+ * Hook utilisé pour lancer un useEffect mais pas au premier rendu
+ *
+ * @param effect
+ * @param deps
+ */
+export function useEffectNotFirst<TEffectFn extends Function>(
+    effect: TEffectFn,
+    deps: any[]
+) {
+    const isNotFirstRender = useRef(false);
+
+    useEffect(() => {
+        if (!isNotFirstRender.current) {
+            isNotFirstRender.current = true;
+            return;
+        }
+
+        effect();
+    }, deps);
 }

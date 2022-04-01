@@ -65,7 +65,7 @@ export function DashboardDetails() {
             currentPageTitle={isLoading ? 'Loading...' : board!.name}
             containerClassName={cls.details_page}
         >
-            <Seo title="Dashboard Details" />
+            <Seo title={board?.name ?? 'Board Details'} />
             {isLoading ? (
                 <Loader />
             ) : (

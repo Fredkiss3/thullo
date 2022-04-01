@@ -16,6 +16,7 @@ import { BoardMember } from '@/lib/types';
 import { useToastContext } from '@/context/toast.context';
 import { TextArea } from './textarea';
 import { clsx, renderMarkdown } from '@/lib/functions';
+import { TextareaAutogrow } from '@/components/textarea-autogrow';
 
 export interface DrawerMenuProps {
     open: boolean;
@@ -157,12 +158,12 @@ export function Drawer({ open, onClose }: DrawerMenuProps) {
                                     changeDescription(description);
                                 }}
                             >
-                                <TextArea
+                                <TextareaAutogrow
                                     className={
                                         cls.drawer__section__description__form__textarea
                                     }
                                     value={description ?? ''}
-                                    rows={20}
+                                    minHeight={200}
                                     placeholder="Add a description (markdown supported)"
                                     onChange={setDescriptionState}
                                 />

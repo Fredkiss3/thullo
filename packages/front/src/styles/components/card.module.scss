@@ -102,6 +102,15 @@
         }
     }
 
+    &__cover {
+        background-color: var(--secondary-color);
+        border-radius: var(--border-radius-md);
+        height: 130px;
+        width: 100%;
+        object-fit: cover;
+        object-position: center;
+    }
+
     &:hover > &__drag_handle,
     &:focus > &__drag_handle,
     &:focus-within > &__drag_handle {

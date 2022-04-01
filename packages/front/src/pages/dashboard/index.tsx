@@ -126,9 +126,7 @@ function AddBoardModal() {
             >
                 <AddBoardForm
                     ref={cancelButtonRef}
-                    onClose={() => {
-                        setIsOpen(false);
-                    }}
+                    onClose={() => setIsOpen(false)}
                 />
             </Modal>
         </>
