@@ -398,19 +398,6 @@ function ActionSection({
             </div>
 
             <div className={cls.action_section__actions}>
-                <div className={cls.action_section__actions__action}>
-                    <Button
-                        disabled={!editable}
-                        alignText={'left'}
-                        variant={'hollow'}
-                        renderLeadingIcon={(cls) => (
-                            <Icon icon={'tag'} className={cls} />
-                        )}
-                    >
-                        Labels
-                    </Button>
-                </div>
-
                 <div
                     className={cls.action_section__actions__action}
                     ref={coverDropdownRef}
@@ -436,6 +423,19 @@ function ActionSection({
                                 : undefined
                         }
                     />
+                </div>
+
+                <div className={cls.action_section__actions__action}>
+                    <Button
+                        disabled={!editable}
+                        alignText={'left'}
+                        variant={'hollow'}
+                        renderLeadingIcon={(cls) => (
+                            <Icon icon={'tag'} className={cls} />
+                        )}
+                    >
+                        Labels
+                    </Button>
                 </div>
 
                 <div className={cls.action_section__actions__action}>
