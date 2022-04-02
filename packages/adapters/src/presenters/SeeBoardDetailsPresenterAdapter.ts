@@ -18,6 +18,11 @@ interface BoardAggregateData {
         avatarURL: string | null;
         login: string;
     };
+    labels: {
+        name: string;
+        color: string;
+        id: string;
+    }[];
     participants: Array<{
         id: string;
         name: string;
@@ -34,7 +39,7 @@ interface BoardAggregateData {
             coverURL: string | null;
             // position: number;
 
-            labels: { name: string; color: string }[];
+            labels: { name: string; color: string; id: string }[];
             commentCount: number;
             attachmentCount: number;
         }>;
@@ -87,6 +92,13 @@ export class SeeBoardDetailsPresenterAdapter
                       avatarURL: admin!.avatarURL,
                       login: admin!.login
                   },
+                  labels: Object.entries(board.labelsByIds).map(
+                      ([id, { name, color }]) => ({
+                          id: short().fromUUID(id),
+                          name,
+                          color
+                      })
+                  ),
                   lists: Object.entries(board.cardsByLists)
                       .sort(([idA], [idB]) => {
                           const a = board.listsByIds[idA];
@@ -110,10 +122,13 @@ export class SeeBoardDetailsPresenterAdapter
                                       id: short().fromUUID(id),
                                       title,
                                       coverURL: cover?.smallURL ?? null,
-                                      labels: labels.map(({ name, color }) => ({
-                                          name,
-                                          color
-                                      })),
+                                      labels: labels.map(
+                                          ({ name, color, id }) => ({
+                                              name,
+                                              color,
+                                              id: short().fromUUID(id)
+                                          })
+                                      ),
                                       commentCount: comments.length,
                                       attachmentCount: attachments.length
                                   })

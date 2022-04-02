@@ -1,3 +1,4 @@
+import { LabelEntity } from './Label';
 import { UnsplashMetadataEntity } from './UnsplashMetadata';
 import { Card } from '@thullo/domain';
 import { Column, Entity } from 'typeorm';
@@ -23,6 +24,9 @@ export class CardEntity extends BaseEntity<Card> {
     })
     cover?: UnsplashMetadataEntity;
 
+    @Column(_ => LabelEntity)
+    labels: LabelEntity[] = [];
+
     static fromDomain(card: Card, position: number): CardEntity {
         const cardEntity = new CardEntity();
         cardEntity.uuid = card.id;
@@ -33,6 +37,10 @@ export class CardEntity extends BaseEntity<Card> {
         cardEntity.cover = card.cover
             ? UnsplashMetadataEntity.fromDomain(card.cover)
             : undefined;
+
+        cardEntity.labels = card.labels.map(label =>
+            LabelEntity.fromDomain(label)
+        );
         return cardEntity;
     }
 
@@ -45,9 +53,9 @@ export class CardEntity extends BaseEntity<Card> {
             cover: this.cover
                 ? UnsplashMetadataEntity.toDomain(this.cover)
                 : null,
+            labels: this.labels.map(label => label.toDomain()),
             // TODO: implement the rest of the properties
             attachments: [],
-            labels: [],
             comments: []
         };
     }

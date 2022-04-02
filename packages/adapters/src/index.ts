@@ -24,3 +24,5 @@ export * from './presenters/SeeCardDetailsPresenterAdapter';
 export * from './presenters/RenameCardPresenterAdapter';
 export * from './presenters/UpdateCardCoverPresenterAdapter';
 export * from './presenters/UpdateCardDescriptionPresenterAdapter';
+export * from './presenters/AddLabelToCardPresenterAdapter';
+export * from './presenters/RemoveLabelFromCardPresenterAdapter';

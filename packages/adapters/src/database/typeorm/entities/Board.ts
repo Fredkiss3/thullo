@@ -10,6 +10,7 @@ import { BaseEntity } from './BaseEntity';
 import { ListEntity } from './List';
 import { MemberEntity } from './Member';
 import { UnsplashMetadataEntity } from './UnsplashMetadata';
+import { LabelEntity } from './Label';
 
 @Entity('participants')
 export class ParticipationEntity {
@@ -64,12 +65,16 @@ export class BoardEntity extends BaseEntity<Board> {
     @Column(_ => CardEntity)
     cards: CardEntity[] = [];
 
+    @Column(_ => LabelEntity)
+    labels: LabelEntity[] = [];
+
     toAggregate(): BoardAggregate {
         return new BoardAggregateBuilder()
             .withBoardId(this.uuid!)
             .withName(this.name!)
             .withDescription(this.description!)
             .withIsPrivate(this.private!)
+            .withLabels(this.labels.map(label => label.toDomain()))
             .withCards(
                 this.cards!.sort((a, b) => a.position! - b.position!).map(
                     card => card.toDomain()
@@ -88,6 +93,10 @@ export class BoardEntity extends BaseEntity<Board> {
         boardEntity.name = aggregate.name;
         boardEntity.description = aggregate.description;
         boardEntity.private = aggregate.isPrivate;
+
+        boardEntity.labels = Object.values(aggregate.labelsByIds).map(
+            LabelEntity.fromDomain
+        );
 
         boardEntity.participants = aggregate.participants.map(
             ParticipationEntity.fromDomain
