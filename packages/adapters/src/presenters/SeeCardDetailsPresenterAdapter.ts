@@ -49,7 +49,11 @@ export class SeeCardDetailsPresenterAdapter implements SeeCardDetailsPresenter {
                   coverURL: card.cover === null ? null : card.cover.regularURL,
                   parentListId: short().fromUUID(card.parentListId),
                   attachments: [],
-                  labels: [],
+                  labels: card.labels.map(label => ({
+                      id: short().fromUUID(label.id),
+                      name: label.name,
+                      color: label.color
+                  })),
                   comments: []
               };
     }
