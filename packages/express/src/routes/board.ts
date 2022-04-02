@@ -1,3 +1,5 @@
+import { RemoveLabelFromCardController } from './../controllers/RemoveLabelFromCardController';
+import { AddLabelToCardController } from './../controllers/AddLabelToCardController';
 import router from 'express-promise-router';
 
 import { auth_middleware } from '../middleware/auth';
@@ -71,6 +73,16 @@ Router.get('/', getController(GetAllBoardsController))
         '/:boardId/cards/:cardId/set-cover',
         auth_middleware,
         getController(ChangeCardCoverController)
+    )
+    .put(
+        '/:boardId/cards/:cardId/add-label',
+        auth_middleware,
+        getController(AddLabelToCardController)
+    )
+    .put(
+        '/:boardId/cards/:cardId/remove-label',
+        auth_middleware,
+        getController(RemoveLabelFromCardController)
     )
     .put(
         '/:boardId/cards/:cardId/rename',
