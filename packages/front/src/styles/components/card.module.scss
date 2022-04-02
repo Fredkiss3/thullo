@@ -63,6 +63,12 @@
         overflow-wrap: break-word;
     }
 
+    &__tags {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+
     &--overlay {
         & .card__drag_handle {
             display: flex;

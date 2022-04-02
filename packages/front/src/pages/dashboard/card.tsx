@@ -23,8 +23,9 @@ import {
 } from '@/lib/queries';
 import { useToastContext } from '@/context/toast.context';
 import { FormEvent } from 'react';
-import { Photo } from '@/lib/types';
+import { Label, Photo } from '@/lib/types';
 import { PhotoSearch } from '@/components/photo-search';
+import { Tag } from '@/components/tag';
 
 export interface CardDetailsProps {}
 
@@ -107,6 +108,7 @@ export function CardDetails({}: CardDetailsProps) {
                                         parentListName={parentListName}
                                         title={card!.title}
                                         editable={canEditCard}
+                                        labels={card!.labels}
                                     />
                                     <DescriptionSection
                                         onChangeDescription={
@@ -203,10 +205,12 @@ function TitleSection({
     parentListName,
     editable,
     onChangeTitle,
+    labels,
 }: {
     title: string;
     parentListName?: string;
     editable: boolean;
+    labels: Label[];
     onChangeTitle: (newTitle: string) => void;
 }) {
     const [isEditing, setIsEditing] = React.useState(false);
@@ -253,6 +257,32 @@ function TitleSection({
             <small className={cls.title_section__subtitle}>
                 In list <strong>{parentListName}</strong>
             </small>
+
+            {labels.length > 0 && (
+                <div className={cls.title_section__labels}>
+                    <div className={cls.title_section__labels__header}>
+                        <Icon
+                            icon="tag"
+                            className={cls.title_section__labels__header__icon}
+                        />
+                        <small>Labels</small>
+                    </div>
+
+                    <ul className={cls.title_section__labels__list}>
+                        {labels.map((label) => (
+                            <>
+                                <Tag
+                                    closeable
+                                    // @ts-ignore
+                                    color={label.color.toLowerCase()}
+                                    text={label.name}
+                                    rounded={false}
+                                />
+                            </>
+                        ))}
+                    </ul>
+                </div>
+            )}
         </section>
     );
 }

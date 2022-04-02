@@ -1,0 +1,29 @@
+.tag {
+    border-radius: var(--border-radius-sm);
+    padding: 0.25rem 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 0.25rem;
+    color: var(--fg-color);
+    background-color: var(--bg-color);
+    font-size: var(--font-size-xs);
+
+    &--closeable {
+        cursor: pointer;
+        padding: 0.5rem 0.75rem;
+        color: var(--bg-color);
+        background-color: var(--fg-color);
+        font-size: var(--font-size-sm);
+    }
+
+    &--rounded {
+        border-radius: var(--border-radius-lg);
+    }
+
+    &__close_icon {
+        height: 0.75rem;
+        margin-top: 0.1rem;
+    }
+}

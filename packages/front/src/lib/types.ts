@@ -6,6 +6,20 @@ export type ApiErrors =
 
 export type ToastType = 'success' | 'error' | 'warning' | 'info';
 
+export type Color =
+    | 'GREEN'
+    | 'YELLOW'
+    | 'ORANGE'
+    | 'RED'
+    | 'BLUE'
+    | 'LIGHTBLUE'
+    | 'LIGHTGREEN'
+    | 'BLACK'
+    | 'PURPLE'
+    | 'DARK'
+    | 'GREY'
+    | 'LIGHTGREY';
+
 export type ToastMessage = {
     type: ToastType;
     message: string;
@@ -47,12 +61,14 @@ export type Board = {
     participants: BoardMember[];
 };
 
+export type Label = { id: string; name: string; color: Color };
+
 export type Card = {
     id?: string;
     title: string;
     coverURL?: string | null;
 
-    labels: { name: string; color: string }[];
+    labels: Label[];
     commentCount: number;
     attachmentCount: number;
 };
@@ -91,6 +107,7 @@ export type BoardDetails = {
     isPrivate: boolean;
     admin: BoardMember;
     lists: List[];
+    labels: Label[];
 };
 
 export type CategorizedBoards = { self: Board[]; public: Board[] };
@@ -121,8 +138,6 @@ export type Attachment = {
     date: Date;
     name: string;
 };
-
-export type Label = { name: string; color: string };
 
 export type CardDetails = {
     id: string;

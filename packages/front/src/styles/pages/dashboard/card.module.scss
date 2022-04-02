@@ -21,19 +21,22 @@
         &__grid {
             // grid of 10 cols
             display: grid;
-            grid-template-columns: repeat(12, 1fr);
+
+            @include phone {
+                grid-template-columns: repeat(12, 1fr);
+                & > :first-child {
+                    grid-column: 1 / span 9;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 1rem;
+                }
+
+                & > :nth-child(2) {
+                    grid-column: 10 / span 3;
+                }
+            }
+
             gap: 2rem;
-
-            & > :first-child {
-                grid-column: 1 / span 9;
-                display: flex;
-                flex-direction: column;
-                gap: 1rem;
-            }
-
-            & > :nth-child(2) {
-                grid-column: 10 / span 3;
-            }
         }
 
         &__cover {
@@ -85,6 +88,32 @@
         & > strong {
             font-weight: var(--font-weight-bold);
             color: var(--text-color);
+        }
+    }
+
+    &__labels {
+        flex-direction: column;
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+
+        &__list {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        &__header {
+            font-weight: var(--font-weight-semi);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--border-color);
+            font-size: var(--font-size-xs);
+
+            &__icon {
+                height: 1rem;
+            }
         }
     }
 }

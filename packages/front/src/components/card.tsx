@@ -4,6 +4,7 @@ import { Card as CardType } from '@/lib/types';
 import { Link } from 'react-router-dom';
 import { Button } from './button';
 import { Icon } from './icon';
+import { Tag as TagComponent } from './tag';
 
 import cls from '@/styles/components/card.module.scss';
 
@@ -21,7 +22,7 @@ export interface CardProps {
 export const Card = React.forwardRef<HTMLAnchorElement, CardProps>(
     (
         {
-            card: { id, title, coverURL },
+            card: { id, title, coverURL, labels },
             boardId,
             style,
             otherProps,
@@ -52,6 +53,18 @@ export const Card = React.forwardRef<HTMLAnchorElement, CardProps>(
                     )}
 
                     <span className={cls.card__title}>{title}</span>
+
+                    <ul className={cls.card__tags}>
+                        {labels.map((label) => (
+                            <li key={label.id} className={cls.card__tag}>
+                                <TagComponent
+                                    // @ts-ignore
+                                    color={label.color.toLowerCase()}
+                                    text={label.name}
+                                />
+                            </li>
+                        ))}
+                    </ul>
 
                     {dragEnabled && id !== undefined && (
                         <button
