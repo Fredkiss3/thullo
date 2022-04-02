@@ -74,26 +74,31 @@ export class BoardAggregate {
         color?: ColorType,
         name?: string,
         labelId?: LabelId
-    ): void {
+    ): Label {
         const card = this.getCardById(cardId);
 
-        if (
-            labelId === undefined &&
-            name !== undefined &&
-            color !== undefined
-        ) {
-            labelId = uuidv4();
-            const label: Label = {
-                id: labelId,
-                name,
-                color,
-                parentBoardId: this._board.id
-            };
+        if (labelId === undefined) {
+            if (name !== undefined && color !== undefined) {
+                labelId = uuidv4();
+                const label: Label = {
+                    id: labelId,
+                    name,
+                    color,
+                    parentBoardId: this._board.id
+                };
 
-            this._labelsById[labelId] = label;
+                this._labelsById[labelId] = label;
 
-            card.labels.push(label);
-        } else if (labelId !== undefined) {
+                // Do not add twice to the card
+                card.labels.push(label);
+
+                return label;
+            } else {
+                throw new Error(
+                    'You must provide a name and a color for the label'
+                );
+            }
+        } else {
             const label = this._labelsById[labelId];
 
             if (label === undefined) {
@@ -102,7 +107,14 @@ export class BoardAggregate {
                 );
             }
 
-            card.labels.push(label);
+            const alreadyExistingLabel = card.labels.find(
+                ({ id }) => id === labelId
+            );
+
+            if (!alreadyExistingLabel) {
+                card.labels.push(label);
+            }
+            return label;
         }
     }
 

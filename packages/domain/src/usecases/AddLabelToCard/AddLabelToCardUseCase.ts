@@ -8,6 +8,7 @@ import { AddLabelToCardPresenter } from './AddLabelToCardPresenter';
 import { AddLabelToCardResponse } from './AddLabelToCardResponse';
 import { FieldErrors } from '../../lib/types';
 import { BoardAggregateRepository } from '../../entities/BoardAggregate';
+import { Label } from '../../entities/Label';
 
 import Validator from 'validatorjs';
 Validator.useLang('fr');
@@ -27,6 +28,7 @@ export class AddLabelToCardUseCase {
         presenter: AddLabelToCardPresenter
     ): Promise<void> {
         let errors = this.validate(request);
+        let label: Label | null = null;
 
         if (!errors) {
             const board =
@@ -41,7 +43,7 @@ export class AddLabelToCardUseCase {
             } else {
                 try {
                     if (board.isParticipant(request.requestedBy)) {
-                        board.addLabelToCard(
+                        label = board.addLabelToCard(
                             request.cardId,
                             request.color ?? undefined,
                             request.name ?? undefined,
@@ -68,15 +70,18 @@ export class AddLabelToCardUseCase {
                         errors = {
                             cardId: ['Card not found']
                         };
+                    } else {
+                        errors = {
+                            global: [(e as Error).message]
+                        };
                     }
                 }
             }
         }
-        presenter.present(new AddLabelToCardResponse(errors));
+        presenter.present(new AddLabelToCardResponse(label, errors));
     }
 
     validate(request: AddLabelToCardRequest): FieldErrors {
-        // TODO : Validation Rules
         const validation = new Validator(request, this.RULES, {
             'required.cardId': 'Card id is required',
             'required.boardId': 'Board id is required',

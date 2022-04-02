@@ -7,7 +7,8 @@ import {
     Member,
     BoardAggregate,
     BoardAggregateBuilder,
-    Colors
+    Colors,
+    Label
 } from '../../src';
 import { v4 as uuidv4 } from 'uuid';
 import { BoardAggregateRepositoryBuilder } from '../builder/BoardAggregateRepositoryBuilder';
@@ -165,6 +166,83 @@ describe('AddLabelToCard Use case', () => {
             'Label 1'
         );
 
+        expect(aggregateExpected!.getCardById(cardId).labels).toHaveLength(1);
+        expect(aggregateExpected!.getCardById(cardId).labels[0].name).toBe(
+            'Label 1'
+        );
+    });
+
+    it('should not add a label twice to the card', async () => {
+        // Given
+        let aggregateExpected: BoardAggregate | null = null;
+
+        const label: Label = {
+            name: 'Label 1',
+            color: Colors.BLUE,
+            id: labelID,
+            parentBoardId: BOARD_ID
+        };
+
+        const aggregate: BoardAggregate = new BoardAggregateBuilder()
+            .withBoardId(BOARD_ID)
+            .withLists([
+                {
+                    id: todoListID,
+                    name: 'Todo',
+                    position: 0
+                }
+            ])
+            .withCards([
+                {
+                    ...cardDetails,
+                    labels: [label]
+                }
+            ])
+            .withLabels([
+                {
+                    name: 'Label 1',
+                    color: Colors.BLUE,
+                    id: labelID
+                }
+            ])
+            .withParticipants([
+                {
+                    isAdmin: true,
+                    member: admin
+                }
+            ])
+            .build();
+
+        const boardAggregateRepository = new BoardAggregateRepositoryBuilder()
+            .withGetBoardAggregateById(() => Promise.resolve(aggregate))
+            .withSaveAggregate((aggregate) => {
+                aggregateExpected = aggregate;
+                return Promise.resolve(aggregate);
+            })
+            .build();
+
+        const useCase = new AddLabelToCardUseCase(boardAggregateRepository);
+
+        // When
+        await useCase.execute(
+            {
+                ...request,
+                labelId: labelID
+            },
+            presenter
+        );
+
+        // Then
+        expect(presenter.response).not.toBe(null);
+        expect(aggregateExpected!).not.toBeFalsy();
+
+        // Not added to the board
+        expect(Object.values(aggregateExpected!.labelsByIds)).toHaveLength(1);
+        expect(Object.values(aggregateExpected!.labelsByIds)[0].name).toBe(
+            'Label 1'
+        );
+
+        // Not added to the card
         expect(aggregateExpected!.getCardById(cardId).labels).toHaveLength(1);
         expect(aggregateExpected!.getCardById(cardId).labels[0].name).toBe(
             'Label 1'

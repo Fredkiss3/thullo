@@ -1,6 +1,9 @@
+import { Label } from '../../entities/Label';
 import { FieldErrors } from '../../lib/types';
 
 export class AddLabelToCardResponse {
-  // TODO: Response args
-  constructor(public errors: FieldErrors) {}
+    constructor(
+        public label: Label | null,
+        public errors: FieldErrors | null
+    ) {}
 }
