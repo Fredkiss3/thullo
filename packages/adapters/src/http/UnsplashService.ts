@@ -68,8 +68,8 @@ export class UnsplashService implements UnsplashGateway {
                     }
                 ]
             },
-            function (error, result) {
-                console.log(result, error);
+            function (error) {
+                console.log(error);
             }
         );
 
