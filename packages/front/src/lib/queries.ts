@@ -1558,14 +1558,12 @@ export function useChangeCardTitleMutation() {
             boardId,
             cardId,
             listId,
-            onSuccess,
         }: {
             boardId: string;
             cardId: string;
             listId: string;
             newName: string;
             oldName: string;
-            onSuccess: () => void;
         }) => {
             const { errors } = await jsonFetch<{ success: boolean }>(
                 `${
@@ -1586,18 +1584,10 @@ export function useChangeCardTitleMutation() {
                 throw new Error(JSON.stringify(errors));
             }
 
-            return { onSuccess, boardId, newName, oldName, cardId, listId };
+            return { boardId, newName, oldName, cardId, listId };
         },
         {
             onMutate: async ({ boardId, newName, cardId, listId }) => {
-                dispatch({
-                    type: 'ADD_INFO',
-                    key: `board-rename-card`,
-                    message: `Updating the card...`,
-                    keep: true,
-                    closeable: false,
-                });
-
                 // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
                 await queryClient.cancelQueries([
                     SINGLE_BOARD_QUERY,
@@ -1653,16 +1643,6 @@ export function useChangeCardTitleMutation() {
                         lists: newLists,
                     }
                 );
-            },
-            onSettled: () => {
-                dispatch({
-                    type: 'REMOVE_TOAST',
-                    key: `board-rename-card`,
-                });
-            },
-            onSuccess: (ctx) => {
-                // Change optimistically the board in the cache
-                ctx.onSuccess();
             },
             onError: (err, { boardId, oldName, listId, cardId }) => {
                 try {
@@ -1751,14 +1731,12 @@ export function useChangeCardCoverMutation() {
             boardId,
             cardId,
             listId,
-            onSuccess,
         }: {
             boardId: string;
             cardId: string;
             listId: string;
             newCover: Photo | null;
             oldCoverPhotoUrl: string | null;
-            onSuccess: () => void;
         }) => {
             const { errors } = await jsonFetch<{ success: boolean }>(
                 `${
@@ -1780,7 +1758,6 @@ export function useChangeCardCoverMutation() {
             }
 
             return {
-                onSuccess,
                 boardId,
                 cardId,
                 listId,
@@ -1790,14 +1767,6 @@ export function useChangeCardCoverMutation() {
         },
         {
             onMutate: async ({ boardId, newCover, cardId, listId }) => {
-                dispatch({
-                    type: 'ADD_INFO',
-                    key: `board-change-cover`,
-                    message: `Updating the card cover...`,
-                    keep: true,
-                    closeable: false,
-                });
-
                 // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
                 await queryClient.cancelQueries([SINGLE_BOARD_QUERY, boardId]);
                 await queryClient.cancelQueries([
@@ -1855,13 +1824,7 @@ export function useChangeCardCoverMutation() {
                     }
                 );
             },
-            onSettled: () => {
-                dispatch({
-                    type: 'REMOVE_TOAST',
-                    key: `board-change-cover`,
-                });
-            },
-            onSuccess: ({ onSuccess, cardId, boardId }) => {
+            onSuccess: ({ cardId, boardId }) => {
                 queryClient.invalidateQueries([SINGLE_BOARD_QUERY, boardId]);
                 queryClient.invalidateQueries([
                     SINGLE_BOARD_QUERY,
@@ -1869,8 +1832,6 @@ export function useChangeCardCoverMutation() {
                     SINGLE_CARD_QUERY,
                     cardId,
                 ]);
-
-                onSuccess();
             },
             onError: (err, { boardId, oldCoverPhotoUrl, listId, cardId }) => {
                 try {
@@ -1958,13 +1919,11 @@ export function useChangeCardDescriptionMutation() {
             newDescription,
             boardId,
             cardId,
-            onSuccess,
         }: {
             boardId: string;
             cardId: string;
             newDescription: string | null;
             oldDescription: string | null;
-            onSuccess: () => void;
         }) => {
             const { errors } = await jsonFetch<{ success: boolean }>(
                 `${
@@ -1986,7 +1945,6 @@ export function useChangeCardDescriptionMutation() {
             }
 
             return {
-                onSuccess,
                 boardId,
                 newDescription,
                 oldDescription,
@@ -1995,14 +1953,6 @@ export function useChangeCardDescriptionMutation() {
         },
         {
             onMutate: async ({ boardId, newDescription, cardId }) => {
-                dispatch({
-                    type: 'ADD_INFO',
-                    key: `board-change-card-description`,
-                    message: `Updating the card...`,
-                    keep: true,
-                    closeable: false,
-                });
-
                 // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
                 await queryClient.cancelQueries([
                     SINGLE_BOARD_QUERY,
@@ -2026,16 +1976,6 @@ export function useChangeCardDescriptionMutation() {
                         description: newDescription,
                     }
                 );
-            },
-            onSettled: () => {
-                dispatch({
-                    type: 'REMOVE_TOAST',
-                    key: `board-change-card-description`,
-                });
-            },
-            onSuccess: (ctx) => {
-                // Change optimistically the board in the cache
-                ctx.onSuccess();
             },
             onError: (err, { boardId, oldDescription, cardId }) => {
                 try {

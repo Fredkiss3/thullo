@@ -1,9 +1,18 @@
 import * as React from 'react';
 // functions and other
+import type { FormEvent } from 'react';
 import { clsx, renderMarkdown } from '@/lib/functions';
-import { useNavigate, useParams } from 'react-router-dom';
-import { useDropdownToggle, useEffectNotFirst, useToggle } from '@/lib/hooks';
+import { useNavigate } from 'react-router-dom';
+import { useDropdownToggle, useEffectNotFirst } from '@/lib/hooks';
 import { useCardDetailsData } from '@/lib/page-hooks';
+import {
+    useAddLabelToCardMutation,
+    useChangeCardCoverMutation,
+    useChangeCardDescriptionMutation,
+    useChangeCardTitleMutation,
+    useRemoveLabelFromCardMutation,
+} from '@/lib/queries';
+import type { Color, Label, PartialOmit, Photo } from '@/lib/types';
 
 // components
 import { Modal } from '@/components/modal';
@@ -12,23 +21,13 @@ import { Icon } from '@/components/icon';
 import { Button } from '@/components/button';
 import { Loader } from '@/components/loader';
 import { TextareaAutogrow } from '@/components/textarea-autogrow';
-
-// styles
-import cls from '@/styles/pages/dashboard/card.module.scss';
 import { Input } from '@/components/input';
-import {
-    useAddLabelToCardMutation,
-    useChangeCardCoverMutation,
-    useChangeCardDescriptionMutation,
-    useChangeCardTitleMutation,
-    useRemoveLabelFromCardMutation,
-} from '@/lib/queries';
-import { useToastContext } from '@/context/toast.context';
-import { FormEvent } from 'react';
-import { Color, Label, PartialOmit, Photo } from '@/lib/types';
 import { PhotoSearch } from '@/components/photo-search';
 import { Tag } from '@/components/tag';
 import { LabelSelector } from '@/components/label-selector';
+
+// styles
+import cls from '@/styles/pages/dashboard/card.module.scss';
 
 export interface CardDetailsProps {}
 
@@ -37,7 +36,6 @@ export function CardDetails({}: CardDetailsProps) {
     const { board, card, canEditCard, parentListName, isLoading } =
         useCardDetailsData();
     const navigate = useNavigate();
-    const { dispatch } = useToastContext();
 
     // mutations
     const changeCardTitleMutation = useChangeCardTitleMutation();
@@ -151,13 +149,6 @@ export function CardDetails({}: CardDetailsProps) {
                 changeCardTitleMutation.mutate({
                     oldName: card.title,
                     newName: newTitle,
-                    onSuccess: () => {
-                        dispatch({
-                            type: 'ADD_SUCCESS',
-                            key: `board-rename-card-${new Date().getTime()}`,
-                            message: 'Card renamed successfully',
-                        });
-                    },
                     boardId: board.id,
                     cardId: card.id,
                     listId: card.parentListId,
@@ -172,13 +163,6 @@ export function CardDetails({}: CardDetailsProps) {
                 changeCardDescriptionMutation.mutate({
                     oldDescription: card.description,
                     newDescription: newDescription,
-                    onSuccess: () => {
-                        dispatch({
-                            type: 'ADD_SUCCESS',
-                            key: `board-change-card-description-${new Date().getTime()}`,
-                            message: 'Card updated successfully',
-                        });
-                    },
                     boardId: board.id,
                     cardId: card.id,
                 });
@@ -192,13 +176,6 @@ export function CardDetails({}: CardDetailsProps) {
                 newCover: photo,
                 oldCoverPhotoUrl: card.coverURL,
                 listId: card.parentListId,
-                onSuccess: () => {
-                    dispatch({
-                        type: 'ADD_SUCCESS',
-                        key: `board-change-card-cover-${new Date().getTime()}`,
-                        message: 'Cover updated successfully',
-                    });
-                },
                 boardId: board.id,
                 cardId: card.id,
             });
