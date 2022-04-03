@@ -7,32 +7,43 @@ import { Icon } from './icon';
 import { TAG_COLORS } from '@/lib/constants';
 
 export interface TagProps {
-    color: Lowercase<Color>;
+    color: Color;
     text: string;
-    closeable?: boolean;
     rounded?: boolean;
-    onClose?: () => void;
+    selected?: boolean;
+    onRemove?: () => void;
+    onSelect?: () => void;
+    disabled?: boolean;
 }
 
 export function Tag({
     color,
     text,
-    onClose,
-    closeable = false,
+    onRemove,
+    onSelect,
+    selected = false,
     rounded = true,
+    disabled = false,
 }: TagProps) {
+    const Element = !!onRemove || !!onSelect ? 'button' : 'small';
+
     return (
-        <small
+        <Element
+            disabled={disabled}
             className={clsx(cls.tag, {
                 [cls[`tag--rounded`]]: rounded,
-                [cls[`tag--closeable`]]: closeable,
+                [cls[`tag--disabled`]]: disabled,
+                [cls[`tag--closeable`]]: !!onRemove,
+                [cls[`tag--selectable`]]: !!onSelect,
+                [cls[`tag--selected`]]: !!onSelect && selected,
             })}
-            onClick={onClose}
+            onClick={onRemove || onSelect}
             style={{
                 // @ts-ignore
-                '--bg-color': !closeable
+                '--bg-color': TAG_COLORS[color].bg,
+                '--text-color': !onRemove
                     ? TAG_COLORS[color].bg
-                    : color === 'lightgrey'
+                    : color === 'LIGHTGREY'
                     ? 'var(--text-color)'
                     : '#fff',
                 '--fg-color': TAG_COLORS[color].fg,
@@ -40,9 +51,13 @@ export function Tag({
         >
             {text}
 
-            {closeable && (
+            {!!onRemove && !disabled && (
                 <Icon icon="x-icon" className={cls.tag__close_icon} />
             )}
-        </small>
+
+            {!!onSelect && selected && (
+                <Icon icon="check" className={cls.tag__selected_icon} />
+            )}
+        </Element>
     );
 }

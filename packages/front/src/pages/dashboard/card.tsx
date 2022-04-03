@@ -17,15 +17,18 @@ import { TextareaAutogrow } from '@/components/textarea-autogrow';
 import cls from '@/styles/pages/dashboard/card.module.scss';
 import { Input } from '@/components/input';
 import {
+    useAddLabelToCardMutation,
     useChangeCardCoverMutation,
     useChangeCardDescriptionMutation,
     useChangeCardTitleMutation,
+    useRemoveLabelFromCardMutation,
 } from '@/lib/queries';
 import { useToastContext } from '@/context/toast.context';
 import { FormEvent } from 'react';
-import { Label, Photo } from '@/lib/types';
+import { Color, Label, PartialOmit, Photo } from '@/lib/types';
 import { PhotoSearch } from '@/components/photo-search';
 import { Tag } from '@/components/tag';
+import { LabelSelector } from '@/components/label-selector';
 
 export interface CardDetailsProps {}
 
@@ -40,6 +43,8 @@ export function CardDetails({}: CardDetailsProps) {
     const changeCardTitleMutation = useChangeCardTitleMutation();
     const changeCardDescriptionMutation = useChangeCardDescriptionMutation();
     const changeCardCoverMutation = useChangeCardCoverMutation();
+    const addLabelToCardMutation = useAddLabelToCardMutation();
+    const removeLabelFromCardMutation = useRemoveLabelFromCardMutation();
 
     // state & ref
     const [isOpen, setIsOpen] = React.useState(true);
@@ -104,16 +109,15 @@ export function CardDetails({}: CardDetailsProps) {
                             <div className={cls.card_details__content__grid}>
                                 <div>
                                     <TitleSection
-                                        onChangeTitle={updateCardTitle}
+                                        onChangeTitle={updateTitle}
+                                        onRemoveLabel={removeLabel}
                                         parentListName={parentListName}
                                         title={card!.title}
                                         editable={canEditCard}
                                         labels={card!.labels}
                                     />
                                     <DescriptionSection
-                                        onChangeDescription={
-                                            updateCardDescription
-                                        }
+                                        onChangeDescription={updateDescription}
                                         description={card!.description}
                                         editable={canEditCard}
                                     />
@@ -122,9 +126,11 @@ export function CardDetails({}: CardDetailsProps) {
                                 </div>
 
                                 <ActionSection
+                                    onSelectLabel={addLabel}
+                                    availableLabels={board.labels}
                                     currentCoverUrl={card!.coverURL}
                                     editable={canEditCard}
-                                    onChangeCover={updateCardCover}
+                                    onChangeCover={updateCover}
                                 />
                             </div>
                         </>
@@ -139,7 +145,7 @@ export function CardDetails({}: CardDetailsProps) {
         navigate(-1);
     }
 
-    function updateCardTitle(newTitle: string) {
+    function updateTitle(newTitle: string) {
         if (board && card) {
             if (newTitle.length > 0 && newTitle !== card.title) {
                 changeCardTitleMutation.mutate({
@@ -160,7 +166,7 @@ export function CardDetails({}: CardDetailsProps) {
         }
     }
 
-    function updateCardDescription(newDescription: string) {
+    function updateDescription(newDescription: string) {
         if (board && card) {
             if (newDescription !== card.description) {
                 changeCardDescriptionMutation.mutate({
@@ -180,7 +186,7 @@ export function CardDetails({}: CardDetailsProps) {
         }
     }
 
-    function updateCardCover(photo: Photo | null) {
+    function updateCover(photo: Photo | null) {
         if (board && card) {
             changeCardCoverMutation.mutate({
                 newCover: photo,
@@ -198,6 +204,38 @@ export function CardDetails({}: CardDetailsProps) {
             });
         }
     }
+
+    function addLabel({
+        id,
+        name,
+        color,
+    }: {
+        id: string | null;
+        name: string;
+        color: Color;
+    }) {
+        if (board && card) {
+            addLabelToCardMutation.mutate({
+                labelId: id,
+                labelName: name,
+                labelColor: color,
+                boardId: board.id,
+                cardId: card.id,
+                listId: card.parentListId,
+            });
+        }
+    }
+
+    function removeLabel(label: Label) {
+        if (board && card) {
+            removeLabelFromCardMutation.mutate({
+                boardId: board.id,
+                cardId: card.id,
+                listId: card.parentListId,
+                label,
+            });
+        }
+    }
 }
 
 function TitleSection({
@@ -206,12 +244,14 @@ function TitleSection({
     editable,
     onChangeTitle,
     labels,
+    onRemoveLabel,
 }: {
     title: string;
     parentListName?: string;
     editable: boolean;
-    labels: Label[];
+    labels: PartialOmit<Label, 'id'>[];
     onChangeTitle: (newTitle: string) => void;
+    onRemoveLabel: (label: Label) => void;
 }) {
     const [isEditing, setIsEditing] = React.useState(false);
     const [newTitle, setNewTitle] = React.useState(title);
@@ -272,9 +312,12 @@ function TitleSection({
                         {labels.map((label) => (
                             <>
                                 <Tag
-                                    closeable
-                                    // @ts-ignore
-                                    color={label.color.toLowerCase()}
+                                    disabled={!label.id}
+                                    onRemove={() =>
+                                        label.id &&
+                                        onRemoveLabel(label as Label)
+                                    }
+                                    color={label.color}
                                     text={label.name}
                                     rounded={false}
                                 />
@@ -409,12 +452,23 @@ function ActionSection({
     onChangeCover,
     editable,
     currentCoverUrl,
+    availableLabels,
+    onSelectLabel,
 }: {
     onChangeCover: (cover: Photo | null) => void;
     editable: boolean;
     currentCoverUrl: string | null;
+    availableLabels: Label[];
+    onSelectLabel: (label: {
+        id: string | null;
+        color: Color;
+        name: string;
+    }) => void;
 }) {
     const [coverDropdownRef, coverDropdownIsOpen, toggleCoverDropdown] =
+        useDropdownToggle();
+
+    const [labelDropdownRef, labelDropdownIsOpen, toggleLabelDropdown] =
         useDropdownToggle();
 
     return (
@@ -455,17 +509,28 @@ function ActionSection({
                     />
                 </div>
 
-                <div className={cls.action_section__actions__action}>
+                <div
+                    className={cls.action_section__actions__action}
+                    ref={labelDropdownRef}
+                >
                     <Button
                         disabled={!editable}
                         alignText={'left'}
-                        variant={'hollow'}
+                        variant={!labelDropdownIsOpen ? 'hollow' : 'black'}
+                        onClick={toggleLabelDropdown}
                         renderLeadingIcon={(cls) => (
                             <Icon icon={'tag'} className={cls} />
                         )}
                     >
                         Labels
                     </Button>
+
+                    {labelDropdownIsOpen && (
+                        <LabelSelector
+                            availableLabels={availableLabels}
+                            onSelect={onSelectLabel}
+                        />
+                    )}
                 </div>
 
                 <div className={cls.action_section__actions__action}>

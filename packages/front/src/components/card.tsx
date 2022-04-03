@@ -58,8 +58,7 @@ export const Card = React.forwardRef<HTMLAnchorElement, CardProps>(
                         {labels.map((label) => (
                             <li key={label.id} className={cls.card__tag}>
                                 <TagComponent
-                                    // @ts-ignore
-                                    color={label.color.toLowerCase()}
+                                    color={label.color}
                                     text={label.name}
                                 />
                             </li>

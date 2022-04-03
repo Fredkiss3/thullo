@@ -6,57 +6,57 @@ export const SINGLE_BOARD_QUERY = 'board';
 export const SINGLE_CARD_QUERY = 'card';
 
 export const TAG_COLORS: Record<
-    Lowercase<Color>,
+    Color,
     {
         bg: string;
         fg: string;
     }
 > = {
-    green: {
+    GREEN: {
         bg: '#D3EADD',
         fg: '#219653',
     },
-    blue: {
+    BLUE: {
         bg: '#D5E6FB',
         fg: '#2F80ED',
     },
-    yellow: {
+    YELLOW: {
         bg: '#FCF4DB',
         fg: '#F2C94C',
     },
-    orange: {
+    ORANGE: {
         bg: '#FBE6D2',
         fg: '#F2994A',
     },
-    purple: {
+    PURPLE: {
         bg: '#EBDCF9',
         fg: '#9B51E0',
     },
-    red: {
+    RED: {
         bg: '#FBEAEA',
         fg: '#EB5757',
     },
-    lightblue: {
+    LIGHTBLUE: {
         fg: '#56CCF2',
         bg: '#ddf4fc',
     },
-    lightgreen: {
+    LIGHTGREEN: {
         fg: '#6FCF97',
         bg: '#E3F9E5',
     },
-    black: {
+    BLACK: {
         fg: '#333333',
         bg: '#E0E0E0',
     },
-    dark: {
+    DARK: {
         fg: '#4F4F4F',
         bg: '#F8F8F8',
     },
-    grey: {
+    GREY: {
         fg: '#828282',
         bg: '#F8F8F8',
     },
-    lightgrey: {
+    LIGHTGREY: {
         fg: '#BDBDBD',
         bg: '#F8F8F8',
     },

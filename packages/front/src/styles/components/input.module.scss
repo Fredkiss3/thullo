@@ -11,7 +11,8 @@
     &:focus-within {
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         background-color: #ffffff;
-        border-color: var(--divider-color);
+        //border-color: var(--divider-color);
+        border-color: transparent;
     }
 
     &__field {

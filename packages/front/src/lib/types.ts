@@ -61,6 +61,9 @@ export type Board = {
     participants: BoardMember[];
 };
 
+// this type serve for setting up some properties of an existing type optional
+export type PartialOmit<T, K extends keyof T> = Omit<T, K> & Partial<T>;
+
 export type Label = { id: string; name: string; color: Color };
 
 export type Card = {
@@ -68,7 +71,7 @@ export type Card = {
     title: string;
     coverURL?: string | null;
 
-    labels: Label[];
+    labels: PartialOmit<Label, 'id'>[];
     commentCount: number;
     attachmentCount: number;
 };
@@ -143,7 +146,7 @@ export type CardDetails = {
     id: string;
     title: string;
     description: string | null;
-    labels: Label[];
+    labels: PartialOmit<Label, 'id'>[];
     attachments: Attachment[];
     comments: Comment[];
     coverURL: string | null;

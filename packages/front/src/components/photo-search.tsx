@@ -1,6 +1,6 @@
 import * as React from 'react';
 // Functions & Others
-import { debounce, jsonFetch } from '@/lib/functions';
+import { clsx, debounce, jsonFetch } from '@/lib/functions';
 import type { ApiErrors, Photo } from '@/lib/types';
 
 // Components
@@ -19,7 +19,11 @@ export interface PhotoSearchProps {
     onDelete?: () => void;
 }
 
-export function PhotoSearch({ show, onSelect, onDelete }: PhotoSearchProps) {
+export function PhotoSearch({
+    show = false,
+    onSelect,
+    onDelete,
+}: PhotoSearchProps) {
     const [search, setSearch] = React.useState('');
     const [isLoading, setIsLoading] = React.useState(true);
 
@@ -68,9 +72,9 @@ export function PhotoSearch({ show, onSelect, onDelete }: PhotoSearchProps) {
         <Dropdown
             testId="photo-search"
             align="right"
-            className={`${cls.photo_search} ${
-                show && cls['photo_search--open']
-            }`}
+            className={clsx(cls.photo_search, {
+                [cls['photo_search--open']]: show,
+            })}
         >
             <div className={cls.photo_search__header}>
                 <strong className={cls.photo_search__header__title}>
@@ -98,17 +102,15 @@ export function PhotoSearch({ show, onSelect, onDelete }: PhotoSearchProps) {
                 }
             />
 
-            {
-                onDelete && (
-                    <Button
-                        className={cls.photo_search__delete}
-                        variant="danger-hollow"
-                        onClick={onDelete}
-                    >
-                        Remove current photo
-                    </Button>
-                )
-            }
+            {onDelete && (
+                <Button
+                    className={cls.photo_search__delete}
+                    variant="danger-hollow"
+                    onClick={onDelete}
+                >
+                    Remove current photo
+                </Button>
+            )}
 
             <ul className={cls.photo_search__list}>
                 {isLoading ? (

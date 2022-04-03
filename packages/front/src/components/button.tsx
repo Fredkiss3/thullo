@@ -17,6 +17,8 @@ export const ButtonVariants = [
 export const ButtonSizes = ['small', 'medium', 'large'] as const;
 
 export interface ButtonProps {
+    tabIndex?: number;
+    title?: string;
     testId?: string;
     variant?: typeof ButtonVariants[number];
     disabled?: boolean;
@@ -38,6 +40,8 @@ export interface ButtonProps {
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     (
         {
+            title,
+            tabIndex,
             children,
             variant,
             renderLeadingIcon,
@@ -59,6 +63,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     ) => {
         return (
             <button
+                title={title}
+                tabIndex={tabIndex}
                 style={style}
                 data-test-id={testId}
                 ref={ref}

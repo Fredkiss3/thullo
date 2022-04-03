@@ -1,3 +1,5 @@
+@import '../base/animations';
+
 .drawer {
     font-family: 'Poppins', sans-serif;
     flex-direction: column;
@@ -12,20 +14,6 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     overflow-y: scroll;
     z-index: 10;
-
-    @keyframes translate-in {
-        from {
-            opacity: 0;
-            transform: translate(200%, 0);
-        }
-    }
-
-    @keyframes translate-out {
-        to {
-            opacity: 0;
-            transform: translate(200%, 0);
-        }
-    }
 
     &--closed {
         display: flex;
