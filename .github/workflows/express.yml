@@ -18,7 +18,26 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  build-and-deploy:
+  build:
+    runs-on: ubuntu-latest
+    environment: dev
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build docker
+        run: make build-docker
+        env:
+          MONGO_URI: ${{ secrets.MONGO_URI }}
+          ISSUER_BASE_URL: ${{ secrets.ISSUER_BASE_URL }}
+          OAUTH_CLIENT_ID: ${{ secrets.OAUTH_CLIENT_ID }}
+          OAUTH_REDIRECT_URI: ${{ secrets.OAUTH_REDIRECT_URI }}
+          UNSPLASH_API_KEY: ${{ secrets.UNSPLASH_API_KEY }}
+          OAUTH_CLIENT_SECRET: ${{ secrets.OAUTH_CLIENT_SECRET }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          CLOUDINARY_URL: ${{ secrets.CLOUDINARY_URL }}
+
+  deploy:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
     environment: dev
@@ -27,26 +46,27 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: "14"
-
-      - name: Build and Deploy the Application
-        run: |
-          cat << EOF > ~/.netrc
-          machine api.heroku.com
-            login $HEROKU_ACCOUNT_EMAIL
-            password $HEROKU_API_KEY
-          machine git.heroku.com
-            login $HEROKU_ACCOUNT_EMAIL
-            password $HEROKU_API_KEY
-          EOF
-          curl https://cli-assets.heroku.com/install.sh | sh
-          heroku container:login
-          heroku container:push web --app thullo-api
-          heroku container:release web --app thullo-api
-
+      - name: Login to docker
+        run: make login-docker
         env:
-          HEROKU_API_KEY: ${{ secrets.HEROKU_TOKEN }}
-          HEROKU_ACCOUNT_EMAIL: ${{ secrets.HEROKU_ACCOUNT_EMAIL }}
+          DCR_PASSWD: ${{ secrets.DCR_PASSWD }}
+          DCR_USER: ${{ secrets.DCR_USER }}
+
+  #     - name: Build and Deploy the Application
+  #       run: |
+  #         cat << EOF > ~/.netrc
+  #         machine api.heroku.com
+  #           login $HEROKU_ACCOUNT_EMAIL
+  #           password $HEROKU_API_KEY
+  #         machine git.heroku.com
+  #           login $HEROKU_ACCOUNT_EMAIL
+  #           password $HEROKU_API_KEY
+  #         EOF
+  #         curl https://cli-assets.heroku.com/install.sh | sh
+  #         heroku container:login
+  #         heroku container:push web --app thullo-api
+  #         heroku container:release web --app thullo-api
+
+  #       env:
+  #         HEROKU_API_KEY: ${{ secrets.HEROKU_TOKEN }}
+  #         HEROKU_ACCOUNT_EMAIL: ${{ secrets.HEROKU_ACCOUNT_EMAIL }}

@@ -1,4 +1,41 @@
-.PHONY: deploy
-deploy:
-	heroku stack:set container -a thullo-api
-	git push heroku master
+domain := $(DEPLOY_DOMAIN)
+server := "$(DEPLOY_USER)@$(domain)"
+
+.DEFAULT_GOAL := help
+help: ### Show this help message
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+
+.PHONY: build-local
+build-local: ### Build docker image locally
+	docker buildx build --platform linux/amd64 -t dcr.fredkiss.dev/thullo-api . \
+		--build-arg MONGO_URI=$(MONGO_URI) \
+		--build-arg ISSUER_BASE_URL=(ISSUER_BASE_URL) \
+		--build-arg OAUTH_CLIENT_ID=$(OAUTH_CLIENT_ID) \
+		--build-arg OAUTH_REDIRECT_URI=$(OAUTH_REDIRECT_URI) \
+		--build-arg UNSPLASH_API_KEY=$(UNSPLASH_API_KEY) \
+		--build-arg OAUTH_CLIENT_SECRET=$(OAUTH_CLIENT_SECRET) \
+		--build-arg JWT_SECRET=$(JWT_SECRET) \
+		--build-arg CLOUDINARY_URL=$(CLOUDINARY_URL)  \
+		--build-arg CLOUDINARY_ASSET_URL=$(CLOUDINARY_ASSET_URL) 
+
+.PHONY: build-docker
+build-docker: ### Build docker image
+	docker build -t dcr.fredkiss.dev/thullo-api . \
+		--build-arg MONGO_URI=$(MONGO_URI) \
+		--build-arg ISSUER_BASE_URL=(ISSUER_BASE_URL) \
+		--build-arg OAUTH_CLIENT_ID=$(OAUTH_CLIENT_ID) \
+		--build-arg OAUTH_REDIRECT_URI=$(OAUTH_REDIRECT_URI) \
+		--build-arg UNSPLASH_API_KEY=$(UNSPLASH_API_KEY) \
+		--build-arg OAUTH_CLIENT_SECRET=$(OAUTH_CLIENT_SECRET) \
+		--build-arg JWT_SECRET=$(JWT_SECRET) \
+		--build-arg CLOUDINARY_URL=$(CLOUDINARY_URL)  \
+		--build-arg CLOUDINARY_ASSET_URL=$(CLOUDINARY_ASSET_URL) 
+
+.PHONY: login-docker
+login-docker: ### login to docker registry
+	echo $(DCR_PASSWD) | docker login  --username=$(DCR_USER) --password-stdin dcr.fredkiss.dev
+
+.PHONY: deploy-docker
+deploy-docker: ### deploy docker image
+	docker push dcr.fredkiss.dev/thullo-api
+	ssh -p $(DEPLOY_PORT) $(server) "echo $(DCR_PASSWD) | docker login  --username=$(DCR_USER) --password-stdin dcr.fredkiss.dev && docker pull dcr.fredkiss.dev/thullo-api && docker run -d -p 8080:80 --restart=always --name thullo-api dcr.fredkiss.dev/thullo-api"
