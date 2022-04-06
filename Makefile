@@ -41,8 +41,8 @@ push-docker: ### Push docker image to registry
 
 .PHONY: deploy-api
 deploy-api: ### deploy docker image for the api
-	ssh -p $(DEPLOY_PORT) $(server) "echo $(DCR_PASSWD) | docker login  --username=$(DCR_USER) --password-stdin dcr.fredkiss.dev && docker pull dcr.fredkiss.dev/thullo-api && docker stop thullo-api 2> /dev/null && docker run -d -p 127.0.0.1:8080:80 --restart=always --name thullo-api dcr.fredkiss.dev/thullo-api"
+	ssh -p $(DEPLOY_PORT) $(server) "echo $(DCR_PASSWD) | docker login  --username=$(DCR_USER) --password-stdin dcr.fredkiss.dev && docker pull dcr.fredkiss.dev/thullo-api && docker stop thullo-api 2> /dev/null && docker rm thullo-api 2> /dev/null && docker run -d -p 127.0.0.1:8080:80 --restart=always --name thullo-api dcr.fredkiss.dev/thullo-api"
 
 .PHONY: deploy-front
 deploy-front: ### deploy docker image for the front
-	ssh -p $(DEPLOY_PORT) $(server) "echo $(DCR_PASSWD) | docker login  --username=$(DCR_USER) --password-stdin dcr.fredkiss.dev && docker pull dcr.fredkiss.dev/thullo-front && docker stop thullo-front 2> /dev/null && docker run -d -p 127.0.0.1:3001:80 --restart=always --name thullo-front dcr.fredkiss.dev/thullo-front"
+	ssh -p $(DEPLOY_PORT) $(server) "echo $(DCR_PASSWD) | docker login  --username=$(DCR_USER) --password-stdin dcr.fredkiss.dev && docker pull dcr.fredkiss.dev/thullo-front && docker stop thullo-front 2> /dev/null  && docker rm thullo-front 2> /dev/null  && docker run -d -p 127.0.0.1:3001:80 --restart=always --name thullo-front dcr.fredkiss.dev/thullo-front"

@@ -14,5 +14,5 @@ RUN pnpm install --prefix packages/front  --shamefully-hoist \
 
 # Webapp based on httpd
 FROM httpd:2.4
-COPY --from=build-stage /app/dist/ /usr/local/apache2/htdocs/
+COPY --from=build-stage /app/packages/front/dist/ /usr/local/apache2/htdocs/
 RUN chmod -R 777 /usr/local/apache2/htdocs/
