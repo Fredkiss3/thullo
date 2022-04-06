@@ -35,7 +35,10 @@ build-docker: ### Build docker image
 login-docker: ### login to docker registry
 	echo $(DCR_PASSWD) | docker login  --username=$(DCR_USER) --password-stdin dcr.fredkiss.dev
 
+.PHONY: push-docker
+push-docker: ### Push docker image to registry
+	docker push dcr.fredkiss.dev/thullo-api
+
 .PHONY: deploy-docker
 deploy-docker: ### deploy docker image
-	docker push dcr.fredkiss.dev/thullo-api
 	ssh -p $(DEPLOY_PORT) $(server) "echo $(DCR_PASSWD) | docker login  --username=$(DCR_USER) --password-stdin dcr.fredkiss.dev && docker pull dcr.fredkiss.dev/thullo-api && docker run -d -p 8080:80 --restart=always --name thullo-api dcr.fredkiss.dev/thullo-api"
