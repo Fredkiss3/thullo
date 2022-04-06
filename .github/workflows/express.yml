@@ -19,7 +19,7 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  build-and-deploy:
+  build-push-docker:
     runs-on: ubuntu-latest
     environment: dev
 
@@ -75,7 +75,7 @@ jobs:
   deploy:
     # The type of runner that the job will run on
     needs:
-      - build
+      - build-push-docker
     runs-on: ubuntu-latest
     environment: dev
 
