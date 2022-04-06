@@ -39,6 +39,8 @@ jobs:
 
   deploy:
     # The type of runner that the job will run on
+    needs:
+      - build
     runs-on: ubuntu-latest
     environment: dev
 
