@@ -9,6 +9,7 @@ on:
     paths:
       - "packages/front/**"
       - .github/workflows/front.yml
+      - "Dockerfile.front"
     branches:
       - develop
 
@@ -17,33 +18,28 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # test:
-  #   runs-on: ubuntu-latest
-  #   environment: dev
+  build-push-docker:
+    runs-on: ubuntu-latest
+    environment: dev
 
-  #   steps:
-  #     - uses: actions/checkout@v2
+    steps:
+      - uses: actions/checkout@v2
 
-  #     - name: Setup pnpm
-  #       uses: pnpm/action-setup@646cdf48217256a3d0b80361c5a50727664284f2
-  #       with:
-  #         version: 6.22.2
-
-  #     - name: Setup Node version
-  #       uses: actions/setup-node@v2
-  #       with:
-  #         node-version: 16.x
-  #         cache: "pnpm"
-
-  #     - name: Install dependencies
-  #       run: FORCE_COLOR=true pnpm i --prefix packages/front
-
-  #     - name: Test the frontend
-  #       run: FORCE_COLOR=true pnpm run test --prefix packages/front
+      - uses: whoan/docker-build-with-cache-action@v5
+        with:
+          username: "${{ secrets.DCR_USER }}"
+          password: "${{ secrets.DCR_PASSWD }}"
+          image_name: thullo-front
+          image_tag: latest
+          push_git_tag: true
+          registry: dcr.fredkiss.dev
+          dockerfile: Dockerfile.front
+          context: .
 
   deploy:
-    # needs: test
     # The type of runner that the job will run on
+    needs:
+      - build-push-docker
     runs-on: ubuntu-latest
     environment: dev
 
@@ -51,32 +47,19 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@646cdf48217256a3d0b80361c5a50727664284f2
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
         with:
-          version: 6.22.2
+          key: ${{ secrets.SSH_SERVER_KEY }}
+          name: id_rsa # optional
+          known_hosts: ${{ secrets.KNOWN_HOSTS }}
 
-      - name: Setup Node version
-        uses: actions/setup-node@v2
-        with:
-          node-version: 16.x
-          cache: "pnpm"
-
-      - name: Install dependencies
-        run: FORCE_COLOR=true pnpm i --prefix packages/front
-
-      - name: Build the frontend
-        run: |
-          NODE_ENV=production VITE_API_URL=https://thullo-api.herokuapp.com FORCE_COLOR=true pnpm run build --prefix packages/front
-          cat << EOF > ./packages/front/dist/_redirects
-          # The following redirect is intended for use with most SPAs that handle routing internally.
-          /*    /index.html   200
-          EOF
-
-      - name: Publish the frontend
-        run: FORCE_COLOR=true pnpm run deploy --prefix packages/front
+      - name: Deploy to Server
+        run: make deploy-front
         env:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-          VITE_API_URL: ${{ secrets.API_URL }}
-          API_URL: ${{ secrets.API_URL }}
+          DEPLOY_DIR: ${{ secrets.DEPLOY_DIR }}
+          DEPLOY_PORT: ${{ secrets.DEPLOY_PORT }}
+          DEPLOY_DOMAIN: ${{ secrets.DEPLOY_DOMAIN }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DCR_PASSWD: ${{ secrets.DCR_PASSWD }}
+          DCR_USER: ${{ secrets.DCR_USER }}
