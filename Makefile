@@ -9,7 +9,7 @@ help: ### Show this help message
 build-local: ### Build docker image locally
 	docker buildx build --platform linux/amd64 -t dcr.fredkiss.dev/thullo-api . \
 		--build-arg MONGO_URI=$(MONGO_URI) \
-		--build-arg ISSUER_BASE_URL=(ISSUER_BASE_URL) \
+		--build-arg ISSUER_BASE_URL=$(ISSUER_BASE_URL) \
 		--build-arg OAUTH_CLIENT_ID=$(OAUTH_CLIENT_ID) \
 		--build-arg OAUTH_REDIRECT_URI=$(OAUTH_REDIRECT_URI) \
 		--build-arg UNSPLASH_API_KEY=$(UNSPLASH_API_KEY) \
@@ -22,7 +22,7 @@ build-local: ### Build docker image locally
 build-docker: ### Build docker image
 	docker build -t dcr.fredkiss.dev/thullo-api . \
 		--build-arg MONGO_URI=$(MONGO_URI) \
-		--build-arg ISSUER_BASE_URL=(ISSUER_BASE_URL) \
+		--build-arg ISSUER_BASE_URL=$(ISSUER_BASE_URL) \
 		--build-arg OAUTH_CLIENT_ID=$(OAUTH_CLIENT_ID) \
 		--build-arg OAUTH_REDIRECT_URI=$(OAUTH_REDIRECT_URI) \
 		--build-arg UNSPLASH_API_KEY=$(UNSPLASH_API_KEY) \
