@@ -20,7 +20,7 @@ build-local: ### Build docker image locally
 
 .PHONY: build-docker
 build-docker: ### Build docker image
-	docker build -t dcr.fredkiss.dev/thullo-api:$(GITHUB_SHA) . \
+	docker build -t dcr.fredkiss.dev/thullo-api . \
 		--build-arg MONGO_URI=$(MONGO_URI) \
 		--build-arg ISSUER_BASE_URL=$(ISSUER_BASE_URL) \
 		--build-arg OAUTH_CLIENT_ID=$(OAUTH_CLIENT_ID) \
