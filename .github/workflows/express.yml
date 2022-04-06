@@ -55,6 +55,23 @@ jobs:
           DCR_PASSWD: ${{ secrets.DCR_PASSWD }}
           DCR_USER: ${{ secrets.DCR_USER }}
 
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_SERVER_KEY }}
+          name: id_rsa # optional
+          known_hosts: ${{ secrets.KNOWN_HOSTS }}
+
+      - name: Deploy to Server
+        run: make deploy-docker
+        env:
+          DEPLOY_DIR: ${{ secrets.DEPLOY_DIR }}
+          DEPLOY_PORT: ${{ secrets.DEPLOY_PORT }}
+          DEPLOY_DOMAIN: ${{ secrets.DEPLOY_DOMAIN }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DCR_PASSWD: ${{ secrets.DCR_PASSWD }}
+          DCR_USER: ${{ secrets.DCR_USER }}
+
   #     - name: Build and Deploy the Application
   #       run: |
   #         cat << EOF > ~/.netrc
