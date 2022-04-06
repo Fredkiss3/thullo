@@ -11,6 +11,7 @@ on:
       - "packages/adapters/**"
       - "Dockerfile"
       - .github/workflows/express.yml
+      - Makefile
     branches:
       - develop
   # Allows you to run this workflow manually from the Actions tab+1
