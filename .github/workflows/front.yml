@@ -41,7 +41,7 @@ jobs:
 
       - name: Build the frontend
         run: |
-          NODE_ENV=production VITE_API_URL=https://thullo-api.herokuapp.com FORCE_COLOR=true pnpm run build --prefix packages/front
+          NODE_ENV=production VITE_API_URL=https://thullo.fredkiss.dev FORCE_COLOR=true pnpm run build --prefix packages/front
 
       - name: Cache Build Output
         uses: actions/upload-artifact@v2
