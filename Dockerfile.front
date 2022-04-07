@@ -1,6 +1,7 @@
 # Build and compile the webapp
 FROM node:16-alpine as build-stage
 
+ENV VITE_API_URL=
 WORKDIR /app
 
 RUN apk add --update curl && rm -rf /var/cache/apk/*
