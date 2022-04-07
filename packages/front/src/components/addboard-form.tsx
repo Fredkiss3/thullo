@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Button } from './button';
 import { Icon } from './icon';
 import { Input } from './input';
-import { jsonFetch } from '@/lib/functions';
+import { jsonFetch, getApiURL } from '@/lib/functions';
 import { Skeleton } from './skeleton';
 import { PhotoSearch } from './photo-search';
 
@@ -27,7 +27,7 @@ export const AddBoardForm = React.forwardRef<
     React.useEffect(() => {
         async function getRandomPhoto() {
             const { data, errors } = await jsonFetch<Photo | null>(
-                `${import.meta.env.VITE_API_URL}/api/proxy/unsplash/random/`
+                `${getApiURL()}/api/proxy/unsplash/random/`
             );
 
             if (errors !== null || data === null) {

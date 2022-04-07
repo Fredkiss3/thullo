@@ -21,6 +21,10 @@ export function getHostWithScheme(url: string): string {
     return urlObject.protocol + '//' + urlObject.host;
 }
 
+export function getApiURL() {
+    return import.meta.env.VITE_API_URL ?? '';
+}
+
 export function wait(ms: number): Promise<void> {
     // Wait for the specified amount of time
     return new Promise((resolve) => setTimeout(resolve, ms));

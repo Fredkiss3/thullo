@@ -1,6 +1,6 @@
 import * as React from 'react';
 // Functions & Others
-import { clsx, debounce, jsonFetch } from '@/lib/functions';
+import { clsx, debounce, jsonFetch, getApiURL } from '@/lib/functions';
 import type { ApiErrors, Photo } from '@/lib/types';
 
 // Components
@@ -36,7 +36,7 @@ export function PhotoSearch({
 
             if (value.length === 0) {
                 ({ data, errors } = await jsonFetch<Photo[] | null>(
-                    `${import.meta.env.VITE_API_URL}/api/proxy/unsplash/list/`
+                    `${getApiURL()}/api/proxy/unsplash/list/`
                 ));
             } else {
                 ({ data, errors } = await jsonFetch<Photo[] | null>(

@@ -14,6 +14,7 @@ import {
     getMax,
     jsonFetch,
     setCookie,
+    getApiURL,
 } from './functions';
 import type {
     ApiErrors,
@@ -39,7 +40,7 @@ export function useUserQuery() {
         USER_QUERY,
         async () => {
             const { data } = await jsonFetch<{ user: User } | null>(
-                `${import.meta.env.VITE_API_URL}/api/auth/me`,
+                `${getApiURL()}/api/auth/me`,
                 {
                     headers: {
                         Authorization: `Bearer ${getCookie(USER_TOKEN)}`,
@@ -61,7 +62,7 @@ export function useBoardsQuery() {
         BOARD_QUERY,
         async () => {
             const { data, errors } = await jsonFetch<Board[]>(
-                `${import.meta.env.VITE_API_URL}/api/boards/`,
+                `${getApiURL()}/api/boards/`,
                 {
                     headers: {
                         Authorization: `Bearer ${getCookie(USER_TOKEN)}`,
@@ -108,7 +109,7 @@ export function useSingleBoardQuery(id?: string) {
             let errors: ApiErrors = null;
             if (id) {
                 ({ data, errors } = await jsonFetch<BoardDetails | null>(
-                    `${import.meta.env.VITE_API_URL}/api/boards/${id}`,
+                    `${getApiURL()}/api/boards/${id}`,
                     {
                         headers: {
                             Authorization: `Bearer ${getCookie(USER_TOKEN)}`,
@@ -194,13 +195,10 @@ export function useLoginMutation() {
     const { dispatch } = useErrorsContext();
     return useMutation(
         (authCode: string | null) =>
-            jsonFetch<{ token?: string }>(
-                `${import.meta.env.VITE_API_URL}/api/auth`,
-                {
-                    method: 'POST',
-                    body: JSON.stringify({ authCode }),
-                }
-            ),
+            jsonFetch<{ token?: string }>(`${getApiURL()}/api/auth`, {
+                method: 'POST',
+                body: JSON.stringify({ authCode }),
+            }),
         {
             onSuccess: ({ data, errors }) => {
                 if (errors === null && data.token) {
@@ -243,7 +241,7 @@ export function useAddBoardMutation() {
             onSuccess: () => void;
         }) => {
             const { data, errors } = await jsonFetch<Board>(
-                `${import.meta.env.VITE_API_URL}/api/boards`,
+                `${getApiURL()}/api/boards`,
                 {
                     method: 'POST',
                     body: JSON.stringify(board),
@@ -895,7 +893,7 @@ export function useAddListMutation() {
             onSuccess: () => void;
         }) => {
             const { data, errors } = await jsonFetch<Omit<List, 'cards'>>(
-                `${import.meta.env.VITE_API_URL}/api/boards/${boardId}/lists`,
+                `${getApiURL()}/api/boards/${boardId}/lists`,
                 {
                     method: 'POST',
                     body: JSON.stringify({
@@ -1171,9 +1169,7 @@ export function useDeleteListMutation() {
             onSuccess: () => void;
         }) => {
             const { errors } = await jsonFetch<{ success: boolean }>(
-                `${import.meta.env.VITE_API_URL}/api/boards/${boardId}/lists/${
-                    list.id
-                }`,
+                `${getApiURL()}/api/boards/${boardId}/lists/${list.id}`,
                 {
                     method: 'DELETE',
                     headers: {
