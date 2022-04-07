@@ -52,7 +52,7 @@ jobs:
   deploy:
     # The type of runner that the job will run on
     needs:
-      - build-push-docker
+      - build
     runs-on: ubuntu-latest
     environment: dev
 
