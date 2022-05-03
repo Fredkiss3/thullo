@@ -80,7 +80,7 @@ A quick look at the top-level files and directories you will see in this project
     │   └── front
     ├── .prettierrc
     ├── jest.config.json
-    ├── lerna.json
+    ├── pnpm-workspace.yaml
     ├── pnpm-lock.yaml
     └── tsconfig.json
 
@@ -107,7 +107,7 @@ A quick look at the top-level files and directories you will see in this project
 
 4. **`jest.config.json`**: this file contains the configuration for Jest, that are used by the all the underlying packages
 
-5. **`lerna.json`**: this file contains the configuration for the monorepo.
+5. **`pnpm-workspace.yaml`**: this file contains the configuration for the monorepo.
 
 6. **`pnpm-lock.yaml`**: this file contains the dependencies lock for the monorepo.
 
