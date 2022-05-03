@@ -89,9 +89,9 @@ A quick look at the top-level files and directories you will see in this project
    
     1. **`domain.yml`** : this workflow is used to test the domain.
    
-    2. **`express.yml`** : this workflow is used to deploy the express app to [heroku](https://heroku.com/).
+    2. **`express.yml`** : this workflow is used to deploy the express app.
    
-    3. **`front.yml`** : this workflow is used to test and deploy the frontend app to [netlify](https://netlify.com/).
+    3. **`front.yml`** : this workflow is used to test and deploy the frontend app.
    
 2. **`packages/`**: this folder contains the monorepo packages, each package is a sub-folder :
 
