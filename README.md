@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://thullo-front.netlify.app">
+  <a href="https://thullo.fredkiss.dev">
     <img alt="Logo Thullo" src="logo.png" width="200" />
   </a>
 </p>
