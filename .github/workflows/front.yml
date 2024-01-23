@@ -4,79 +4,62 @@ name: CI/CD For the Frontend
 
 # Controls when the action will run.
 on:
-  # Triggers the workflow on push or pull request events but only for the main branch
-  push:
-    paths:
-      - "packages/front/**"
-      - .github/workflows/front.yml
-      - "Dockerfile.front"
-    branches:
-      - develop
+    # Triggers the workflow on push or pull request events but only for the main branch
+    push:
+        paths:
+            - "packages/front/**"
+            - .github/workflows/front.yml
+            - "Dockerfile.front"
+        branches:
+            - develop
 
-  # Allows you to run this workflow manually from the Actions tab+1
-  workflow_dispatch:
+    # Allows you to run this workflow manually from the Actions tab+1
+    workflow_dispatch:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    environment: dev
+    build-push-docker:
+        runs-on: ubuntu-latest
+        environment: dev
 
-    steps:
-      - uses: actions/checkout@v2
+        steps:
+            - uses: actions/checkout@v2
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@646cdf48217256a3d0b80361c5a50727664284f2
-        with:
-          version: 6.22.2
+            - uses: whoan/docker-build-with-cache-action@v5
+              with:
+                  username: "${{ secrets.DCR_USER }}"
+                  password: "${{ secrets.DCR_PASSWD }}"
+                  image_name: thullo-front
+                  image_tag: latest
+                  push_git_tag: true
+                  registry: dcr.fredkiss.dev
+                  dockerfile: Dockerfile.front
+                  context: .
 
-      - name: Setup Node version
-        uses: actions/setup-node@v2
-        with:
-          node-version: 16.x
-          cache: "pnpm"
+    deploy:
+        # The type of runner that the job will run on
+        needs:
+            - build-push-docker
+        runs-on: ubuntu-latest
+        environment: dev
 
-      - name: Install dependencies
-        run: FORCE_COLOR=true pnpm i --prefix packages/front
+        # Steps represent a sequence of tasks that will be executed as part of the job
+        steps:
+            - uses: actions/checkout@v2
 
-      - name: Build the frontend
-        run: |
-          NODE_ENV=production VITE_API_URL=https://thullo.fredkiss.dev FORCE_COLOR=true pnpm run build --prefix packages/front
+            - name: Install SSH key
+              uses: shimataro/ssh-key-action@v2
+              with:
+                  key: ${{ secrets.SSH_SERVER_KEY }}
+                  name: id_rsa # optional
+                  known_hosts: ${{ secrets.KNOWN_HOSTS }}
 
-      - name: Cache Build Output
-        uses: actions/upload-artifact@v2
-        with:
-          name: thullo-front-build-output
-          path: packages/front/dist
-
-  deploy:
-    # The type of runner that the job will run on
-    needs:
-      - build
-    runs-on: ubuntu-latest
-    environment: dev
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Download Build Artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: thullo-front-build-output
-          path: dist
-
-      - name: Install SSH key
-        uses: shimataro/ssh-key-action@v2
-        with:
-          key: ${{ secrets.SSH_SERVER_KEY }}
-          name: id_rsa # optional
-          known_hosts: ${{ secrets.KNOWN_HOSTS }}
-
-      - name: Deploy to Server
-        run: make deploy-front
-        env:
-          DEPLOY_DIR: ${{ secrets.DEPLOY_DIR }}
-          DEPLOY_PORT: ${{ secrets.DEPLOY_PORT }}
-          DEPLOY_DOMAIN: ${{ secrets.DEPLOY_DOMAIN }}
-          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+            - name: Deploy to Server
+              run: make deploy-front
+              env:
+                  DEPLOY_DIR: ${{ secrets.DEPLOY_DIR }}
+                  DEPLOY_PORT: ${{ secrets.DEPLOY_PORT }}
+                  DEPLOY_DOMAIN: ${{ secrets.DEPLOY_DOMAIN }}
+                  DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+                  DCR_PASSWD: ${{ secrets.DCR_PASSWD }}
+                  DCR_USER: ${{ secrets.DCR_USER }}
