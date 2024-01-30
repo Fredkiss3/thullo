@@ -46,6 +46,6 @@ deploy-api: ### deploy docker image for the api
 
 .PHONY: deploy-front
 deploy-front: ### deploy docker image for the front
-	ssh -p $(DEPLOY_PORT) $(server) "echo $(DCR_PASSWD) | docker login  --username=$(DCR_USER) --password-stdin dcr.fredkiss.dev && docker pull dcr.fredkiss.dev/thullo-front && docker stop thullo-front | docker rm thullo-api | docker run -d --network caddy --restart=always --name thullo-front dcr.fredkiss.dev/thullo-front"
+	ssh -p $(DEPLOY_PORT) $(server) "echo $(DCR_PASSWD) | docker login  --username=$(DCR_USER) --password-stdin dcr.fredkiss.dev && docker pull dcr.fredkiss.dev/thullo-front && docker stop thullo-front | docker rm thullo-front | docker run -d --network caddy --restart=always --name thullo-front dcr.fredkiss.dev/thullo-front"
 
 
