@@ -80,6 +80,7 @@ jobs:
                   FORCE_COLOR=true pnpm --prefix packages/domain run build
                   FORCE_COLOR=true pnpm --prefix packages/adapters run build
                   FORCE_COLOR=true pnpm --prefix packages/express run build
+                  ls -alh packages/express
             - name: Set up QEMU
               uses: docker/setup-qemu-action@v2
             - name: Set up Docker Buildx
