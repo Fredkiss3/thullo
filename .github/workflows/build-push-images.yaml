@@ -31,6 +31,7 @@ jobs:
                   curl -f https://get.pnpm.io/v6.16.js | node - add --global pnpm@6
                   FORCE_COLOR=true pnpm install --prefix packages/front --shamefully-hoist --frozen-lockfile
                   FORCE_COLOR=true pnpm --prefix packages/front run build
+                  ls -alh packages/front
             - name: Set up QEMU
               uses: docker/setup-qemu-action@v2
             - name: Set up Docker Buildx
