@@ -16,3 +16,8 @@ notes.md
 .github
 .vercel
 docker-compose.yml
+packages/domain/
+packages/express/
+packages/adapters/
+packages/src/
+packages/cypress/
