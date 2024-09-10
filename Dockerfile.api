@@ -27,6 +27,9 @@ COPY ./packages/adapters/package.json ./packages/adapters/package.json
 COPY ./packages/express/package.json ./packages/express/package.json
 
 RUN FORCE_COLOR=true pnpm install --shamefully-hoist --frozen-lockfile
+RUN FORCE_COLOR=true pnpm --prefix packages/domain install --shamefully-hoist --frozen-lockfile
+RUN FORCE_COLOR=true pnpm --prefix packages/adapters install --shamefully-hoist --frozen-lockfile
+RUN FORCE_COLOR=true pnpm --prefix packages/express install --shamefully-hoist --frozen-lockfile
 
 ENV NODE_ENV=production
 
