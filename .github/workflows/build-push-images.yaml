@@ -52,7 +52,7 @@ jobs:
                   cache-from: type=registry,ref=ghcr.io/fredkiss3/thullo-front:latest
                   cache-to: type=inline
     build-push-backend:
-        name: Build and Push Thuello API
+        name: Build and Push Thullo API
         runs-on: ubuntu-latest
         permissions:
             packages: write
@@ -72,7 +72,7 @@ jobs:
                   key: ${{ runner.OS }}-pnpm-cache-${{ hashFiles('pnpm-lock.yaml') }}
                   restore-keys: |
                       ${{ runner.OS }}-pnpm-cache-
-            - name: Build docs with node
+            - name: Build API with node
               run: |
                   curl -f https://get.pnpm.io/v6.16.js | node - add --global pnpm@6
                   FORCE_COLOR=true pnpm install --shamefully-hoist --frozen-lockfile
