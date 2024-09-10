@@ -4,16 +4,6 @@ name: CI/CD For the Frontend
 
 # Controls when the action will run.
 on:
-    # Triggers the workflow on push or pull request events but only for the main branch
-    push:
-        paths:
-            - "packages/front/**"
-            - .github/workflows/front.yml
-            - "Dockerfile.front"
-            - Makefile
-        branches:
-            - develop
-
     # Allows you to run this workflow manually from the Actions tab+1
     workflow_dispatch:
 
