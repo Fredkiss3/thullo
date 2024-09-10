@@ -70,9 +70,8 @@ A quick look at the top-level files and directories you will see in this project
     .
     ├── .github/
     │    └── workflows
-    │        ├── express.yml
     │        ├── domain.yml
-    │        └── front.yml
+    │        └── build-push-images.yml
     ├── packages/
     │   ├── domain
     │   ├── express
@@ -84,14 +83,11 @@ A quick look at the top-level files and directories you will see in this project
     ├── pnpm-lock.yaml
     └── tsconfig.json
 
-1. **`.github/`**: this folder contains the GitHub Actions workflow configuration for Continuous Integration/Continuous Deployment.
-   Given that this project is a [monorepo](https://www.wikiwand.com/en/Monorepo), there is muliples workflows for the different packages, with each one targeting a specific environment :
+1. **`.github/`**: this folder contains the GitHub Actions workflow configuration for Continuous Integration/Continuous Deployment.:
    
-    1. **`domain.yml`** : this workflow is used to test the domain.
+    1. **`build-push-images.yml`** : this workflow is used to build the images for the frontend & API.
+    2. **`domain.yml`** : this workflow is used to test the domain.
    
-    2. **`express.yml`** : this workflow is used to deploy the express app.
-   
-    3. **`front.yml`** : this workflow is used to test and deploy the frontend app.
    
 2. **`packages/`**: this folder contains the monorepo packages, each package is a sub-folder :
 
