@@ -20,22 +20,21 @@ WORKDIR /webapp
 RUN apk add --update curl && rm -rf /var/cache/apk/*
 RUN curl -f https://get.pnpm.io/v6.16.js | node - add --global pnpm@6
 
-COPY ./package.json ./
-COPY ./pnpm-lock.yaml ./
-COPY ./packages/domain/package.json ./packages/domain/package.json
-COPY ./packages/adapters/package.json ./packages/adapters/package.json
-COPY ./packages/express/package.json ./packages/express/package.json
+COPY ./* ./
+COPY ./packages/adapters ./packages/adapters
+COPY ./packages/domain ./packages/domain
+COPY ./packages/express ./packages/express
 
-RUN FORCE_COLOR=true pnpm install --shamefully-hoist --frozen-lockfile
-RUN FORCE_COLOR=true pnpm --prefix packages/domain install --shamefully-hoist --frozen-lockfile
-RUN FORCE_COLOR=true pnpm --prefix packages/adapters install --shamefully-hoist --frozen-lockfile
-RUN FORCE_COLOR=true pnpm --prefix packages/express install --shamefully-hoist --frozen-lockfile
 
-ENV NODE_ENV=production
+RUN pnpm install --prefix packages/domain  --shamefully-hoist \
+    && pnpm --prefix packages/domain run build 
 
-COPY ./packages/domain/dist ./packages/domain/dist
-COPY ./packages/adapters/dist ./packages/adapters/dist
-COPY ./packages/express/dist ./packages/express/dist
+RUN pnpm install --prefix packages/adapters  --shamefully-hoist \
+    && pnpm --prefix packages/adapters run build 
 
+RUN pnpm install --prefix packages/express  --shamefully-hoist \
+    && pnpm --prefix packages/express run build 
+
+ENV NODE_ENV production
 
 CMD [ "pnpm", "run", "start", "--prefix", "packages/express" ]
