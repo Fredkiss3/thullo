@@ -30,7 +30,7 @@ jobs:
       - name: Build front with node
         env:
           TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-          TURBO_TEAM: fredkiss3
+          TURBO_TEAM: ducktors
           TURBO_API: https://thullo-turbo-remote-cache-docker.fkiss.me
         run: |
           FORCE_COLOR=true pnpm install --frozen-lockfile

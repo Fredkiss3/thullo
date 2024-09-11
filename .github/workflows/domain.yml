@@ -33,5 +33,5 @@ jobs:
       - run: FORCE_COLOR=true TURBO_API=$TURBO_API TURBO_TOKEN=$TURBO_TOKEN TURBO_TEAM=$TURBO_TEAM pnpm turbo test --filter @thullo/domain
         env:
           TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-          TURBO_TEAM: fredkiss3
+          TURBO_TEAM: ducktors
           TURBO_API: https://thullo-turbo-remote-cache-docker.fkiss.me
