@@ -1,36 +1,36 @@
-version: '3.1'
+version: "3.1"
 
 services:
-#  express:
-#    build:
-#      context: .
-#      dockerfile: Dockerfile
-#    environment:
-#      NODE_ENV: production
-#      PORT: 8080
-#      MONGO_URI: mongodb://root:password@mongo:27017/thullo?authSource=admin
-#    ports:
-#      - "8082:8080"
+    #  express:
+    #    build:
+    #      context: .
+    #      dockerfile: Dockerfile
+    #    environment:
+    #      NODE_ENV: production
+    #      PORT: 8080
+    #      MONGO_URI: mongodb://root:password@mongo:27017/thullo?authSource=admin
+    #    ports:
+    #      - "8082:8080"
 
-  mongo:
-    image: mongo
-    restart: always
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: password
-    ports:
-      - "27017:27017"
-    volumes:
-      - mongodb-data:/data/db
-  mongo-express:
-    image: mongo-express
-    restart: always
-    ports:
-      - 8081:8081
-    environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: root
-      ME_CONFIG_MONGODB_ADMINPASSWORD: password
-      ME_CONFIG_MONGODB_URL: mongodb://root:password@mongo:27017/
+    mongo:
+        image: mongo:8.0-rc
+        restart: always
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: root
+            MONGO_INITDB_ROOT_PASSWORD: password
+        ports:
+            - "27017:27017"
+        volumes:
+            - mongodb-data:/data/db
+    mongo-express:
+        image: mongo-express
+        restart: always
+        ports:
+            - 8081:8081
+        environment:
+            ME_CONFIG_MONGODB_ADMINUSERNAME: root
+            ME_CONFIG_MONGODB_ADMINPASSWORD: password
+            ME_CONFIG_MONGODB_URL: mongodb://root:password@mongo:27017/
 
 volumes:
-  mongodb-data:
+    mongodb-data:

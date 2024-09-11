@@ -8,7 +8,7 @@ export function Footer({}: FooterProps) {
         <footer className={cls.footer}>
             <p>
                 Created by&nbsp; Fredkiss3, for a{' '}
-                <a href="https://devchallenges.io/challenges/wP0LbGgEeKhpFHUpPpDh">
+                <a href="https://legacy.devchallenges.io/solutions/MNJziYyAHCTLDr6Q4qd6#feedback">
                     <strong>devchallenges</strong>
                 </a>
                 , Check out the source code on &nbsp;

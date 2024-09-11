@@ -6,8 +6,6 @@ node_modules/
 /.idea/vcs.xml
 *.iml
 notes.md
-# Local Netlify folder
-.netlify
 .DS_Store
 *.http
 .vercel

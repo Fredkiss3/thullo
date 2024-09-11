@@ -25,7 +25,6 @@ COPY ./packages/adapters ./packages/adapters
 COPY ./packages/domain ./packages/domain
 COPY ./packages/express ./packages/express
 
-
 RUN pnpm install --prefix packages/domain  --shamefully-hoist \
     && pnpm --prefix packages/domain run build 
 
