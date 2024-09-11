@@ -21,6 +21,13 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - uses: actions/checkout@v2
+      - name: Cache turbo artefacts
+        uses: actions/cache@v3
+        with:
+          path: '**/.turbo'
+          key: ${{ runner.OS }}-turbo-cache-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.OS }}-turbo-cache-
       - uses: pnpm/action-setup@646cdf48217256a3d0b80361c5a50727664284f2
         with:
           version: 8.15.9
@@ -30,8 +37,4 @@ jobs:
           node-version: 20.x
           cache: 'pnpm'
       - run: pnpm install --frozen-lockfile
-      - run: FORCE_COLOR=true TURBO_API=$TURBO_API TURBO_TOKEN=$TURBO_TOKEN TURBO_TEAM=$TURBO_TEAM pnpm turbo test --filter @thullo/domain
-        env:
-          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-          TURBO_TEAM: ducktors
-          TURBO_API: https://thullo-turbo-remote-cache-docker.fkiss.me
+      - run: FORCE_COLOR=true pnpm turbo test --filter @thullo/domain
