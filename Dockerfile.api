@@ -27,9 +27,4 @@ RUN pnpm install --frozen-lockfile
 
 ENV NODE_ENV=production
 
-RUN ls -alh ./packages/domain/
-RUN ls -alh ./packages/adapters/
-RUN ls -alh ./apps/express/
-RUN ls -alh ./apps/front/
-
-CMD [ "pnpm", "run", "start", "--prefix", "packages/express" ]
+CMD [ "pnpm", "run", "start", "--prefix", "apps/express" ]
