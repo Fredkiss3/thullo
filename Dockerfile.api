@@ -28,9 +28,8 @@ COPY turbo.json ./
 COPY .turbo/config.json ./.turbo/
 
 COPY ./* ./
-COPY ./packages/adapters ./packages/adapters
-COPY ./packages/domain ./packages/domain
-COPY ./apps/express ./apps/express
+COPY ./packages/ ./packages/
+COPY ./apps/ ./apps/
 
 RUN pnpm install --frozen-lockfile
 

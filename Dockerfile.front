@@ -3,5 +3,5 @@ FROM caddy:2.8-alpine
 
 WORKDIR /var/www/html
 
-COPY ./packages/front/dist/ .
+COPY ./apps/front/dist/ .
 COPY ./Caddyfile /etc/caddy/Caddyfile
