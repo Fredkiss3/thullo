@@ -10,7 +10,5 @@ notes.md
 .DS_Store
 *.http
 .vercel
-.turbo/** 
-!.turbo/config.json
-apps/**/.turbo/
-packages/**/.turbo/
+.turbo/
+.env
