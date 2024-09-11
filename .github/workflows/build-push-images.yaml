@@ -86,4 +86,4 @@ jobs:
           cache-from: |
             type=registry,ref=ghcr.io/fredkiss3/thullo-api:latest
           cache-to: type=inline
-          build-args: '--build-arg TURBO_TOKEN=${{ secrets.TURBO_TOKEN }}  --build-arg TURBO_TEAM=ducktors'
+          build-args: '--build-arg TURBO_TOKEN="${{ secrets.TURBO_TOKEN }}"  --build-arg TURBO_TEAM="ducktors"'
