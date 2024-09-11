@@ -19,13 +19,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Cache turbo artefacts
-        uses: actions/cache@v3
-        with:
-          path: '**/.turbo'
-          key: ${{ runner.OS }}-turbo-cache-${{ hashFiles('pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.OS }}-turbo-cache-
       - uses: pnpm/action-setup@646cdf48217256a3d0b80361c5a50727664284f2
         with:
           version: 8.15.9
@@ -69,13 +62,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Cache turbo artefacts
-        uses: actions/cache@v3
-        with:
-          path: '**/.turbo'
-          key: ${{ runner.OS }}-turbo-cache-${{ hashFiles('pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.OS }}-turbo-cache-
       - uses: pnpm/action-setup@646cdf48217256a3d0b80361c5a50727664284f2
         with:
           version: 8.15.9
