@@ -30,10 +30,11 @@ jobs:
       - name: Build front with node
         env:
           TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-          TURBO_TEAM: ducktors
+          TURBO_TEAM: fredkiss3
+          TURBO_API: https://thullo-turbo-remote-cache-docker.fkiss.me
         run: |
           FORCE_COLOR=true pnpm install --frozen-lockfile
-          FORCE_COLOR=true TURBO_TOKEN=$TURBO_TOKEN TURBO_TEAM=$TURBO_TEAM  pnpm turbo build --filter @thullo/front
+          FORCE_COLOR=true TURBO_API=$TURBO_API TURBO_TOKEN=$TURBO_TOKEN TURBO_TEAM=$TURBO_TEAM  pnpm turbo build --filter @thullo/front
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
@@ -86,4 +87,4 @@ jobs:
           cache-from: |
             type=registry,ref=ghcr.io/fredkiss3/thullo-api:latest
           cache-to: type=inline
-          build-args: '--build-arg TURBO_TOKEN="${{ secrets.TURBO_TOKEN }}"  --build-arg TURBO_TEAM="ducktors"'
+          build-args: '--build-arg TURBO_TOKEN="${{ secrets.TURBO_TOKEN }}"'

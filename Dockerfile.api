@@ -33,7 +33,7 @@ COPY ./apps/ ./apps/
 
 RUN pnpm install --frozen-lockfile
 
-RUN FORCE_COLOR=true pnpm turbo build --filter @thullo/api
+RUN FORCE_COLOR=true TURBO_API="https://thullo-turbo-remote-cache-docker.fkiss.me" TURBO_TOKEN=$TURBO_TOKEN TURBO_TEAM="fredkiss3" pnpm turbo build --filter @thullo/api
 
 ENV NODE_ENV=production
 

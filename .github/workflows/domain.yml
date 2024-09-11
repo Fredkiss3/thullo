@@ -30,7 +30,8 @@ jobs:
           node-version: 20.x
           cache: 'pnpm'
       - run: pnpm install --frozen-lockfile
-      - run: FORCE_COLOR=true TURBO_TOKEN=$TURBO_TOKEN TURBO_TEAM=$TURBO_TEAM pnpm turbo test --filter @thullo/domain
+      - run: FORCE_COLOR=true TURBO_API=$TURBO_API TURBO_TOKEN=$TURBO_TOKEN TURBO_TEAM=$TURBO_TEAM pnpm turbo test --filter @thullo/domain
         env:
           TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-          TURBO_TEAM: ducktors
+          TURBO_TEAM: fredkiss3
+          TURBO_API: https://thullo-turbo-remote-cache-docker.fkiss.me
