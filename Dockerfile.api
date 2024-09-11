@@ -1,4 +1,4 @@
-FROM node:16-alpine
+FROM node:20-alpine
 
 # Build time args to be passed as env variables
 # ARG MONGO_URI
@@ -23,16 +23,11 @@ RUN curl -f https://get.pnpm.io/v6.16.js | node - add --global pnpm@6
 COPY ./* ./
 COPY ./packages/adapters ./packages/adapters
 COPY ./packages/domain ./packages/domain
-COPY ./packages/express ./packages/express
+COPY ./apps/express ./apps/express
 
-RUN pnpm install --prefix packages/domain  --shamefully-hoist \
-    && pnpm --prefix packages/domain run build 
+RUN pnpm install --frozen-lockfile
 
-RUN pnpm install --prefix packages/adapters  --shamefully-hoist \
-    && pnpm --prefix packages/adapters run build 
-
-RUN pnpm install --prefix packages/express  --shamefully-hoist \
-    && pnpm --prefix packages/express run build 
+RUN pnpm turbo build --filter @thullo/api
 
 ENV NODE_ENV=production
 
