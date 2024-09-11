@@ -10,10 +10,14 @@ FROM node:20-alpine
 # ARG JWT_SECRET
 # ARG CLOUDINARY_URL
 # ARG CLOUDINARY_ASSET_URL
+ARG TURBO_TOKEN 
+ARG TURBO_TEAM
 
 # With default values
 ENV ALLOWED_URLS=https://thullo.fredkiss.dev
 ENV PORT=80
+ENV TURBO_TOKEN=$TURBO_TOKEN
+ENV TURBO_TEAM=$TURBO_TEAM
 
 WORKDIR /webapp
 
@@ -27,7 +31,7 @@ COPY ./apps/express ./apps/express
 
 RUN pnpm install --frozen-lockfile
 
-RUN pnpm turbo build --filter @thullo/api
+RUN FORCE_COLOR=true TURBO_TOKEN=$TURBO_TOKEN TURBO_TEAM=$TURBO_TEAM pnpm turbo build --filter @thullo/api
 
 ENV NODE_ENV=production
 
