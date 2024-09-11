@@ -33,4 +33,4 @@ jobs:
       - run: FORCE_COLOR=true TURBO_TOKEN=$TURBO_TOKEN TURBO_TEAM=$TURBO_TEAM pnpm turbo test --filter @thullo/domain
         env:
           TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-          TURBO_TEAM: fredkiss3
+          TURBO_TEAM: ducktors

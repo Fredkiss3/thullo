@@ -33,6 +33,7 @@ COPY ./apps/ ./apps/
 
 RUN pnpm install --frozen-lockfile
 
+RUN echo "TURBO_TEAM=$TURBO_TEAM TURBO_TOKEN=$TURBO_TOKEN"
 RUN FORCE_COLOR=true pnpm turbo build --filter @thullo/api
 
 ENV NODE_ENV=production
