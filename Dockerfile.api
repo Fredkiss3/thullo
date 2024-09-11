@@ -10,19 +10,22 @@ FROM node:20-alpine
 # ARG JWT_SECRET
 # ARG CLOUDINARY_URL
 # ARG CLOUDINARY_ASSET_URL
-ARG TURBO_TOKEN 
 ARG TURBO_TEAM
+ENV TURBO_TEAM=$TURBO_TEAM
 
-# With default values
+ARG TURBO_TOKEN
+ENV TURBO_TOKEN=$TURBO_TOKEN
+
 ENV ALLOWED_URLS=https://thullo.fredkiss.dev
 ENV PORT=80
-ENV TURBO_TOKEN=$TURBO_TOKEN
-ENV TURBO_TEAM=$TURBO_TEAM
 
 WORKDIR /webapp
 
 RUN apk add --update curl && rm -rf /var/cache/apk/*
 RUN npm install --global pnpm@8.15.9
+
+COPY turbo.json ./
+COPY .turbo/config.json ./.turbo/
 
 COPY ./* ./
 COPY ./packages/adapters ./packages/adapters
