@@ -27,4 +27,4 @@ RUN pnpm install --frozen-lockfile
 
 ENV NODE_ENV=production
 
-CMD [ "pnpm", "run", "start", "--prefix", "apps/express" ]
+CMD [ "pnpm", "--filter", "@thullo/api" , "run", "start"]
