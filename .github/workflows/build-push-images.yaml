@@ -30,7 +30,7 @@ jobs:
       - name: Build front with node
         run: |
           FORCE_COLOR=true pnpm install --frozen-lockfile
-          FORCE_COLOR=true pnpm turbo build --filter @thullo/front
+          FORCE_COLOR=true VITE_API_URL="" pnpm turbo build --filter @thullo/front
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
