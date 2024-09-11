@@ -18,7 +18,7 @@ ENV PORT=80
 WORKDIR /webapp
 
 RUN apk add --update curl && rm -rf /var/cache/apk/*
-RUN curl -f https://get.pnpm.io/v6.16.js | node - add --global pnpm@6
+RUN npm install --global pnpm@8.15.9
 
 COPY ./* ./
 COPY ./packages/adapters ./packages/adapters
